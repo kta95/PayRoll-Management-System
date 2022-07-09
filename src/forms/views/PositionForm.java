@@ -9,7 +9,7 @@ import javax.swing.SwingConstants;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import java.awt.Color;
 
-public class HomeForm extends JInternalFrame {
+public class PositionForm extends JInternalFrame {
 
 	/**
 	 * Launch the application.
@@ -18,7 +18,7 @@ public class HomeForm extends JInternalFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					HomeForm frame = new HomeForm();
+					PositionForm frame = new PositionForm();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -30,7 +30,7 @@ public class HomeForm extends JInternalFrame {
 	/**
 	 * Create the frame.
 	 */
-	public HomeForm() {
+	public PositionForm() {
 		getContentPane().setBackground(Color.WHITE);
 		
 		this.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -40,7 +40,7 @@ public class HomeForm extends JInternalFrame {
 		
 		setBounds(0, 0, 976, 591);
 		
-		JLabel lblNewLabel = new JLabel("HOME");
+		JLabel lblNewLabel = new JLabel("Position");
 		lblNewLabel.setBackground(Color.WHITE);
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 40));
