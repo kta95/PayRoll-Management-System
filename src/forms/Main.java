@@ -30,7 +30,6 @@ import forms.views.PositionForm;
 import java.awt.Font;
 import java.awt.Image;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
@@ -38,7 +37,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import com.formdev.flatlaf.icons.FlatCheckBoxIcon;
 import com.formdev.flatlaf.ui.FlatBorder;
-import com.formdev.flatlaf.icons.FlatFileChooserDetailsViewIcon;
 
 public class Main {
 
@@ -65,6 +63,7 @@ public class Main {
 	 * Create the application.
 	 */
 	public Main() {
+		
 		initialize();
 
 	}
@@ -81,7 +80,7 @@ public class Main {
 		
 		JPanel topBar = new JPanel();
 		topBar.setBackground(Color.WHITE);
-		topBar.setBounds(299, 0, 976, 70);
+		topBar.setBounds(299, 0, 976, 72);
 		frame.getContentPane().add(topBar);
 		topBar.setLayout(null);
 		
@@ -225,8 +224,22 @@ public class Main {
 		allowanceMenu.add(lblAllowance);
 		
 		JDesktopPane desktopPane = new JDesktopPane();
-		desktopPane.setBounds(299, 70, 976, 591);
+		desktopPane.setBounds(299, 123, 976, 538);
 		frame.getContentPane().add(desktopPane);
+		HomeForm home = new HomeForm();
+		desktopPane.add(home).setVisible(true);
+
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.WHITE);
+		panel.setBounds(299, 71, 976, 51);
+		frame.getContentPane().add(panel);
+		panel.setLayout(null);
+		
+		JLabel lblCurrentMenu = new JLabel(lblHome.getText());
+		lblCurrentMenu.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCurrentMenu.setFont(new Font("Tahoma", Font.BOLD, 40));
+		lblCurrentMenu.setBounds(0, 0, 328, 51);
+		panel.add(lblCurrentMenu);
 		
 		Color defaultColor = Color.BLACK;
 		Color onClickColor = new Color(0, 0, 128);
@@ -242,10 +255,12 @@ public class Main {
 				allowanceMenu.setBackground(defaultColor);
 				deducMenu.setBackground(defaultColor);
 				payrollMenu.setBackground(defaultColor);
+				
+				lblCurrentMenu.setText(lblHome.getText());
+
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				HomeForm home = new HomeForm();
 				desktopPane.removeAll();
 				desktopPane.add(home).setVisible(true);
 			}
@@ -263,6 +278,8 @@ public class Main {
 				allowanceMenu.setBackground(defaultColor);
 				deducMenu.setBackground(defaultColor);
 				payrollMenu.setBackground(defaultColor);
+				
+				lblCurrentMenu.setText(lblEmployee.getText());
 			}
 			public void mouseClicked(MouseEvent e) {
 				EmployeeForm empForm = new EmployeeForm();
@@ -283,6 +300,9 @@ public class Main {
 				deducMenu.setBackground(defaultColor);
 				payrollMenu.setBackground(defaultColor);
 				
+				
+				lblCurrentMenu.setText(lblDepart.getText());
+
 				DepartmentForm dept = new DepartmentForm();
 				desktopPane.removeAll();
 				desktopPane.add(dept).setVisible(true);
@@ -300,6 +320,9 @@ public class Main {
 				allowanceMenu.setBackground(defaultColor);
 				deducMenu.setBackground(defaultColor);
 				payrollMenu.setBackground(defaultColor);
+				lblCurrentMenu.setText(lblPosition.getText());
+
+				
 				
 				PositionForm pForm = new PositionForm();
 				desktopPane.removeAll();
@@ -319,6 +342,9 @@ public class Main {
 				deducMenu.setBackground(defaultColor);
 				payrollMenu.setBackground(defaultColor);
 				
+				
+				lblCurrentMenu.setText(lblAllowance.getText());
+
 				AllowanceForm allwn = new AllowanceForm();
 				desktopPane.removeAll();
 				desktopPane.add(allwn).setVisible(true);
@@ -336,6 +362,9 @@ public class Main {
 				allowanceMenu.setBackground(defaultColor);
 				deducMenu.setBackground(onClickColor);
 				payrollMenu.setBackground(defaultColor);
+				
+				lblCurrentMenu.setText(lblDeduction.getText());
+
 				
 				DeductionForm deduk = new DeductionForm();
 				desktopPane.removeAll();
@@ -355,6 +384,9 @@ public class Main {
 				deducMenu.setBackground(defaultColor);
 				payrollMenu.setBackground(defaultColor);
 				
+				lblCurrentMenu.setText(lblAttendance.getText());
+
+				
 				AttendanceForm attd = new AttendanceForm();
 				desktopPane.removeAll();
 				desktopPane.add(attd).setVisible(true);
@@ -372,6 +404,9 @@ public class Main {
 				allowanceMenu.setBackground(defaultColor);
 				deducMenu.setBackground(defaultColor);
 				payrollMenu.setBackground(onClickColor);
+				
+				lblCurrentMenu.setText(lblPayroll.getText());
+
 				
 				PayrollForm payrollForm = new PayrollForm();
 				desktopPane.removeAll();

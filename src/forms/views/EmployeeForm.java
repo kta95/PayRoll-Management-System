@@ -7,6 +7,8 @@ import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import java.awt.Font;
@@ -18,11 +20,14 @@ import javax.swing.plaf.basic.BasicInternalFrameUI;
 
 
 import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.ui.FlatTextFieldUI;
+
 import javax.swing.JFormattedTextField.AbstractFormatter;
 
 import java.util.Date;
 import java.util.Properties;
 import com.toedter.calendar.JDateChooser;
+import javax.swing.JButton;
 
 public class EmployeeForm extends JInternalFrame {
 
@@ -32,7 +37,8 @@ public class EmployeeForm extends JInternalFrame {
 	private JTextField phoneField;
 	private JTextField emailField;
 	private JTextField addressField;
-	private JTextField roleField;
+    private JTable tblEmployee;
+
 	/**
 	 * Launch the application.
 	 */
@@ -65,15 +71,15 @@ public class EmployeeForm extends JInternalFrame {
 	private void initialize() {
 		this.getContentPane().setBackground(Color.WHITE);
 		this.setTitle("Employee Form");
-		this.setBounds(0, 0, 976, 591);
+		this.setBounds(0, 0, 976, 538);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.getContentPane().setLayout(null);
 		
 		JPanel panel = new JPanel();
 		panel.setBackground(Color.WHITE);
-		panel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Employee Registration", TitledBorder.LEADING, TitledBorder.TOP, null, Color.BLACK));
+		panel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Employee Management", TitledBorder.LEADING, TitledBorder.TOP, null, Color.BLACK));
 		panel.setToolTipText("Employee Registration");
-		panel.setBounds(26, 38, 924, 298);
+		panel.setBounds(26, 11, 924, 182);
 		panel.setName("Employee Registration");
 		this.getContentPane().add(panel);
 		panel.setLayout(null);
@@ -101,64 +107,85 @@ public class EmployeeForm extends JInternalFrame {
 		
 		JLabel lblPhone = new JLabel("Phone");
 		lblPhone.setForeground(Color.black);
-		lblPhone.setBounds(31, 161, 51, 21);
+		lblPhone.setBounds(397, 33, 51, 21);
 		panel.add(lblPhone);
 		
 		JLabel lblEmail = new JLabel("Email");
 		lblEmail.setForeground(Color.black);
-		lblEmail.setBounds(31, 193, 51, 21);
+		lblEmail.setBounds(397, 65, 51, 21);
 		panel.add(lblEmail);
 		
 		JLabel lblAddress = new JLabel("Address");
 		lblAddress.setForeground(Color.black);
-		lblAddress.setBounds(31, 225, 51, 21);
+		lblAddress.setBounds(397, 97, 51, 21);
 		panel.add(lblAddress);
 		
-		JLabel lblRole = new JLabel("Role");
-		lblRole.setForeground(Color.black);
-		lblRole.setBounds(31, 257, 51, 21);
-		panel.add(lblRole);
 		
 		idField = new JTextField();
-		idField.setBounds(111, 33, 184, 21);
+		idField.setBounds(111, 33, 224, 21);
 		panel.add(idField);
 		idField.setColumns(10);
 		
 		nameField = new JTextField();
 		nameField.setColumns(10);
-		nameField.setBounds(111, 65, 184, 21);
+		nameField.setBounds(111, 65, 224, 21);
 		panel.add(nameField);
 		
 		genderField = new JTextField();
 		genderField.setColumns(10);
-		genderField.setBounds(111, 97, 184, 21);
+		genderField.setBounds(111, 97, 224, 21);
 		panel.add(genderField);
 		
 		phoneField = new JTextField();
 		phoneField.setColumns(10);
-		phoneField.setBounds(111, 161, 184, 21);
+		phoneField.setBounds(475, 33, 224, 21);
 		panel.add(phoneField);
 		
 		emailField = new JTextField();
 		emailField.setColumns(10);
-		emailField.setBounds(111, 193, 184, 21);
+		emailField.setBounds(475, 65, 224, 21);
 		panel.add(emailField);
 		
 		addressField = new JTextField();
 		addressField.setColumns(10);
-		addressField.setBounds(111, 225, 184, 21);
+		addressField.setBounds(475, 97, 224, 21);
 		panel.add(addressField);
 		
-		roleField = new JTextField();
-		roleField.setColumns(10);
-		roleField.setBounds(111, 257, 184, 21);
-		panel.add(roleField);
-		
 		JDateChooser dobChooser = new JDateChooser();
-		dobChooser.setBounds(111, 130, 184, 20);
+		dobChooser.setBounds(111, 130, 224, 20);
 		panel.add(dobChooser);
 		
+		JLabel lblhiredDate = new JLabel("HiredDate");
+		lblhiredDate.setHorizontalAlignment(SwingConstants.LEFT);
+		lblhiredDate.setForeground(Color.BLACK);
+		lblhiredDate.setBounds(397, 129, 51, 21);
+		panel.add(lblhiredDate);
+		
+		JDateChooser hiredDateChooser = new JDateChooser();
+		hiredDateChooser.setBounds(475, 130, 224, 20);
+		panel.add(hiredDateChooser);
+		
+		JButton btnSave = new JButton("Register");
+		btnSave.setBounds(749, 24, 128, 38);
+		panel.add(btnSave);
+		
+		JButton btnUpdate = new JButton("Update");
+		btnUpdate.setBounds(749, 73, 128, 38);
+		panel.add(btnUpdate);
+		
+		JButton btnDelete = new JButton("Delete");
+		btnDelete.setBounds(749, 122, 128, 38);
+		panel.add(btnDelete);
+		
 		Date date = dobChooser.getDate();
-		System.out.println(date);
+		
+
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBounds(26, 204, 924, 296);
+        this.getContentPane().add(scrollPane);
+
+        tblEmployee = new JTable();
+        tblEmployee.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        scrollPane.setViewportView(tblEmployee);
 	}
 }
