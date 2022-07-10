@@ -38,6 +38,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import com.formdev.flatlaf.icons.FlatCheckBoxIcon;
 import com.formdev.flatlaf.ui.FlatBorder;
+import com.formdev.flatlaf.icons.FlatFileChooserDetailsViewIcon;
 
 public class Main {
 

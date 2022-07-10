@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="jars/mysql-connector-java-8.0.19.jar"/>
 	<classpathentry kind="lib" path="jars/flatlaf-2.3.jar"/>
 	<classpathentry kind="lib" path="jcalendar-1.4.jar"/>
+	<classpathentry kind="lib" path="flatlaf-2.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

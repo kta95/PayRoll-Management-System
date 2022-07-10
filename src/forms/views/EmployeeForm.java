@@ -19,7 +19,10 @@ import javax.swing.plaf.basic.BasicInternalFrameUI;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import javax.swing.JFormattedTextField.AbstractFormatter;
+
+import java.util.Date;
 import java.util.Properties;
+import com.toedter.calendar.JDateChooser;
 
 public class EmployeeForm extends JInternalFrame {
 
@@ -151,6 +154,11 @@ public class EmployeeForm extends JInternalFrame {
 		roleField.setBounds(111, 257, 184, 21);
 		panel.add(roleField);
 		
-
+		JDateChooser dobChooser = new JDateChooser();
+		dobChooser.setBounds(111, 130, 184, 20);
+		panel.add(dobChooser);
+		
+		Date date = dobChooser.getDate();
+		System.out.println(date);
 	}
 }
