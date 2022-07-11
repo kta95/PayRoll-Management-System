@@ -5,13 +5,15 @@ public class Position {
 	private int pId;
 	
 	private String title;
-	
+	private double basicSalary;
 	private Department department;
 
-	public Position(int pId, String title, Department department) {
+	
+	public Position(int pId, String title, double basicSalary, Department department) {
 		super();
 		this.pId = pId;
 		this.title = title;
+		this.basicSalary = basicSalary;
 		this.department = department;
 	}
 
@@ -36,6 +38,14 @@ public class Position {
 		this.title = title;
 	}
 
+	public double getBasicSalary() {
+		return basicSalary;
+	}
+
+	public void setBasicSalary(double basicSalary) {
+		this.basicSalary = basicSalary;
+	}
+
 	public Department getDepartment() {
 		return department;
 	}
@@ -48,6 +58,9 @@ public class Position {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		long temp;
+		temp = Double.doubleToLongBits(basicSalary);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((department == null) ? 0 : department.hashCode());
 		result = prime * result + pId;
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
@@ -63,6 +76,8 @@ public class Position {
 		if (getClass() != obj.getClass())
 			return false;
 		Position other = (Position) obj;
+		if (Double.doubleToLongBits(basicSalary) != Double.doubleToLongBits(other.basicSalary))
+			return false;
 		if (department == null) {
 			if (other.department != null)
 				return false;
@@ -77,6 +92,7 @@ public class Position {
 			return false;
 		return true;
 	}
+
 	
 	
 }
