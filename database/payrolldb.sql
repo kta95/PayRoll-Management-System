@@ -111,7 +111,7 @@ CREATE TABLE `department` (
   `dept_id` int NOT NULL AUTO_INCREMENT,
   `dept_name` varchar(45) NOT NULL,
   PRIMARY KEY (`dept_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -120,7 +120,7 @@ CREATE TABLE `department` (
 
 LOCK TABLES `department` WRITE;
 /*!40000 ALTER TABLE `department` DISABLE KEYS */;
-INSERT INTO `department` VALUES (1,'bitch'),(2,'whorehouse');
+INSERT INTO `department` VALUES (1,'HR'),(2,'security'),(3,'Network'),(4,'Programming'),(5,'Administration');
 /*!40000 ALTER TABLE `department` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -173,12 +173,12 @@ DROP TABLE IF EXISTS `job_position`;
 CREATE TABLE `job_position` (
   `position_id` int NOT NULL AUTO_INCREMENT,
   `position_title` varchar(45) NOT NULL,
-  `basic_salary` int NOT NULL,
+  `basic_salary` double NOT NULL,
   `department_id` int NOT NULL,
   PRIMARY KEY (`position_id`),
   KEY `fk_dept_id_idx` (`department_id`),
   CONSTRAINT `fk_dept_id` FOREIGN KEY (`department_id`) REFERENCES `department` (`dept_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -187,7 +187,7 @@ CREATE TABLE `job_position` (
 
 LOCK TABLES `job_position` WRITE;
 /*!40000 ALTER TABLE `job_position` DISABLE KEYS */;
-INSERT INTO `job_position` VALUES (2,'Whore',1000,1);
+INSERT INTO `job_position` VALUES (2,'programmer',2000,4),(3,'Manager',1000000,2);
 /*!40000 ALTER TABLE `job_position` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -200,4 +200,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-07-10 18:17:19
+-- Dump completed on 2022-07-11 11:55:19
