@@ -25,19 +25,31 @@ import com.formdev.flatlaf.ui.FlatTextFieldUI;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.Properties;
 import com.toedter.calendar.JDateChooser;
+
+import entities.Department;
+import entities.Employee;
+import entities.Position;
+
 import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.awt.event.ActionEvent;
+import javax.swing.JComboBox;
 
 public class EmployeeForm extends JInternalFrame {
-
-	private JTextField idField;
 	private JTextField nameField;
 	private JTextField genderField;
 	private JTextField phoneField;
 	private JTextField emailField;
 	private JTextField addressField;
     private JTable tblEmployee;
+    private JComboBox<String> deptCombo = new JComboBox<>();
+    private JComboBox<String> positionCombo = new JComboBox<>();
+	JDateChooser dobChooser = new JDateChooser();
+	JDateChooser hiredDateChooser = new JDateChooser();
 
 	/**
 	 * Launch the application.
@@ -68,6 +80,17 @@ public class EmployeeForm extends JInternalFrame {
 		BasicInternalFrameUI ui= (BasicInternalFrameUI)this.getUI();
 		ui.setNorthPane(null);
 	}
+	
+	private void setEmployeeDataFromForm(Employee employee) {
+		employee.setName(nameField.getText());
+		employee.setGender(genderField.getText());
+		employee.setDateOfBirth(dobChooser.getDate());
+
+//		employee.setBasicSalary(Double.valueOf(basicSalaryField.getText().isBlank()? "0" : basicSalaryField.getText()));
+//		Optional<Department> selectedDepartment = deptList.stream().filter(d -> d.getDepartmentName().equals(deptCombo.getSelectedItem())).findFirst();
+//		position.setDepartment(selectedDepartment.orElse(null));
+	}
+	
 	private void initialize() {
 		this.getContentPane().setBackground(Color.WHITE);
 		this.setTitle("Employee Form");
@@ -84,98 +107,106 @@ public class EmployeeForm extends JInternalFrame {
 		this.getContentPane().add(panel);
 		panel.setLayout(null);
 		
-		JLabel idLbl = new JLabel("ID");
-		idLbl.setForeground(new Color(0, 0, 0));
-		idLbl.setBounds(31, 33, 51, 21);
-		panel.add(idLbl);
-		
 		JLabel lblName = new JLabel("Name");
 		lblName.setForeground(Color.black);
-		lblName.setBounds(31, 65, 51, 21);
+		lblName.setBounds(31, 33, 51, 21);
 		panel.add(lblName);
 		
 		JLabel lblGender = new JLabel("Gender");
 		lblGender.setForeground(Color.black);
-		lblGender.setBounds(31, 97, 51, 21);
+		lblGender.setBounds(31, 65, 51, 21);
 		panel.add(lblGender);
 		
 		JLabel lblDob = new JLabel("DOB");
 		lblDob.setHorizontalAlignment(SwingConstants.LEFT);
 		lblDob.setForeground(Color.black);
-		lblDob.setBounds(31, 129, 51, 21);
+		lblDob.setBounds(31, 97, 51, 21);
 		panel.add(lblDob);
 		
 		JLabel lblPhone = new JLabel("Phone");
 		lblPhone.setForeground(Color.black);
-		lblPhone.setBounds(397, 33, 51, 21);
+		lblPhone.setBounds(31, 129, 51, 21);
 		panel.add(lblPhone);
 		
 		JLabel lblEmail = new JLabel("Email");
 		lblEmail.setForeground(Color.black);
-		lblEmail.setBounds(397, 65, 51, 21);
+		lblEmail.setBounds(321, 33, 51, 21);
 		panel.add(lblEmail);
 		
 		JLabel lblAddress = new JLabel("Address");
 		lblAddress.setForeground(Color.black);
-		lblAddress.setBounds(397, 97, 51, 21);
+		lblAddress.setBounds(321, 65, 51, 21);
 		panel.add(lblAddress);
-		
-		
-		idField = new JTextField();
-		idField.setBounds(111, 33, 224, 21);
-		panel.add(idField);
-		idField.setColumns(10);
 		
 		nameField = new JTextField();
 		nameField.setColumns(10);
-		nameField.setBounds(111, 65, 224, 21);
+		nameField.setBounds(111, 33, 200, 21);
 		panel.add(nameField);
 		
 		genderField = new JTextField();
 		genderField.setColumns(10);
-		genderField.setBounds(111, 97, 224, 21);
+		genderField.setBounds(111, 65, 200, 21);
 		panel.add(genderField);
 		
 		phoneField = new JTextField();
 		phoneField.setColumns(10);
-		phoneField.setBounds(475, 33, 224, 21);
+		phoneField.setBounds(111, 129, 200, 21);
 		panel.add(phoneField);
 		
 		emailField = new JTextField();
 		emailField.setColumns(10);
-		emailField.setBounds(475, 65, 224, 21);
+		emailField.setBounds(382, 33, 200, 21);
 		panel.add(emailField);
 		
 		addressField = new JTextField();
 		addressField.setColumns(10);
-		addressField.setBounds(475, 97, 224, 21);
+		addressField.setBounds(382, 65, 200, 21);
 		panel.add(addressField);
 		
-		JDateChooser dobChooser = new JDateChooser();
-		dobChooser.setBounds(111, 130, 224, 20);
+		dobChooser.setBounds(111, 97, 200, 20);
 		panel.add(dobChooser);
 		
 		JLabel lblhiredDate = new JLabel("HiredDate");
 		lblhiredDate.setHorizontalAlignment(SwingConstants.LEFT);
 		lblhiredDate.setForeground(Color.BLACK);
-		lblhiredDate.setBounds(397, 129, 51, 21);
+		lblhiredDate.setBounds(321, 97, 67, 21);
 		panel.add(lblhiredDate);
 		
-		JDateChooser hiredDateChooser = new JDateChooser();
-		hiredDateChooser.setBounds(475, 130, 224, 20);
+		hiredDateChooser.setBounds(382, 98, 200, 20);
 		panel.add(hiredDateChooser);
 		
 		JButton btnSave = new JButton("Register");
-		btnSave.setBounds(749, 24, 128, 38);
+		btnSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		btnSave.setBounds(382, 133, 163, 38);
 		panel.add(btnSave);
 		
 		JButton btnUpdate = new JButton("Update");
-		btnUpdate.setBounds(749, 73, 128, 38);
+		btnUpdate.setBounds(565, 133, 163, 38);
 		panel.add(btnUpdate);
 		
 		JButton btnDelete = new JButton("Delete");
-		btnDelete.setBounds(749, 122, 128, 38);
+		btnDelete.setBounds(746, 133, 163, 38);
 		panel.add(btnDelete);
+		
+		JLabel lblPosition = new JLabel("Position");
+		lblPosition.setForeground(Color.BLACK);
+		lblPosition.setBounds(592, 33, 67, 21);
+		panel.add(lblPosition);
+		
+		positionCombo.setBounds(684, 32, 200, 22);
+		panel.add(positionCombo);
+		
+		JLabel lblDepartment = new JLabel("Department");
+		lblDepartment.setForeground(Color.BLACK);
+		lblDepartment.setBounds(592, 65, 84, 21);
+		panel.add(lblDepartment);
+		
+		deptCombo.setBounds(684, 64, 200, 22);
+		panel.add(deptCombo);
 		
 		Date date = dobChooser.getDate();
 		

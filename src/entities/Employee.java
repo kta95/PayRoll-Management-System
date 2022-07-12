@@ -1,6 +1,6 @@
 package entities;
 
-public class Employee {
+public class Employee extends PersonInfo{
 
 	private String username;
 

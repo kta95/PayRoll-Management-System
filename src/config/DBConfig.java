@@ -21,7 +21,7 @@ public class DBConfig {
 	public Connection getConnection() throws SQLException {
 		
 		if (con == null) {
-			con = (Connection) DriverManager.getConnection(this.URL, "root", this.PASSWORD);
+			con = (Connection) DriverManager.getConnection(this.URL, "system", this.PASSWORD);
 		}
 		return con;
 	}

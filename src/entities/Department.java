@@ -8,12 +8,13 @@ public class Department {
 	private String departmentName;
 
 	private List<Position> positon;
-
-	public Department(int departmentId, String departmentName, List<Position> positon) {
+	private List<Employee> employee;
+	public Department(int departmentId, String departmentName, List<Position> positon, List<Employee> employee) {
 		super();
 		this.departmentId = departmentId;
 		this.departmentName = departmentName;
 		this.positon = positon;
+		this.employee = employee;
 	}
 
 	public Department() {
@@ -43,6 +44,14 @@ public class Department {
 
 	public void setPositon(List<Position> positon) {
 		this.positon = positon;
+	}
+
+	public List<Employee> getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(List<Employee> employee) {
+		this.employee = employee;
 	}
 	
 }

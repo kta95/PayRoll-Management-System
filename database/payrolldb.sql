@@ -139,29 +139,24 @@ CREATE TABLE `employee` (
   `emp_phone` varchar(45) NOT NULL,
   `emp_email` varchar(45) NOT NULL,
   `emp_address` varchar(45) NOT NULL,
-  `emp_position` varchar(45) DEFAULT NULL,
-  `emp_department` varchar(45) DEFAULT NULL,
   `hired_date` date DEFAULT NULL,
   `role` int DEFAULT '0',
   `username` varchar(45) DEFAULT NULL,
   `password` varchar(45) DEFAULT NULL,
   `active` tinyint NOT NULL,
   `emp_position_id` int NOT NULL,
+  `emp_department_id` int NOT NULL,  
   PRIMARY KEY (`emp_id`),
   KEY `emp_jobposition_id_idx` (`emp_position_id`),
-  CONSTRAINT `emp_jobposition_id` FOREIGN KEY (`emp_position_id`) REFERENCES `job_position` (`position_id`)
+  KEY `emp_department_id_idx` (`emp_department_id`),
+  CONSTRAINT `emp_jobposition_id` FOREIGN KEY (`emp_position_id`) REFERENCES `job_position` (`position_id`),
+  CONSTRAINT `emp_fk_department_id` FOREIGN KEY (`emp_department_id`) REFERENCES `department` (`dept_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `employee`
 --
-
-LOCK TABLES `employee` WRITE;
-/*!40000 ALTER TABLE `employee` DISABLE KEYS */;
-INSERT INTO `employee` VALUES (1,'shit','female',NULL,'4234234','fdafd','fdaff',NULL,NULL,NULL,0,NULL,NULL,1,2);
-/*!40000 ALTER TABLE `employee` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `job_position`

@@ -74,7 +74,7 @@ public class Main {
 	private void initialize() {
 		frame = new JFrame();
 		frame.getContentPane().setBackground(Color.WHITE);
-		frame.setBounds(10, 10, 1291, 700);
+		frame.setBounds(40, 10, 1291, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -186,7 +186,7 @@ public class Main {
 		JPanel attdMenu = new JPanel();
 		attdMenu.setLayout(null);
 		attdMenu.setBackground(Color.BLACK);
-		attdMenu.setBounds(0, 465, 299, 49);
+		attdMenu.setBounds(0, 345, 299, 49);
 		sideBar.add(attdMenu);
 		
 		JLabel lblAttendance = new JLabel("Attendance");
@@ -199,7 +199,7 @@ public class Main {
 		JPanel deducMenu = new JPanel();
 		deducMenu.setLayout(null);
 		deducMenu.setBackground(Color.BLACK);
-		deducMenu.setBounds(0, 405, 299, 49);
+		deducMenu.setBounds(0, 465, 299, 49);
 		sideBar.add(deducMenu);
 		
 		JLabel lblDeduction = new JLabel("Deduction");
@@ -213,7 +213,7 @@ public class Main {
 
 		allowanceMenu.setLayout(null);
 		allowanceMenu.setBackground(Color.BLACK);
-		allowanceMenu.setBounds(0, 345, 299, 49);
+		allowanceMenu.setBounds(0, 405, 299, 49);
 		sideBar.add(allowanceMenu);
 		
 		JLabel lblAllowance = new JLabel("allowance");
