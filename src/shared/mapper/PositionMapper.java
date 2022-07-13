@@ -11,10 +11,6 @@ public class PositionMapper {
         	position.setpId(rs.getInt("position_id"));
         	position.setTitle(rs.getString("position_title"));
         	position.setBasicSalary(rs.getDouble("basic_salary"));
-        	Department department = new Department();
-        	department.setDepartmentId(rs.getInt("department_id"));
-        	department.setDepartmentName(rs.getString("dept_name"));
-        	position.setDepartment(department);
         } catch (Exception e) {
             e.printStackTrace();
         }

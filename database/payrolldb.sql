@@ -76,7 +76,7 @@ DROP TABLE IF EXISTS `attendance`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `attendance` (
-  `attendance_id` int NOT NULL,
+  `attendance_id` int NOT NULL AUTO_INCREMENT,
   `present` int NOT NULL,
   `absent` int NOT NULL,
   `month` date DEFAULT NULL,
@@ -132,7 +132,7 @@ DROP TABLE IF EXISTS `employee`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `employee` (
-  `emp_id` int NOT NULL,
+  `emp_id` int NOT NULL AUTO_INCREMENT,
   `emp_name` varchar(45) NOT NULL,
   `emp_gender` varchar(45) NOT NULL,
   `emp_dob` date DEFAULT NULL,
@@ -140,23 +140,29 @@ CREATE TABLE `employee` (
   `emp_email` varchar(45) NOT NULL,
   `emp_address` varchar(45) NOT NULL,
   `hired_date` date DEFAULT NULL,
-  `role` int DEFAULT '0',
+  `role` varchar(45) DEFAULT NULL,
   `username` varchar(45) DEFAULT NULL,
   `password` varchar(45) DEFAULT NULL,
   `active` tinyint NOT NULL,
   `emp_position_id` int NOT NULL,
-  `emp_department_id` int NOT NULL,  
+  `emp_department_id` int NOT NULL,
   PRIMARY KEY (`emp_id`),
   KEY `emp_jobposition_id_idx` (`emp_position_id`),
   KEY `emp_department_id_idx` (`emp_department_id`),
-  CONSTRAINT `emp_jobposition_id` FOREIGN KEY (`emp_position_id`) REFERENCES `job_position` (`position_id`),
-  CONSTRAINT `emp_fk_department_id` FOREIGN KEY (`emp_department_id`) REFERENCES `department` (`dept_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `emp_fk_department_id` FOREIGN KEY (`emp_department_id`) REFERENCES `department` (`dept_id`),
+  CONSTRAINT `emp_jobposition_id` FOREIGN KEY (`emp_position_id`) REFERENCES `job_position` (`position_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `employee`
 --
+
+LOCK TABLES `employee` WRITE;
+/*!40000 ALTER TABLE `employee` DISABLE KEYS */;
+INSERT INTO `employee` VALUES (1,'Kyaw Thet Aung','Other','1995-07-30','09785085329','kta@kmail.com','Yangon','2022-04-01','USER',NULL,NULL,1,1,4),(2,'Thant Phyo Aung','Female','1997-08-08','0987654321','tpa@tmail.com','Yangon','2022-07-02','USER',NULL,NULL,1,3,3),(3,'Arkar Hein','Male','1997-08-12','096853645','arkar@sai.com','Oman','2019-07-19','USER',NULL,NULL,1,3,1);
+/*!40000 ALTER TABLE `employee` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `job_position`
@@ -169,10 +175,7 @@ CREATE TABLE `job_position` (
   `position_id` int NOT NULL AUTO_INCREMENT,
   `position_title` varchar(45) NOT NULL,
   `basic_salary` double NOT NULL,
-  `department_id` int NOT NULL,
-  PRIMARY KEY (`position_id`),
-  KEY `fk_dept_id_idx` (`department_id`),
-  CONSTRAINT `fk_dept_id` FOREIGN KEY (`department_id`) REFERENCES `department` (`dept_id`)
+  PRIMARY KEY (`position_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -182,7 +185,7 @@ CREATE TABLE `job_position` (
 
 LOCK TABLES `job_position` WRITE;
 /*!40000 ALTER TABLE `job_position` DISABLE KEYS */;
-INSERT INTO `job_position` VALUES (2,'programmer',2000,4),(3,'Manager',1000000,2);
+INSERT INTO `job_position` VALUES (1,'Senior Developer',50000),(2,'programmer',2000),(3,'Manager',1000000);
 /*!40000 ALTER TABLE `job_position` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -195,4 +198,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-07-11 11:55:19
+-- Dump completed on 2022-07-13 20:26:12

@@ -6,6 +6,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -16,41 +17,68 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
-
+import javax.swing.table.DefaultTableModel;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.ui.FlatTextFieldUI;
 
 import javax.swing.JFormattedTextField.AbstractFormatter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.stream.Collectors;
+
 import com.toedter.calendar.JDateChooser;
 
 import entities.Department;
 import entities.Employee;
 import entities.Position;
+import services.DepartmentService;
+import services.EmployeeService;
+import services.PositionService;
 
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 
 public class EmployeeForm extends JInternalFrame {
 	private JTextField nameField;
-	private JTextField genderField;
 	private JTextField phoneField;
 	private JTextField emailField;
 	private JTextField addressField;
     private JTable tblEmployee;
     private JComboBox<String> deptCombo = new JComboBox<>();
+    private JComboBox<String> genderCombo = new JComboBox<>();
+	List<String> genders = new ArrayList<>();
+    private List<Department> deptList;
     private JComboBox<String> positionCombo = new JComboBox<>();
+    private List<Position> positionList;
 	JDateChooser dobChooser = new JDateChooser();
 	JDateChooser hiredDateChooser = new JDateChooser();
-
+	private DefaultTableModel dtm=new DefaultTableModel();
+	private List<Employee> employeeList = new ArrayList<>();
+	private DepartmentService departmentService;
+	private PositionService positionService;
+	private EmployeeService employeeService;
+	private List<Employee> filteredEmployeeList = new ArrayList();
+	private Employee employee;
+	SimpleDateFormat Date_Format = new SimpleDateFormat("yyyy-MM-dd");
+	DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+	private JTextField searchField;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -73,25 +101,126 @@ public class EmployeeForm extends JInternalFrame {
 	 */
 	public EmployeeForm() {
 		initialize();
-
-		
-		
+		setTableDesign();
+		initializeDependancy();
+		this.loadAllEmployee(Optional.empty());
 		this.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		BasicInternalFrameUI ui= (BasicInternalFrameUI)this.getUI();
 		ui.setNorthPane(null);
+		this.loadDepartmentComboBox();
+		this.loadPositionComboBox();
+		this.loadGenderComboBox();
 	}
 	
-	private void setEmployeeDataFromForm(Employee employee) {
-		employee.setName(nameField.getText());
-		employee.setGender(genderField.getText());
-		employee.setDateOfBirth(dobChooser.getDate());
+	private void initializeDependancy() {
 
+		this.departmentService = new DepartmentService();
+		this.positionService = new PositionService();
+		this.employeeService = new EmployeeService();
+	}
+	
+	private void setTableDesign() {
+		dtm.addColumn("Employee ID");
+		dtm.addColumn("Name");
+		dtm.addColumn("Gender");
+		dtm.addColumn("Date Of Birth");
+		dtm.addColumn("Phone");
+		dtm.addColumn("Email");
+		dtm.addColumn("Address");
+		dtm.addColumn("Hired Date");
+		dtm.addColumn("Position");
+		dtm.addColumn("Department");
+		
+		this.tblEmployee.setModel(dtm);
+	}
+	
+	private void setEmployeeDataFromForm(Employee employee) throws ParseException {
+
+		employee.setName(nameField.getText());
+		Optional<String> selectedGender = genders.stream().filter(g -> g.equals(genderCombo.getSelectedItem())).findFirst();
+		employee.setGender(selectedGender.orElse(null));
+		String dob = Date_Format.format(dobChooser.getDate());
+		employee.setDateOfBirth(dob);
+//		System.out.println(dob);
+
+		employee.setPhone(phoneField.getText());
+		employee.setEmail(emailField.getText());
+		employee.setAddress(addressField.getText());
+		String hd = "" + Date_Format.format(hiredDateChooser.getDate());
+//		System.out.println(hd);
+		employee.setHiredDate(hd);
+		Optional<Position> selectedPosition = positionList.stream().filter(p -> p.getTitle().equals(positionCombo.getSelectedItem())).findFirst();
+		employee.setPosition(selectedPosition.orElse(null));
+		Optional<Department> selectedDepartment = deptList.stream().filter(d -> d.getDepartmentName().equals(deptCombo.getSelectedItem())).findFirst();
+		employee.setDepartment(selectedDepartment.orElse(null));
 //		employee.setBasicSalary(Double.valueOf(basicSalaryField.getText().isBlank()? "0" : basicSalaryField.getText()));
 //		Optional<Department> selectedDepartment = deptList.stream().filter(d -> d.getDepartmentName().equals(deptCombo.getSelectedItem())).findFirst();
 //		position.setDepartment(selectedDepartment.orElse(null));
 	}
 	
+	private void loadDepartmentComboBox() {
+		deptCombo.addItem("- Select -");
+		this.deptList = this.departmentService.findAllDepartments();
+		this.deptList.forEach(d -> deptCombo.addItem(d.getDepartmentName()));
+	}
+	
+	private void loadGenderComboBox() {
+		genderCombo.addItem("- Select -");
+		this.genders.add("Male");
+		this.genders.add("Female");
+		this.genders.add("Other");
+		this.genders.forEach(g -> genderCombo.addItem(g));
+	}
+	
+	private void loadPositionComboBox() {
+		positionCombo.addItem("- Select -");
+		this.positionList = this.positionService.findAllPositions();
+		this.positionList.forEach(d -> positionCombo.addItem(d.getTitle()));
+	}
+	
+	private void loadAllEmployee(Optional<List<Employee>> optionalEmployees) {
+		this.dtm = (DefaultTableModel) this.tblEmployee.getModel();
+		this.dtm.getDataVector().removeAllElements();
+		this.dtm.fireTableDataChanged();
+		
+		this.employeeList=this.employeeService.findAllEmployees();
+		this.filteredEmployeeList=optionalEmployees.orElseGet(()->this.employeeList)
+				.stream().collect(Collectors.toList());
+	
+            
+		filteredEmployeeList.forEach(e-> {
+            	Object[] row =new Object [12]; 
+            			row[0] = e.getId();
+            			row[1] = e.getName();
+            			row[2] = e.getGender();
+            			row[3] = e.getDateOfBirth();
+            			row[4] = e.getPhone();
+            			row[5] = e.getEmail();
+            			row[6] = e.getAddress();
+            			row[7] = e.getHiredDate();
+            			row[8] = e.getPosition().getTitle();
+            			row[9] = e.getDepartment().getDepartmentName();
+            	dtm.addRow(row);
+            });
+			this.tblEmployee.setModel(dtm);
+       
+	}
+	
+	private void resetFormData() {
+		nameField.setText("");
+		genderCombo.setSelectedIndex(0);
+		dobChooser.setDate(null);
+		phoneField.setText("");
+		emailField.setText("");
+		addressField.setText("");
+		hiredDateChooser.setDate(null);
+		positionCombo.setSelectedIndex(0);
+		deptCombo.setSelectedIndex(0);
+	}
+	
 	private void initialize() {
+        
+
 		this.getContentPane().setBackground(Color.WHITE);
 		this.setTitle("Employee Form");
 		this.setBounds(0, 0, 976, 538);
@@ -102,7 +231,7 @@ public class EmployeeForm extends JInternalFrame {
 		panel.setBackground(Color.WHITE);
 		panel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Employee Management", TitledBorder.LEADING, TitledBorder.TOP, null, Color.BLACK));
 		panel.setToolTipText("Employee Registration");
-		panel.setBounds(26, 11, 924, 182);
+		panel.setBounds(30, 273, 924, 198);
 		panel.setName("Employee Registration");
 		this.getContentPane().add(panel);
 		panel.setLayout(null);
@@ -143,11 +272,6 @@ public class EmployeeForm extends JInternalFrame {
 		nameField.setBounds(111, 33, 200, 21);
 		panel.add(nameField);
 		
-		genderField = new JTextField();
-		genderField.setColumns(10);
-		genderField.setBounds(111, 65, 200, 21);
-		panel.add(genderField);
-		
 		phoneField = new JTextField();
 		phoneField.setColumns(10);
 		phoneField.setBounds(111, 129, 200, 21);
@@ -178,6 +302,26 @@ public class EmployeeForm extends JInternalFrame {
 		JButton btnSave = new JButton("Register");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Employee employee = new Employee();
+				if(!nameField.getText().isEmpty() && !(genderCombo.getSelectedIndex() == 0) && !dobChooser.getDate().equals(null) &&
+						!phoneField.getText().isEmpty() && !emailField.getText().isEmpty() && !addressField.getText().isEmpty() &&
+						!hiredDateChooser.getDate().equals(null)) {
+					try {
+						setEmployeeDataFromForm(employee);
+					} catch (ParseException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					employeeService.createEmployee(employee);
+					Date date = dobChooser.getDate();
+
+					System.out.println(date);
+
+					loadAllEmployee(Optional.empty());
+					resetFormData();
+				}else {
+					JOptionPane.showMessageDialog(null,"Enter required field", "error", 0);
+				}
 				
 			}
 		});
@@ -185,10 +329,34 @@ public class EmployeeForm extends JInternalFrame {
 		panel.add(btnSave);
 		
 		JButton btnUpdate = new JButton("Update");
+		btnUpdate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					setEmployeeDataFromForm(employee);
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				employeeService.updateEmployee(String.valueOf(employee.getId()), employee);
+				resetFormData();
+				loadAllEmployee(Optional.empty());
+			}
+		});
 		btnUpdate.setBounds(565, 133, 163, 38);
 		panel.add(btnUpdate);
 		
 		JButton btnDelete = new JButton("Delete");
+		btnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(!nameField.getText().isEmpty() && !(genderCombo.getSelectedIndex() == 0) && !dobChooser.getDate().equals(null) &&
+						!phoneField.getText().isEmpty() && !emailField.getText().isEmpty() && !addressField.getText().isEmpty() &&
+						!hiredDateChooser.getDate().equals(null)) {
+					employeeService.deleteEmployee(String.valueOf(employee.getId()));
+					resetFormData();
+					loadAllEmployee(Optional.empty());
+				}
+			}
+		});
 		btnDelete.setBounds(746, 133, 163, 38);
 		panel.add(btnDelete);
 		
@@ -208,15 +376,100 @@ public class EmployeeForm extends JInternalFrame {
 		deptCombo.setBounds(684, 64, 200, 22);
 		panel.add(deptCombo);
 		
-		Date date = dobChooser.getDate();
+		genderCombo.setBounds(111, 64, 200, 22);
+		panel.add(genderCombo);
+		
 		
 
         JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(26, 204, 924, 296);
+        scrollPane.setBounds(30, 52, 924, 210);
         this.getContentPane().add(scrollPane);
 
         tblEmployee = new JTable();
         tblEmployee.setFont(new Font("Tahoma", Font.PLAIN, 15));
         scrollPane.setViewportView(tblEmployee);
+        
+        JButton btnSearch = new JButton("Search");
+        btnSearch.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		String keyword=searchField.getText();
+				loadAllEmployee(
+						Optional.of(employeeList.stream()
+								.filter(employee -> employee.getName().toLowerCase()
+								.startsWith(keyword.toLowerCase()))
+								.collect(Collectors.toList()))
+								);
+				if(searchField.getText().equals("Search By Employee Name")) {
+					loadAllEmployee(Optional.empty());
+				}
+        	}
+        });
+        btnSearch.setBounds(244, 11, 89, 30);
+        getContentPane().add(btnSearch);
+        
+        searchField = new JTextField("Search By Employee Name");
+        searchField.setColumns(10);
+        searchField.setBounds(30, 11, 200, 30);
+    	searchField.setForeground(Color.GRAY);
+        searchField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (searchField.getText().equals("Search By Employee Name")) {
+                	searchField.setText("");
+                	searchField.setForeground(Color.BLACK);
+                }
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (searchField.getText().isEmpty()) {
+                	searchField.setForeground(Color.GRAY);
+                	searchField.setText("Search By Employee Name");
+                }
+            }
+            });
+        getContentPane().add(searchField);
+        
+        
+        this.tblEmployee.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+            if (!tblEmployee.getSelectionModel().isSelectionEmpty()) {
+
+                String id = tblEmployee.getValueAt(tblEmployee.getSelectedRow(), 0).toString();
+
+                employee = employeeService.findEmployeeById(id);
+                
+                nameField.setText(employee.getName());
+                int index = 0;
+                for (String gender : genders) {
+                	if (gender.equals(employee.getGender())) {
+                		index = genders.indexOf(gender) + 1;
+                	}
+                }
+                System.out.println(index);
+                genderCombo.setSelectedIndex(index); 
+                
+        		Date dateOfBirth = null;
+        		Date hiredDate = null;
+				try {
+					dateOfBirth = formatter.parse(employee.getDateOfBirth());
+	        		hiredDate = formatter.parse(employee.getHiredDate());
+
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+             
+                dobChooser.setDate(dateOfBirth);
+
+                phoneField.setText(employee.getPhone());
+                emailField.setText(employee.getEmail());
+                addressField.setText(employee.getAddress());        
+                hiredDateChooser.setDate(hiredDate);
+                System.out.println("This is position index: " + employee.getPosition().getpId());
+                positionCombo.setSelectedIndex(employee.getPosition().getpId());
+                System.out.println("this is department index: " + employee.getDepartment().getDepartmentId());
+				deptCombo.setSelectedIndex(employee.getDepartment().getDepartmentId());
+
+            }
+        });
 	}
 }

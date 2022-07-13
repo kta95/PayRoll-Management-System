@@ -23,10 +23,9 @@ public class PositionService {
 	}
 	public void createPosition(Position position) {
 		try {
-			PreparedStatement ps=this.dbConfig.getConnection().prepareStatement("INSERT INTO job_position (position_title, basic_salary, department_id) VALUES (?,?,?)");
+			PreparedStatement ps=this.dbConfig.getConnection().prepareStatement("INSERT INTO job_position (position_title, basic_salary) VALUES (?,?)");
 			ps.setString(1, position.getTitle());
 			ps.setDouble(2, position.getBasicSalary());
-			ps.setInt(3, position.getDepartment().getDepartmentId());
 			ps.executeUpdate();
 			ps.close();
 		}catch(Exception e) {
@@ -40,11 +39,10 @@ public class PositionService {
 	public void updatePosition(String id, Position position) {
         try {
             PreparedStatement ps = this.dbConfig.getConnection()
-                    .prepareStatement("UPDATE job_position SET position_title=?, basic_salary=?, department_id=? WHERE position_id=?");
+                    .prepareStatement("UPDATE job_position SET position_title=?, basic_salary=? WHERE position_id=?");
             ps.setString(1, position.getTitle());
             ps.setDouble(2, position.getBasicSalary());
-			ps.setInt(3, position.getDepartment().getDepartmentId());
-			ps.setString(4, id);
+			ps.setString(3, id);
             ps.executeUpdate();
             ps.close();
         } catch (Exception e) {
@@ -68,9 +66,7 @@ public class PositionService {
 		List<Position> positionList=new ArrayList<>();
 		try (Statement st = this.dbConfig.getConnection().createStatement()) {
 
-			String query = "SELECT * FROM job_position "
-					+ "INNER JOIN department "
-					+ "ON department.dept_id = job_position.department_id;";
+			String query = "SELECT * FROM job_position;";
 
 			ResultSet rs = st.executeQuery(query);
 
@@ -92,8 +88,6 @@ public class PositionService {
 		try (Statement st = this.dbConfig.getConnection().createStatement()) {
 
 			String query = "SELECT * FROM job_position "
-					+ "INNER JOIN department "
-					+ "ON department.dept_id = job_position.department_id "
 					+ "WHERE position_id = " + id + ";";
 
 			ResultSet rs = st.executeQuery(query);

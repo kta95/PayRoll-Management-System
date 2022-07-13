@@ -40,13 +40,12 @@ public class PositionForm extends JInternalFrame {
 	private PositionService PositionService;
 	private Position position;
 	private JTable tblposition;
-	private DefaultTableModel dtm=new DefaultTableModel();
-	private List<Position> positionList=new ArrayList();
-	private List<Position> filteredpositionList=new ArrayList();
+	private DefaultTableModel dtm = new DefaultTableModel();
+	private List<Position> positionList = new ArrayList();
+	private List<Position> filteredpositionList = new ArrayList();
 	private JTextField txtSearch;
 	private JTextField txtpositionSearch;
 	private JTextField basicSalaryField;
-    private JComboBox<String> deptCombo = new JComboBox<>();
     private List<Department> deptList;
     private DepartmentService departmentService;
 	
@@ -73,7 +72,6 @@ public class PositionForm extends JInternalFrame {
 	private void resetFormData() {
 		positionField.setText("");
 		basicSalaryField.setText("");
-		deptCombo.setSelectedIndex(0);
 
 	}
 	
@@ -85,19 +83,13 @@ public class PositionForm extends JInternalFrame {
 		this.tblposition.setModel(dtm);
 	}
 	
-	private void loadDepartmentComboBox() {
-		deptCombo.addItem("- Select -");
-		this.deptList = this.departmentService.findAllDepartments();
-		this.deptList.forEach(d -> deptCombo.addItem(d.getDepartmentName()));
-	}
-	
+
 	
 	public PositionForm() {
 		initialize();
 		initializeDependency();
 		this.setTableDesign();
 		this.loadAllPosition(Optional.empty());
-		loadDepartmentComboBox();
 		
 		getContentPane().setBackground(Color.WHITE);
 		getContentPane().setLayout(null);
@@ -134,7 +126,7 @@ public class PositionForm extends JInternalFrame {
             			row[0] = e.getpId();
             			row[1] = e.getTitle();
             			row[2] = e.getBasicSalary();
-            			row[3] = e.getDepartment().getDepartmentName();
+  ///          			row[3] = e.getDepartment().getDepartmentName();
             	dtm.addRow(row);
             });
 			this.tblposition.setModel(dtm);
@@ -144,8 +136,7 @@ public class PositionForm extends JInternalFrame {
 	private void setPositionDataFromForm(Position position) {
 		position.setTitle(positionField.getText());
 		position.setBasicSalary(Double.valueOf(basicSalaryField.getText().isBlank()? "0" : basicSalaryField.getText()));
-		Optional<Department> selectedDepartment = deptList.stream().filter(d -> d.getDepartmentName().equals(deptCombo.getSelectedItem())).findFirst();
-		position.setDepartment(selectedDepartment.orElse(null));
+
 	}
 	
 	public void initialize() {
@@ -210,15 +201,6 @@ public class PositionForm extends JInternalFrame {
 		basicSalaryField.setColumns(10);
 		basicSalaryField.setBounds(226, 121, 264, 36);
 		panel.add(basicSalaryField);
-		
-		JLabel lblDepartment = new JLabel("Department");
-		lblDepartment.setHorizontalAlignment(SwingConstants.LEFT);
-		lblDepartment.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblDepartment.setBounds(51, 172, 143, 47);
-		panel.add(lblDepartment);
-		
-		deptCombo.setBounds(226, 179, 264, 36);
-		panel.add(deptCombo);
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Position position=new Position();
@@ -275,8 +257,8 @@ public class PositionForm extends JInternalFrame {
 
 					positionField.setText(position.getTitle());
 					basicSalaryField.setText(String.valueOf(position.getBasicSalary()));
-					Optional<Department> selectedDepartment = deptList.stream().filter(d -> d.getDepartmentName().equals(deptCombo.getSelectedItem())).findFirst();
-					deptCombo.setSelectedIndex(position.getDepartment().getDepartmentId());
+//					Optional<Department> selectedDepartment = deptList.stream().filter(d -> d.getDepartmentName().equals(deptCombo.getSelectedItem())).findFirst();
+				//	deptCombo.setSelectedIndex(position.getDepartment().getDepartmentId());
 				}
 			}
 		});
