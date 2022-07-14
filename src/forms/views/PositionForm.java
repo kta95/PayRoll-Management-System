@@ -41,8 +41,8 @@ public class PositionForm extends JInternalFrame {
 	private Position position;
 	private JTable tblposition;
 	private DefaultTableModel dtm = new DefaultTableModel();
-	private List<Position> positionList = new ArrayList();
-	private List<Position> filteredpositionList = new ArrayList();
+	private List<Position> positionList = new ArrayList<>();
+	private List<Position> filteredpositionList;
 	private JTextField txtSearch;
 	private JTextField txtpositionSearch;
 	private JTextField basicSalaryField;
@@ -79,7 +79,7 @@ public class PositionForm extends JInternalFrame {
 		dtm.addColumn("PositionID");
 		dtm.addColumn("Position");
 		dtm.addColumn("Basic Salary");
-		dtm.addColumn("Department");
+//		dtm.addColumn("Department");
 		this.tblposition.setModel(dtm);
 	}
 	
@@ -89,18 +89,13 @@ public class PositionForm extends JInternalFrame {
 		initialize();
 		initializeDependency();
 		this.setTableDesign();
-		this.loadAllPosition(Optional.empty());
-		
+		this.loadAllPosition(Optional.empty());	
 		getContentPane().setBackground(Color.WHITE);
 		getContentPane().setLayout(null);
-		
-		
-		
+			
 		this.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		BasicInternalFrameUI ui= (BasicInternalFrameUI)this.getUI();
-		ui.setNorthPane(null);
-		
-		
+		ui.setNorthPane(null);	
 		setBounds(0, 0, 976, 591);
 
 	}
@@ -109,6 +104,7 @@ public class PositionForm extends JInternalFrame {
 		// TODO Auto-generated method stub
 		this.PositionService = new PositionService();
 		this.departmentService = new DepartmentService();
+		this.filteredpositionList = new ArrayList<>();
 	}
 	
 	private void loadAllPosition(Optional<List<Position>> optionalPositions) {
@@ -178,7 +174,7 @@ public class PositionForm extends JInternalFrame {
 		panel.add(btnDelete);
 		
 		positionField = new JTextField();
-		positionField.setBounds(226, 63, 264, 36);
+		positionField.setBounds(226, 109, 264, 36);
 		panel.add(positionField);
 		positionField.setColumns(10);
 		
@@ -186,7 +182,7 @@ public class PositionForm extends JInternalFrame {
 		btnSave.setBounds(51, 306, 123, 47);
 		panel.add(btnSave);
 		JLabel lblposition = new JLabel("Position");
-		lblposition.setBounds(51, 56, 143, 47);
+		lblposition.setBounds(51, 102, 143, 47);
 		panel.add(lblposition);
 		lblposition.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lblposition.setHorizontalAlignment(SwingConstants.LEFT);
@@ -194,12 +190,12 @@ public class PositionForm extends JInternalFrame {
 		JLabel lblBasicSalary = new JLabel("Basic Salary");
 		lblBasicSalary.setHorizontalAlignment(SwingConstants.LEFT);
 		lblBasicSalary.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblBasicSalary.setBounds(51, 114, 143, 47);
+		lblBasicSalary.setBounds(51, 160, 143, 47);
 		panel.add(lblBasicSalary);
 		
 		basicSalaryField = new JTextField();
 		basicSalaryField.setColumns(10);
-		basicSalaryField.setBounds(226, 121, 264, 36);
+		basicSalaryField.setBounds(226, 167, 264, 36);
 		panel.add(basicSalaryField);
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -246,6 +242,7 @@ public class PositionForm extends JInternalFrame {
 		btnSearch.setBounds(877, 22, 89, 25);
 		this.getContentPane().add(btnSearch);
 		
+		// put data into fields when selected
 		this.tblposition.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {

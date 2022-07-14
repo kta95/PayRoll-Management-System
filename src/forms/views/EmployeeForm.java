@@ -231,7 +231,7 @@ public class EmployeeForm extends JInternalFrame {
 		panel.setBackground(Color.WHITE);
 		panel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Employee Management", TitledBorder.LEADING, TitledBorder.TOP, null, Color.BLACK));
 		panel.setToolTipText("Employee Registration");
-		panel.setBounds(30, 273, 924, 198);
+		panel.setBounds(28, 11, 924, 187);
 		panel.setName("Employee Registration");
 		this.getContentPane().add(panel);
 		panel.setLayout(null);
@@ -382,7 +382,7 @@ public class EmployeeForm extends JInternalFrame {
 		
 
         JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(30, 52, 924, 210);
+        scrollPane.setBounds(28, 267, 924, 217);
         this.getContentPane().add(scrollPane);
 
         tblEmployee = new JTable();
@@ -404,12 +404,12 @@ public class EmployeeForm extends JInternalFrame {
 				}
         	}
         });
-        btnSearch.setBounds(244, 11, 89, 30);
+        btnSearch.setBounds(237, 226, 89, 30);
         getContentPane().add(btnSearch);
         
         searchField = new JTextField("Search By Employee Name");
         searchField.setColumns(10);
-        searchField.setBounds(30, 11, 200, 30);
+        searchField.setBounds(28, 226, 200, 30);
     	searchField.setForeground(Color.GRAY);
         searchField.addFocusListener(new FocusListener() {
             @Override

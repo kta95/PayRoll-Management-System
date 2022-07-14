@@ -143,7 +143,7 @@ public class DepartmentForm extends JInternalFrame {
 		});
 		btnEdit.setForeground(Color.BLACK);
 		btnEdit.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnEdit.setBounds(339, 205, 89, 47);
+		btnEdit.setBounds(338, 264, 89, 47);
 		panel.add(btnEdit);
 		
 		JButton btnDelete = new JButton("Delete");
@@ -158,19 +158,19 @@ public class DepartmentForm extends JInternalFrame {
 		});
 		btnDelete.setForeground(Color.BLACK);
 		btnDelete.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnDelete.setBounds(226, 205, 89, 47);
+		btnDelete.setBounds(226, 264, 89, 47);
 		panel.add(btnDelete);
 		
 		deptField = new JTextField();
-		deptField.setBounds(226, 97, 264, 47);
+		deptField.setBounds(226, 124, 264, 47);
 		panel.add(deptField);
 		deptField.setColumns(10);
 		
 		JButton btnSave = new JButton("Save");
-		btnSave.setBounds(113, 206, 89, 47);
+		btnSave.setBounds(112, 265, 89, 47);
 		panel.add(btnSave);
 		JLabel lblDept = new JLabel("Department");
-		lblDept.setBounds(59, 95, 143, 47);
+		lblDept.setBounds(57, 122, 143, 47);
 		panel.add(lblDept);
 		lblDept.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lblDept.setHorizontalAlignment(SwingConstants.LEFT);
