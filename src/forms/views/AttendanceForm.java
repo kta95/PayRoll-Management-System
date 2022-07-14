@@ -7,6 +7,8 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
+import javax.swing.table.DefaultTableModel;
+
 import java.awt.Color;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
@@ -19,14 +21,21 @@ import javax.swing.JButton;
 import com.toedter.calendar.JMonthChooser;
 
 import entities.Attendance;
+import entities.Employee;
+import services.AttendanceService;
+import services.EmployeeService;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import java.awt.event.ActionEvent;
 
 public class AttendanceForm extends JInternalFrame {
@@ -38,7 +47,16 @@ public class AttendanceForm extends JInternalFrame {
 	private JTextField empIDField;
 	private JTextField empNameField;
 	private JTable attdtbl;
+	private DefaultTableModel dtm=new DefaultTableModel();
+	private List<Attendance> attendanceList = new ArrayList<>();
 	private final String[] months;
+	private Employee employee;
+	private EmployeeService employeeService;
+	JMonthChooser monthChooser = new JMonthChooser();
+	private AttendanceService attendanceService;
+	private List<Attendance> filteredAttendanceList = new ArrayList();
+	private JTextField searchField;
+
 	/**
 	 * Launch the application.
 	 */
@@ -59,16 +77,100 @@ public class AttendanceForm extends JInternalFrame {
 	 * Create the frame.
 	 */
 	public AttendanceForm() {
+		this.initialize();
+		this.initializeDependancy();
+		this.setTableDesign();
+		resetFormData();
 		this.months = new String[] {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 		this.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		BasicInternalFrameUI ui= (BasicInternalFrameUI)this.getUI();
 		ui.setNorthPane(null);
 		
+		this.loadAllAttendance(Optional.empty());
+
+	}
+	
+	private void initializeDependancy() {
+		this.employeeService = new EmployeeService();
+		this.attendanceService = new AttendanceService();
+	}
+	
+	
+	private void setTableDesign() {
+		dtm.addColumn("Attendance ID");
+		dtm.addColumn("Employee ID");
+		dtm.addColumn("Employee Name");
+		dtm.addColumn("Present");
+		dtm.addColumn("Absent");
+		dtm.addColumn("Month");
+		dtm.addColumn("Leaves");
+		dtm.addColumn("Lates");
+		dtm.addColumn("Overtime");
 		
-		setBounds(0, 0, 976, 591);
-		getContentPane().setBackground(Color.WHITE);
-		getContentPane().setLayout(null);
+		this.attdtbl.setModel(dtm);
+	}
+	
+	private void resetFormData() {
+		empIDField.setText("");
+		empNameField.setText("");
+		presentField.setText("0");
+		absentField.setText("0");
+		monthChooser.setMonth(0);
+		leavesField.setText("0");
+		lateField.setText("0");
+		otField.setText("0");
+
+	}
+	
+	private void setAttendanceDataFrom(Attendance attendance) {
+		String mymonth = months[monthChooser.getMonth()];
+
+		attendance.setPresent(presentField.getText().isBlank() ? "0" : presentField.getText());
+		attendance.setAbsent(absentField.getText().isBlank() ? "0" : absentField.getText());
+		attendance.setLeave(leavesField.getText().isBlank()? "0" : leavesField.getText());
+		attendance.setMonth(mymonth);
+		attendance.setHourLate(lateField.getText().isBlank() ? "0" : lateField.getText());
+		attendance.setHourOT(otField.getText().isBlank() ? "0" : otField.getText());
+		attendance.setEmployee(employee);
+	}
+	
+	private void loadAllAttendance(Optional<List<Attendance>> optionalAttendances) {
+		this.dtm = (DefaultTableModel) this.attdtbl.getModel();
+		this.dtm.getDataVector().removeAllElements();
+		this.dtm.fireTableDataChanged();
 		
+		System.out.println("from");
+		
+		this.attendanceList=this.attendanceService.findAllAttendances();
+		for (Attendance attd : attendanceList) {
+			System.out.println(attd.getId() + " " + attd.getEmployee().getName());
+		}
+		this.filteredAttendanceList=optionalAttendances.orElseGet(()->this.attendanceList)
+				.stream().collect(Collectors.toList());
+	
+            
+		filteredAttendanceList.forEach(e-> {
+            	Object[] row =new Object [9]; 
+            			row[0] = e.getId();
+            			row[1] = e.getEmployee().getId();
+            			row[2] = e.getEmployee().getName();
+            			row[3] = e.getPresent();
+            			row[4] = e.getAbsent();
+            			row[5] = e.getMonth();
+            			row[6] = e.getLeave();
+            			row[7] = e.getHourLate();
+            			row[8] = e.getHourOT();
+
+            	dtm.addRow(row);
+            });
+			this.attdtbl.setModel(dtm);
+       
+	}
+	
+	private void initialize() {
+		this.setBounds(0, 0, 976, 591);
+		this.getContentPane().setBackground(Color.WHITE);
+		this.getContentPane().setLayout(null);
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
 		panel.setToolTipText("Employee Registration");
@@ -141,9 +243,26 @@ public class AttendanceForm extends JInternalFrame {
 		lblEmployeeId.setBounds(31, 36, 78, 21);
 		panel.add(lblEmployeeId);
 		
-		empIDField = new JTextField();
+		empIDField = new JTextField("Search By Employee ID");
 		empIDField.setColumns(10);
-		empIDField.setBounds(128, 33, 115, 21);
+		empIDField.setBounds(128, 33, 136, 21);
+		empIDField.setForeground(Color.GRAY);
+		empIDField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (empIDField.getText().equals("Search By Employee ID")) {
+                	empIDField.setText("");
+                	empIDField.setForeground(Color.BLACK);
+                }
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (empIDField.getText().isEmpty()) {
+                	empIDField.setForeground(Color.GRAY);
+                	empIDField.setText("Search By Employee ID");
+                }
+            }
+            });
 		panel.add(empIDField);
 		
 		JLabel lblEmployeeName = new JLabel("Employee Name");
@@ -158,54 +277,95 @@ public class AttendanceForm extends JInternalFrame {
 		panel.add(empNameField);
 		
 		JButton btnSearchEmpID = new JButton("Search");
-		btnSearchEmpID.setBounds(263, 32, 89, 23);
+		btnSearchEmpID.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				List<Attendance> attendanceList = new ArrayList<>();
+				attendanceList= attendanceService.findAllAttendances();
+				for (Attendance attd : attendanceList) {
+					System.out.println(attd.getId() + " " + attd.getEmployee().getName());
+				}
+				String id = empIDField.getText();
+				employee = new Employee();
+				employee = employeeService.findEmployeeById(id);
+				empNameField.setText(employee.getName());
+				
+				
+			}
+		});
+		btnSearchEmpID.setBounds(274, 32, 78, 23);
 		panel.add(btnSearchEmpID);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 204, 924, 349);
+		scrollPane.setBounds(10, 249, 924, 278);
 		getContentPane().add(scrollPane);
 		
 		attdtbl = new JTable();
 		attdtbl.setFont(new Font("Tahoma", Font.PLAIN, 15));
         scrollPane.setViewportView(attdtbl);
         
-		JMonthChooser monthChooser = new JMonthChooser();
 		monthChooser.setBounds(475, 31, 224, 26);
 		panel.add(monthChooser);
 		
         JButton btnSave = new JButton("Register");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Attendance attendance = new Attendance();
+
 				if (!presentField.getText().trim().isBlank() && !absentField.getText().trim().isBlank() && !leavesField.getText().trim().isBlank() &&
 						!(monthChooser.getMonth() == 0) && !lateField.getText().trim().isBlank() && !otField.getText().trim().isBlank() && !empIDField.getText().trim().isBlank()) {
-					Attendance attendance = new Attendance();
-					String mymonth = months[monthChooser.getMonth()];
 					
-					attendance.setPresent(Integer.valueOf(presentField.getText()));
-					attendance.setAbsent(Integer.valueOf(absentField.getText()));
-					attendance.setPresent(Integer.valueOf(leavesField.getText()));
-					attendance.setMonth(mymonth);
-					attendance.setPresent(Integer.valueOf(lateField.getText()));
-					attendance.setPresent(Integer.valueOf(otField.getText()));
-					attendance.setPresent(Integer.valueOf(empIDField.getText()));
+					setAttendanceDataFrom(attendance);
 					
-					System.out.println(mymonth);
+					attendanceService.createAttendance(attendance);
+					loadAllAttendance(Optional.empty());
+					
+					resetFormData();
 				}
 				
 			}
 		});
-		btnSave.setBounds(749, 24, 128, 38);
+		btnSave.setBounds(770, 88, 128, 38);
 		panel.add(btnSave);
 		
-		JButton btnUpdate = new JButton("Update");
-		btnUpdate.setBounds(749, 73, 128, 38);
-		panel.add(btnUpdate);
+		searchField = new JTextField("Search By Employee Name");
+		searchField.setColumns(10);
+		searchField.setBounds(10, 217, 162, 21);
+		searchField.setForeground(Color.GRAY);
+        searchField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (searchField.getText().equals("Search By Employee Name")) {
+                	searchField.setText("");
+                	searchField.setForeground(Color.BLACK);
+                }
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (searchField.getText().isEmpty()) {
+                	searchField.setForeground(Color.GRAY);
+                	searchField.setText("Search By Employee Name");
+                }
+            }
+            });
+		getContentPane().add(searchField);
 		
-		JButton btnDelete = new JButton("Delete");
-		btnDelete.setBounds(749, 122, 128, 38);
-		panel.add(btnDelete);
+		JButton btnEmpAttendanceSearch = new JButton("Search");
+		btnEmpAttendanceSearch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String keyword=searchField.getText();
+				loadAllAttendance(
+						Optional.of(attendanceList.stream()
+								.filter(a -> a.getEmployee().getName().toLowerCase()
+								.startsWith(keyword.toLowerCase()))
+								.collect(Collectors.toList()))
+								);
+				if(searchField.getText().equals("Search By Employee Name")) {
+					loadAllAttendance(Optional.empty());
+				}
+			}
+		});
+		btnEmpAttendanceSearch.setBounds(182, 215, 89, 23);
+		getContentPane().add(btnEmpAttendanceSearch);
 		
-
-
 	}
 }

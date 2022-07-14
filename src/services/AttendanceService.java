@@ -1,32 +1,39 @@
 package services;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import config.DBConfig;
 import entities.Attendance;
+import entities.Employee;
 import repositories.AttendanceRepo;
+import shared.mapper.AttendanceMapper;
 
 public class AttendanceService implements AttendanceRepo{
-	private final DBConfig DBConfig;
+	private final DBConfig dbConfig;
+	private AttendanceMapper attendanceMapper;
 	
 	public AttendanceService() {
-		DBConfig = new DBConfig();
+		dbConfig = new DBConfig();
+		attendanceMapper = new AttendanceMapper();
 	}
 	@Override
 	public void createAttendance(Attendance attendance) {
 		// TODO Auto-generated method stub
 		try {
-			PreparedStatement ps = this.DBConfig.getConnection()
-					.prepareStatement("INSERT INTO attendance (present, absent, month, leave, hour_late, hour_overtime, attd_emp_id)" +
-							"VALUES (?,?,?,?,?,?,?);");
-			ps.setInt(1, attendance.getPresent());
-			ps.setInt(2, attendance.getAbsent());
+			PreparedStatement ps = this.dbConfig.getConnection()
+					.prepareStatement("INSERT INTO attendance(present, absent, month, leave_day, leaves, hour_late, hour_overtime, attd_emp_id) VALUES (?,?,?,?,?,?,?,?);");
+			ps.setString(1, attendance.getPresent());
+			ps.setString(2, attendance.getAbsent());
 			ps.setString(3, attendance.getMonth());
-			ps.setInt(4, attendance.getAbsent());
-			ps.setInt(5, attendance.getPresent());
-			ps.setInt(6, attendance.getAbsent());
-			ps.setInt(7, attendance.getPresent());
-			
+			ps.setString(4, "10");
+			ps.setString(5, attendance.getLeave());
+			ps.setString(6, attendance.getHourLate());
+			ps.setString(7, attendance.getHourOT());
+			ps.setInt(8, attendance.getEmployee().getId());
 			ps.executeUpdate();
 			ps.close();
 		} catch (Exception e) {
@@ -34,5 +41,33 @@ public class AttendanceService implements AttendanceRepo{
 		}
 		
 	}
+	
+	public List<Attendance> findAllAttendances() {
+		List<Attendance> attendanceList=new ArrayList<>();
+		try (Statement st = this.dbConfig.getConnection().createStatement())  {
+			
+			String query = "SELECT * FROM attendance INNER JOIN employee ON employee.emp_id = attendance.attd_emp_id;";
+
+			ResultSet rs = st.executeQuery(query);
+
+			while(rs.next()) {
+				Attendance attendance = new Attendance();
+				System.out.println("Why 3");
+
+				attendanceList.add(this.attendanceMapper.mapToAttendance(attendance, rs));
+
+			}
+			System.out.println("Why");
+
+		} catch (Exception e) {
+			for (Attendance attd : attendanceList) {
+				System.out.println(attd.getId() + " " + attd.getEmployee().getName());
+			}
+			e.printStackTrace();
+		}
+		
+		return attendanceList;
+	}
+	
 	
 }
