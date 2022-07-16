@@ -38,9 +38,11 @@ import com.toedter.calendar.JDateChooser;
 import entities.Department;
 import entities.Employee;
 import entities.Position;
+import forms.Main;
 import services.DepartmentService;
 import services.EmployeeService;
 import services.PositionService;
+import shared.utils.EmployeeHolder;
 
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -78,7 +80,8 @@ public class EmployeeForm extends JInternalFrame {
 	SimpleDateFormat Date_Format = new SimpleDateFormat("yyyy-MM-dd");
 	DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 	private JTextField searchField;
-	
+	private EmployeeDetailsForm empDetails;
+	private Main main;
 	/**
 	 * Launch the application.
 	 */
@@ -100,6 +103,8 @@ public class EmployeeForm extends JInternalFrame {
 	 * Create the frame.
 	 */
 	public EmployeeForm() {
+		this.empDetails = new EmployeeDetailsForm();
+		this.main = new Main();
 		initialize();
 		setTableDesign();
 		initializeDependancy();
@@ -429,6 +434,19 @@ public class EmployeeForm extends JInternalFrame {
             });
         getContentPane().add(searchField);
         
+        JButton btnViewDetail = new JButton("View Detail");
+        btnViewDetail.setEnabled(false);
+        btnViewDetail.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		EmployeeDetailsForm newframe = new EmployeeDetailsForm();
+        		EmployeeForm.this.setVisible(false);
+				newframe.setVisible(true);
+				getParent().add(newframe);
+        	}
+        });
+        btnViewDetail.setBounds(789, 209, 163, 38);
+        getContentPane().add(btnViewDetail);
+        
         
         this.tblEmployee.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
             if (!tblEmployee.getSelectionModel().isSelectionEmpty()) {
@@ -436,7 +454,7 @@ public class EmployeeForm extends JInternalFrame {
                 String id = tblEmployee.getValueAt(tblEmployee.getSelectedRow(), 0).toString();
 
                 employee = employeeService.findEmployeeById(id);
-                
+                EmployeeHolder.setSelectedEmployee(employee);
                 nameField.setText(employee.getName());
                 int index = 0;
                 for (String gender : genders) {
@@ -468,6 +486,7 @@ public class EmployeeForm extends JInternalFrame {
                 positionCombo.setSelectedIndex(employee.getPosition().getpId());
                 System.out.println("this is department index: " + employee.getDepartment().getDepartmentId());
 				deptCombo.setSelectedIndex(employee.getDepartment().getDepartmentId());
+				btnViewDetail.setEnabled(true);
 
             }
         });
