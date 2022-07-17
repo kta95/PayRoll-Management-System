@@ -25,6 +25,8 @@ import java.awt.Image;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.ActionEvent;
 
 public class LoginForm {
@@ -67,7 +69,7 @@ public class LoginForm {
 	private void initialize() {
 		frame = new JFrame();
 		frame.getContentPane().setBackground(Color.WHITE);
-		frame.setBounds(350, 100, 660, 500);
+		frame.setBounds(320, 100, 720, 550);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //		frame.setUndecorated(true);
 		frame.getContentPane().setLayout(null);
@@ -76,29 +78,47 @@ public class LoginForm {
 		
 		JPanel panel = new JPanel();
 		panel.setBackground(Color.BLACK);
-		panel.setBounds(0, 0, 320, 500);
+		panel.setBounds(0, 0, 360, 511);
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
 		
 		JLabel lblLogin = new JLabel("Login");
-		lblLogin.setBounds(103, 36, 115, 52);
+		lblLogin.setBounds(10, 11, 340, 64);
 		panel.add(lblLogin);
 		lblLogin.setForeground(Color.WHITE);
 		lblLogin.setFont(new Font("Tahoma", Font.BOLD, 30));
 		lblLogin.setHorizontalAlignment(SwingConstants.CENTER);
 		
-		txtUsername = new JTextField();
-		txtUsername.setBounds(53, 164, 211, 41);
+		txtUsername = new JTextField("Username");
+		txtUsername.setBounds(53, 164, 255, 41);
+		txtUsername.setForeground(Color.GRAY);
+		txtUsername.addFocusListener(new FocusListener() {
+	            @Override
+	            public void focusGained(FocusEvent e) {
+	                if (txtUsername.getText().equals("Username")) {
+	                	txtUsername.setText("");
+	                	txtUsername.setForeground(Color.BLACK);
+	                }
+	            }
+	            @Override
+	            public void focusLost(FocusEvent e) {
+	                if (txtUsername.getText().isEmpty()) {
+	                	txtUsername.setForeground(Color.GRAY);
+	                	txtUsername.setText("Username");
+	                }
+	            }
+	     });
+		
 		panel.add(txtUsername);
+
+		
 		txtUsername.setColumns(10);
 		
 		txtPassword = new JPasswordField();
 		txtPassword.setColumns(10);
-		txtPassword.setBounds(53, 239, 211, 41);
+		txtPassword.setBounds(53, 239, 255, 41);
+		txtPassword.setIgnoreRepaint(false);
 		panel.add(txtPassword);
-
-		
-		
 		JLabel lblUsername = new JLabel("Username");
 		lblUsername.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblUsername.setForeground(Color.WHITE);
@@ -138,26 +158,26 @@ public class LoginForm {
              }
 			
 		});
-		btnLogin.setBounds(53, 323, 211, 41);
+		btnLogin.setBounds(53, 349, 255, 41);
 		panel.add(btnLogin);
 
 		JLabel logoImg = new JLabel("");
 		logoImg.setHorizontalAlignment(SwingConstants.CENTER);
 //		ImageIcon imageIcon = new ImageIcon(new ImageIcon("src\\icons\\logo.png").getImage().getScaledInstance(180, 180, Image.SCALE_SMOOTH));
 
-		logoImg.setBounds(322, 87, 320, 249);
+		logoImg.setBounds(359, 90, 345, 249);
 		logoImg.setIcon(new ImageIcon(LoginForm.class.getResource("/icons/logo.png")));
 		frame.getContentPane().add(logoImg);
 		
 		JLabel lblNewLabel = new JLabel("Payroll Management System version(beta)");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setBounds(322, 436, 320, 25);
+		lblNewLabel.setBounds(359, 486, 345, 25);
 		frame.getContentPane().add(lblNewLabel);
 		
 		JLabel lblNewLabel_1 = new JLabel("Welcome");
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 30));
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_1.setBounds(330, 11, 304, 68);
+		lblNewLabel_1.setBounds(359, 11, 345, 68);
 		frame.getContentPane().add(lblNewLabel_1);
 	}
 }

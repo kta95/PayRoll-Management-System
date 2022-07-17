@@ -296,7 +296,7 @@ public class AttendanceForm extends JInternalFrame {
 		panel.add(btnSearchEmpID);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 249, 924, 278);
+		scrollPane.setBounds(10, 249, 924, 250);
 		getContentPane().add(scrollPane);
 		
 		attdtbl = new JTable();

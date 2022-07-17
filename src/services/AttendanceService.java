@@ -69,5 +69,25 @@ public class AttendanceService implements AttendanceRepo{
 		return attendanceList;
 	}
 	
-	
+	public Attendance findAttendanceByEmpId(String id) {
+		Attendance attendance = new Attendance();
+		try (Statement st = this.dbConfig.getConnection().createStatement()) {
+
+			String query = "SELECT * FROM attendance "
+					+ "INNER JOIN employee "
+					+ "ON employee.emp_id = attendance.attd_emp_id "
+					+ "WHERE attd_emp_id = " + id + ";";
+
+			ResultSet rs = st.executeQuery(query);
+
+			if (rs.next()) {
+				this.attendanceMapper.mapToAttendance(attendance,rs);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return attendance;
+	}
 }

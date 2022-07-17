@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import config.DBConfig;
+import entities.Attendance;
 import entities.Employee;
 import entities.UserRole;
 import shared.mapper.EmployeeMapper;
@@ -34,7 +35,7 @@ public class EmployeeService {
 	            ps.setString(5, employee.getEmail());
 	            ps.setString(6, employee.getAddress());
 	            ps.setString(7, String.valueOf(employee.getHiredDate()));
-	            ps.setString(8, UserRole.USER.toString());
+	            ps.setString(8, employee.getDepartment().getDepartmentName().equals("HR") ? UserRole.ADMIN.toString() : UserRole.USER.toString());
 	            ps.setBoolean(9, true);
 	            ps.setLong(10, employee.getPosition().getpId());
 	            ps.setInt(11, employee.getDepartment().getDepartmentId());
@@ -51,7 +52,7 @@ public class EmployeeService {
 	public void updateEmployee(String id, Employee employee) {
 		 try {
 	            PreparedStatement ps = this.dbConfig.getConnection()
-	                    .prepareStatement("UPDATE employee SET emp_name=?, emp_gender=?, emp_dob=?, emp_phone=?, emp_email=?, emp_address=?, hired_date=?, username=?, password=?, active=?, emp_position_id=?, emp_department_id=? WHERE emp_id=?");
+	                    .prepareStatement("UPDATE employee SET emp_name=?, emp_gender=?, emp_dob=?, emp_phone=?, emp_email=?, emp_address=?, hired_date=?, username=?, password=?, role=?, active=?, emp_position_id=?, emp_department_id=? WHERE emp_id=?");
 	            System.out.println("how about here");
 	            ps.setString(1, employee.getName());
 	            ps.setString(2, employee.getGender());
@@ -62,10 +63,11 @@ public class EmployeeService {
 	            ps.setString(7, String.valueOf(employee.getHiredDate()));
 	            ps.setString(8, employee.getUsername());
 	            ps.setString(9, employee.getPassword());
-	            ps.setBoolean(10, true);
-	            ps.setInt(11, employee.getPosition().getpId());
-	            ps.setInt(12, employee.getDepartment().getDepartmentId());
-	            ps.setString(13, id);
+	            ps.setString(10, employee.getDepartment().getDepartmentName().equals("HR") ? UserRole.ADMIN.toString() : UserRole.USER.toString());
+	            ps.setBoolean(11, true);
+	            ps.setInt(12, employee.getPosition().getpId());
+	            ps.setInt(13, employee.getDepartment().getDepartmentId());
+	            ps.setString(14, id);
 	            ps.executeUpdate();
 	            ps.close();
         } catch (Exception e) {
@@ -76,7 +78,13 @@ public class EmployeeService {
 	 public void deleteEmployee(String id) {
 	        try {
 	            PreparedStatement ps = this.dbConfig.getConnection()
-	                    .prepareStatement("DELETE FROM employee WHERE Employee_id=?");
+	                    .prepareStatement("DELETE FROM employee "
+	                    			+ "INNER JOIN attendance "
+	                    			+ "ON attendance.attd_emp_id = employee.emp_id "
+	                    			+ "INNER JOIN attendance "
+	                    			+ "ON allowance_details.ad_employee_id = employee.emp_id "
+	                    			+ " WHERE Employee_id=?");
+	            
 	            ps.setString(1, id);
 	            ps.executeUpdate();
 	            ps.close();
@@ -133,4 +141,6 @@ public class EmployeeService {
 
 		return employee;
 	}
+	
+
 }

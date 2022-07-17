@@ -154,10 +154,19 @@ public class EmployeeForm extends JInternalFrame {
 		String hd = "" + Date_Format.format(hiredDateChooser.getDate());
 //		System.out.println(hd);
 		employee.setHiredDate(hd);
+		
+		if(!deptCombo.getSelectedItem().equals("HR")) {
+			if(positionCombo.getSelectedItem().equals("HR clerk")) {
+				JOptionPane.showMessageDialog(null, "HR clerk shouldn't be in another department!", "Invalid Fields", 0);
+				resetFormData();
+				return;
+			}
+		}
 		Optional<Position> selectedPosition = positionList.stream().filter(p -> p.getTitle().equals(positionCombo.getSelectedItem())).findFirst();
 		employee.setPosition(selectedPosition.orElse(null));
 		Optional<Department> selectedDepartment = deptList.stream().filter(d -> d.getDepartmentName().equals(deptCombo.getSelectedItem())).findFirst();
-		employee.setDepartment(selectedDepartment.orElse(null));
+		employee.setDepartment(selectedDepartment.orElse(null));		
+
 //		employee.setBasicSalary(Double.valueOf(basicSalaryField.getText().isBlank()? "0" : basicSalaryField.getText()));
 //		Optional<Department> selectedDepartment = deptList.stream().filter(d -> d.getDepartmentName().equals(deptCombo.getSelectedItem())).findFirst();
 //		position.setDepartment(selectedDepartment.orElse(null));
@@ -178,6 +187,7 @@ public class EmployeeForm extends JInternalFrame {
 	}
 	
 	private void loadPositionComboBox() {
+		
 		positionCombo.addItem("- Select -");
 		this.positionList = this.positionService.findAllPositions();
 		this.positionList.forEach(d -> positionCombo.addItem(d.getTitle()));

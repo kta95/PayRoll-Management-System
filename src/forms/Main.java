@@ -85,8 +85,11 @@ public class Main {
 		mainframe.setBounds(40, 10, 1291, 700);
 		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainframe.getContentPane().setLayout(null);
-		mainframe.setUndecorated(true);
-
+//		mainframe.setUndecorated(true);
+		JPanel sideBar = new JPanel();
+		
+		
+		
 		JPanel topBar = new JPanel();
 		topBar.setBackground(Color.WHITE);
 		topBar.setBounds(299, 0, 976, 72);
@@ -142,7 +145,6 @@ public class Main {
 		lblNewLabel.setBounds(903, 0, 33, 30);
 		topBar.add(lblNewLabel);
 
-		JPanel sideBar = new JPanel();
 		sideBar.setBackground(Color.BLACK);
 		sideBar.setBounds(0, 0, 299, 661);
 		mainframe.getContentPane().add(sideBar);

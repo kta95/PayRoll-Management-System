@@ -11,6 +11,7 @@ import javax.swing.SwingConstants;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 
 import entities.Employee;
+import entities.UserRole;
 import services.EmployeeService;
 import shared.utils.EmployeeHolder;
 
@@ -247,12 +248,16 @@ public class EmployeeDetailsForm extends JInternalFrame {
 				lblHd.setText(employee.getHiredDate());
 				lblPosition_1.setText(employee.getPosition().getTitle());
 				lblDepartment_1.setText(employee.getDepartment().getDepartmentName());
+				System.out.println(employee.getRole().equals(UserRole.ADMIN) + " haha");
+				System.out.println((employee.getRole() == UserRole.ADMIN) + " haha");
 
-				if (lblDepartment_1.getText().equals("HR") || employee.getName().equals("Kyaw Thet Aung")) {
+				if (employee.getRole().equals(UserRole.ADMIN) || employee.getName().equals("Kyaw Thet Aung")) {
 					lblaccess.setForeground(Color.green);
 					lblaccess.setText("This employee has permission to become administrator!");
 					txtUsername.setEditable(true);
 					txtPassword.setEditable(true);
+					txtUsername.setText(employee.getUsername());
+					txtPassword.setText(String.valueOf(employee.getPassword()));
 				} else {
 					lblaccess.setForeground(Color.red);
 					lblaccess.setText("This employee does not have access to Admin!");

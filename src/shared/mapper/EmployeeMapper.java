@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import entities.Department;
 import entities.Employee;
 import entities.Position;
+import entities.UserRole;
 
 public class EmployeeMapper {
 	
@@ -35,6 +36,8 @@ public class EmployeeMapper {
         	employee.setPosition(position);
         	
         	employee.setHiredDate(String.valueOf(rs.getDate("hired_date")));
+        	UserRole role = UserRole.valueOf(rs.getString("role"));
+        	employee.setRole((role));
             employee.setUsername(rs.getString("username"));
             employee.setActive(rs.getBoolean("active"));
 
