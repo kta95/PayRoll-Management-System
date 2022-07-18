@@ -61,7 +61,7 @@ CREATE TABLE `allowance_details` (
   KEY `fkkf_attd_id_idx` (`ad_attendance_id`),
   CONSTRAINT `fk_employee_id` FOREIGN KEY (`ad_employee_id`) REFERENCES `employee` (`emp_id`),
   CONSTRAINT `fkkf_attd_id` FOREIGN KEY (`ad_attendance_id`) REFERENCES `attendance` (`attendance_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -105,6 +105,38 @@ LOCK TABLES `attendance` WRITE;
 /*!40000 ALTER TABLE `attendance` DISABLE KEYS */;
 INSERT INTO `attendance` VALUES (1,'0','0','June','10','0','0','0',1),(2,'0','0','September','10','0','0','0',2),(3,'21','0','November','10','0','0','10',3);
 /*!40000 ALTER TABLE `attendance` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `deduction_details`
+--
+
+DROP TABLE IF EXISTS `deduction_details`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `deduction_details` (
+  `deduction_id` int NOT NULL,
+  `dd_emp_id` int NOT NULL,
+  `dd_attd_id` int NOT NULL,
+  `tax` varchar(45) DEFAULT NULL,
+  `SSC` varchar(45) DEFAULT NULL,
+  `description` varchar(45) DEFAULT NULL,
+  `deduction_amount` varchar(45) NOT NULL,
+  PRIMARY KEY (`deduction_id`),
+  KEY `deduk_fk_emp_id_idx` (`dd_emp_id`),
+  KEY `deduk_fk_attd_id_idx` (`dd_attd_id`),
+  CONSTRAINT `deduk_fk_attd_id` FOREIGN KEY (`dd_attd_id`) REFERENCES `attendance` (`attendance_id`),
+  CONSTRAINT `deduk_fk_emp_id` FOREIGN KEY (`dd_emp_id`) REFERENCES `employee` (`emp_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `deduction_details`
+--
+
+LOCK TABLES `deduction_details` WRITE;
+/*!40000 ALTER TABLE `deduction_details` DISABLE KEYS */;
+/*!40000 ALTER TABLE `deduction_details` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -205,4 +237,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-07-17 22:14:32
+-- Dump completed on 2022-07-18 23:45:27

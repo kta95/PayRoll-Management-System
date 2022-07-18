@@ -5,24 +5,12 @@ package shared.mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import entities.Allowance;
 import entities.AllowanceDetails;
 import entities.Attendance;
 import entities.Employee;
 
 public class AllowanceMapper {
-    public Allowance mapToAllowance(Allowance allowance, ResultSet rs) {
-        try {
-             allowance.setAllowanceID(rs.getInt("allowance_id"));
-             allowance.setDescription(rs.getString("description"));
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return allowance;
-
-    }
     public AllowanceDetails mapToAllowanceDetails(AllowanceDetails allowanceDetails, ResultSet rs) {
         try {
              allowanceDetails.setAdId(rs.getInt("ad_id"));

@@ -180,7 +180,7 @@ public class AllowanceForm extends JInternalFrame {
 		JPanel panel = new JPanel();
 		panel.setBackground(Color.WHITE);
 		panel.setBorder(new TitledBorder(null, "Allowance", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.setBounds(62, 27, 405, 460);
+		panel.setBounds(48, 27, 405, 460);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
@@ -239,7 +239,7 @@ public class AllowanceForm extends JInternalFrame {
 		panel.add(txtOT);
 		
 		JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(510, 64, 412, 413);
+        scrollPane.setBounds(477, 64, 452, 413);
         this.getContentPane().add(scrollPane);
 
         tblAllowance = new JTable();
@@ -388,7 +388,7 @@ public class AllowanceForm extends JInternalFrame {
 		
 		txtSearchName = new JTextField("Search By Employee Name");
 		txtSearchName.setColumns(10);
-		txtSearchName.setBounds(666, 27, 165, 26);
+		txtSearchName.setBounds(679, 21, 165, 32);
 		txtSearchName.setForeground(Color.GRAY);
 		txtSearchName.addFocusListener(new FocusListener() {
 	            @Override
@@ -425,7 +425,7 @@ public class AllowanceForm extends JInternalFrame {
 				}
 			}
 		});
-		btnSearchName.setBounds(841, 27, 75, 26);
+		btnSearchName.setBounds(854, 21, 75, 32);
 		getContentPane().add(btnSearchName);
 		
 		this.tblAllowance.getSelectionModel().addListSelectionListener(new ListSelectionListener() {

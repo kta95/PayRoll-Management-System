@@ -312,7 +312,7 @@ public class AttendanceForm extends JInternalFrame {
 				Attendance attendance = new Attendance();
 
 				if (!presentField.getText().trim().isBlank() && !absentField.getText().trim().isBlank() && !leavesField.getText().trim().isBlank() &&
-						!(monthChooser.getMonth() == 0) && !lateField.getText().trim().isBlank() && !otField.getText().trim().isBlank() && !empIDField.getText().trim().isBlank()) {
+					 !lateField.getText().trim().isBlank() && !otField.getText().trim().isBlank() && !empIDField.getText().trim().isBlank()) {
 					
 					setAttendanceDataFrom(attendance);
 					
