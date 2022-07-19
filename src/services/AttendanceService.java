@@ -90,4 +90,16 @@ public class AttendanceService implements AttendanceRepo{
 
 		return attendance;
 	}
+	
+	 public void deleteAttendance(String id) {
+	        try {
+	            PreparedStatement ps = this.dbConfig.getConnection()
+	                    .prepareStatement("DELETE FROM attendance WHERE attendance_id=?;");
+	            ps.setString(1, id);
+	            ps.executeUpdate();
+	            ps.close();
+	        } catch (Exception e) {
+	        	e.printStackTrace();
+	        }
+	    }
 }

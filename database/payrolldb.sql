@@ -16,29 +16,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `allowance`
---
-
-DROP TABLE IF EXISTS `allowance`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `allowance` (
-  `allowance_id` int NOT NULL AUTO_INCREMENT,
-  `allowance_description` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`allowance_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `allowance`
---
-
-LOCK TABLES `allowance` WRITE;
-/*!40000 ALTER TABLE `allowance` DISABLE KEYS */;
-/*!40000 ALTER TABLE `allowance` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `allowance_details`
 --
 
@@ -59,9 +36,9 @@ CREATE TABLE `allowance_details` (
   UNIQUE KEY `ad_employee_id_UNIQUE` (`ad_employee_id`),
   KEY `fk_employee_id_idx` (`ad_employee_id`),
   KEY `fkkf_attd_id_idx` (`ad_attendance_id`),
-  CONSTRAINT `fk_employee_id` FOREIGN KEY (`ad_employee_id`) REFERENCES `employee` (`emp_id`),
-  CONSTRAINT `fkkf_attd_id` FOREIGN KEY (`ad_attendance_id`) REFERENCES `attendance` (`attendance_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `fk_employee_id` FOREIGN KEY (`ad_employee_id`) REFERENCES `employee` (`emp_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fkkf_attd_id` FOREIGN KEY (`ad_attendance_id`) REFERENCES `attendance` (`attendance_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -70,7 +47,6 @@ CREATE TABLE `allowance_details` (
 
 LOCK TABLES `allowance_details` WRITE;
 /*!40000 ALTER TABLE `allowance_details` DISABLE KEYS */;
-INSERT INTO `allowance_details` VALUES (2,2,'62000.0','2','NT','2000','40000','20000',2),(3,1,'80000.0','1','new input','20000','40000','20000',1);
 /*!40000 ALTER TABLE `allowance_details` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -93,8 +69,8 @@ CREATE TABLE `attendance` (
   `attd_emp_id` int NOT NULL,
   PRIMARY KEY (`attendance_id`),
   KEY `attd_fk_emp_id_idx` (`attd_emp_id`),
-  CONSTRAINT `attd_fk_emp_id` FOREIGN KEY (`attd_emp_id`) REFERENCES `employee` (`emp_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `attd_fk_emp_id` FOREIGN KEY (`attd_emp_id`) REFERENCES `employee` (`emp_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -103,7 +79,6 @@ CREATE TABLE `attendance` (
 
 LOCK TABLES `attendance` WRITE;
 /*!40000 ALTER TABLE `attendance` DISABLE KEYS */;
-INSERT INTO `attendance` VALUES (1,'0','0','June','10','0','0','0',1),(2,'0','0','September','10','0','0','0',2),(3,'21','0','November','10','0','0','10',3);
 /*!40000 ALTER TABLE `attendance` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -115,7 +90,7 @@ DROP TABLE IF EXISTS `deduction_details`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `deduction_details` (
-  `deduction_id` int NOT NULL,
+  `deduction_id` int NOT NULL AUTO_INCREMENT,
   `dd_emp_id` int NOT NULL,
   `dd_attd_id` int NOT NULL,
   `tax` varchar(45) DEFAULT NULL,
@@ -125,8 +100,8 @@ CREATE TABLE `deduction_details` (
   PRIMARY KEY (`deduction_id`),
   KEY `deduk_fk_emp_id_idx` (`dd_emp_id`),
   KEY `deduk_fk_attd_id_idx` (`dd_attd_id`),
-  CONSTRAINT `deduk_fk_attd_id` FOREIGN KEY (`dd_attd_id`) REFERENCES `attendance` (`attendance_id`),
-  CONSTRAINT `deduk_fk_emp_id` FOREIGN KEY (`dd_emp_id`) REFERENCES `employee` (`emp_id`)
+  CONSTRAINT `deduk_fk_attd_id` FOREIGN KEY (`dd_attd_id`) REFERENCES `attendance` (`attendance_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `deduk_fk_emp_id` FOREIGN KEY (`dd_emp_id`) REFERENCES `employee` (`emp_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -188,9 +163,9 @@ CREATE TABLE `employee` (
   PRIMARY KEY (`emp_id`),
   KEY `emp_jobposition_id_idx` (`emp_position_id`),
   KEY `emp_department_id_idx` (`emp_department_id`),
-  CONSTRAINT `emp_fk_department_id` FOREIGN KEY (`emp_department_id`) REFERENCES `department` (`dept_id`),
-  CONSTRAINT `emp_jobposition_id` FOREIGN KEY (`emp_position_id`) REFERENCES `job_position` (`position_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `emp_fk_department_id` FOREIGN KEY (`emp_department_id`) REFERENCES `department` (`dept_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `emp_jobposition_id` FOREIGN KEY (`emp_position_id`) REFERENCES `job_position` (`position_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -199,7 +174,7 @@ CREATE TABLE `employee` (
 
 LOCK TABLES `employee` WRITE;
 /*!40000 ALTER TABLE `employee` DISABLE KEYS */;
-INSERT INTO `employee` VALUES (1,'Kyaw Thet Aung','Male','1995-07-30','09785085329','kta@kmail.com','Yangon','2022-04-01','USER','kta','kta',1,1,2),(2,'Thant Phyo Aung','Other','1997-08-08','0987654321','tpa@tmail.com','Yangon','2022-07-02','ADMIN','tpa','tpa',1,4,1),(3,'Arkar Hein','Male','1997-08-12','0968536451','arkar@sai.com','Oman','2019-07-19','ADMIN','akh','akh',1,4,1);
+INSERT INTO `employee` VALUES (1,'Kyaw Thet Aung','Male','1995-07-30','09785085329','billionairekta@gmail.com','Yangon','2022-04-01','USER','kta','kta',1,2,4),(2,'Mike Miller','Male','1984-10-03','010236549','itsmike@cocomail.com','Tokyo','2009-05-16','USER',NULL,NULL,1,1,3),(3,'Satou Keiko','Female','1986-08-06','010326475','satou999@Jmail.com','Tokyo','2002-02-04','USER',NULL,NULL,1,1,5),(4,'Yamada Ichiro','Male','1969-10-01','0106487885','yamada1ro@gmail.com','Tokyo','1989-07-06','USER',NULL,NULL,1,3,5),(5,'Matsumoto Tadashi','Male','1966-09-10','01036487220','mtmttds@yolomail.com','Tokyo','1982-07-05','USER',NULL,NULL,1,3,2),(6,'Gupta','Male','1979-04-07','010788455122','indianoone@slumail.com','Tokyo','2011-06-17','USER',NULL,NULL,1,1,4);
 /*!40000 ALTER TABLE `employee` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -224,8 +199,45 @@ CREATE TABLE `job_position` (
 
 LOCK TABLES `job_position` WRITE;
 /*!40000 ALTER TABLE `job_position` DISABLE KEYS */;
-INSERT INTO `job_position` VALUES (1,'Senior Developer',50000),(2,'programmer',2000),(3,'Manager',1000000),(4,'HR clerk',200000);
+INSERT INTO `job_position` VALUES (1,'Senior Developer',2000000),(2,'programmer',500000),(3,'Manager',8000000),(4,'HR clerk',300000);
 /*!40000 ALTER TABLE `job_position` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `payroll`
+--
+
+DROP TABLE IF EXISTS `payroll`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `payroll` (
+  `payroll_id` int NOT NULL AUTO_INCREMENT,
+  `emp_id` int NOT NULL,
+  `attendance_id` int NOT NULL,
+  `allowance_id` int NOT NULL,
+  `deduction_id` int NOT NULL,
+  `date` date NOT NULL,
+  `gross_salary` varchar(45) NOT NULL,
+  `net_salary` varchar(45) NOT NULL,
+  PRIMARY KEY (`payroll_id`),
+  KEY `payroll_emp_id_idx` (`emp_id`),
+  KEY `payroll_attendance_id_idx` (`attendance_id`),
+  KEY `payroll_allowance_id_idx` (`allowance_id`),
+  KEY `payroll_deduction_id_idx` (`deduction_id`),
+  CONSTRAINT `payroll_allowance_id` FOREIGN KEY (`allowance_id`) REFERENCES `allowance_details` (`ad_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `payroll_attendance_id` FOREIGN KEY (`attendance_id`) REFERENCES `attendance` (`attendance_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `payroll_deduction_id` FOREIGN KEY (`deduction_id`) REFERENCES `deduction_details` (`deduction_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `payroll_emp_id` FOREIGN KEY (`emp_id`) REFERENCES `employee` (`emp_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `payroll`
+--
+
+LOCK TABLES `payroll` WRITE;
+/*!40000 ALTER TABLE `payroll` DISABLE KEYS */;
+/*!40000 ALTER TABLE `payroll` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -237,4 +249,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-07-18 23:45:27
+-- Dump completed on 2022-07-19 22:49:31

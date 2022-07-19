@@ -32,6 +32,7 @@ public class EmployeeMapper {
         	Position position = new Position();
         	position.setpId(rs.getInt("position_id"));
         	position.setTitle(rs.getString("position_title"));
+        	position.setBasicSalary(rs.getDouble("basic_salary"));
         	employee.setDepartment(department);
         	employee.setPosition(position);
         	

@@ -7,6 +7,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import config.DBConfig;
 import entities.Attendance;
 import entities.Employee;
@@ -18,10 +20,16 @@ import shared.mapper.EmployeeMapper;
 public class EmployeeService {
 	private DBConfig dbConfig;
 	private EmployeeMapper employeeMapper;
-
+	private AttendanceService attendanceService;
+	private AllowanceService allowanceService;
+	private DeductionService deductionService;
+	
 	public EmployeeService() {
 		this.employeeMapper = new EmployeeMapper();
 		this.dbConfig=new DBConfig();
+		this.attendanceService = new AttendanceService();
+		this.allowanceService = new AllowanceService();
+		this.deductionService = new DeductionService();
 	}
 	public void createEmployee(Employee employee) {
 		try {
@@ -78,20 +86,19 @@ public class EmployeeService {
 	 public void deleteEmployee(String id) {
 	        try {
 	            PreparedStatement ps = this.dbConfig.getConnection()
-	                    .prepareStatement("DELETE FROM employee "
-	                    			+ "INNER JOIN attendance "
-	                    			+ "ON attendance.attd_emp_id = employee.emp_id "
-	                    			+ "INNER JOIN attendance "
-	                    			+ "ON allowance_details.ad_employee_id = employee.emp_id "
-	                    			+ " WHERE Employee_id=?");
+	                    .prepareStatement("DELETE FROM employee WHERE emp_id=?;");
 	            
 	            ps.setString(1, id);
 	            ps.executeUpdate();
 	            ps.close();
 	        } catch (Exception e) {
-
+				JOptionPane.showMessageDialog(null, e.toString(), "unsuccessful", 0);
 	        	e.printStackTrace();
+	        	return;
 	        }
+//	        attendanceService.deleteAttendance(id);
+//	        allowanceService.deleteAllowance(id);
+//	        deductionService.deleteDeduction(id);
 	    }
 	public List<Employee> findAllEmployees() {
 		List<Employee> employeeList=new ArrayList<>();

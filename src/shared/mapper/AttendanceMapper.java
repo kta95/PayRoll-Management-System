@@ -3,6 +3,7 @@ package shared.mapper;
 import java.sql.ResultSet;
 import entities.Attendance;
 import entities.Employee;
+import entities.UserRole;
 
 public class AttendanceMapper {
 	
@@ -23,6 +24,16 @@ public class AttendanceMapper {
         	Employee theEmployee = new Employee();
         	theEmployee.setId(rs.getInt("emp_id"));
         	theEmployee.setName(rs.getString("emp_name"));
+        	theEmployee.setGender(rs.getString("emp_gender"));                
+        	theEmployee.setDateOfBirth(String.valueOf(rs.getDate("emp_dob")));
+        	theEmployee.setPhone(rs.getString("emp_phone"));
+        	theEmployee.setEmail(rs.getString("emp_email"));
+        	theEmployee.setAddress(rs.getString("emp_address"));     	
+        	theEmployee.setHiredDate(String.valueOf(rs.getDate("hired_date")));
+          	UserRole role = UserRole.valueOf(rs.getString("role"));
+          	theEmployee.setRole((role));
+          	theEmployee.setUsername(rs.getString("username"));
+          	theEmployee.setActive(rs.getBoolean("active"));
 
         	attendance.setEmployee(theEmployee);
 

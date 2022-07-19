@@ -43,6 +43,7 @@ import com.formdev.flatlaf.icons.FlatCheckBoxIcon;
 import com.formdev.flatlaf.ui.FlatBorder;
 
 import entities.Employee;
+import java.awt.Toolkit;
 
 public class Main {
 
@@ -81,6 +82,7 @@ public class Main {
 	 */
 	private void initialize() {
 		mainframe = new JFrame();
+		mainframe.setIconImage(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("/icons/favicon.png")));
 		mainframe.getContentPane().setBackground(Color.WHITE);
 		mainframe.setBounds(40, 10, 1291, 700);
 		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -123,26 +125,26 @@ public class Main {
 			public void mouseReleased(MouseEvent e) {
 				int response = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit?", "Confirm Exit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);				
 				if (response == JOptionPane.YES_OPTION) {
-					mainframe.dispose();				
+					mainframe.dispose();
 				}
 			}
 		});
-		panelexit.setBounds(936, 0, 30, 30);
+		panelexit.setBounds(932, 2, 40, 35);
 		topBar.add(panelexit);
 		panelexit.setLayout(null);
 		
 		JLabel lblExit = new JLabel("");
-		lblExit.setBounds(0, 0, 30, 30);
+		lblExit.setBounds(0, 0, 40, 35);
 		panelexit.add(lblExit);
 		lblExit.setFont(new Font("Tahoma", Font.PLAIN, 17));
 		lblExit.setHorizontalAlignment(SwingConstants.CENTER);
 		ImageIcon logoutIcon = new ImageIcon(new ImageIcon("src\\icons\\logout.png").getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH));
 		lblExit.setIcon(logoutIcon);
 		
-		JLabel lblNewLabel = new JLabel("Exit");
+		JLabel lblNewLabel = new JLabel("Logout");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblNewLabel.setBounds(903, 0, 33, 30);
+		lblNewLabel.setBounds(875, 0, 59, 35);
 		topBar.add(lblNewLabel);
 
 		sideBar.setBackground(Color.BLACK);

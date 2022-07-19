@@ -28,6 +28,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ActionEvent;
+import java.awt.Toolkit;
 
 public class LoginForm {
 
@@ -68,6 +69,7 @@ public class LoginForm {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(LoginForm.class.getResource("/icons/favicon.png")));
 		frame.getContentPane().setBackground(Color.WHITE);
 		frame.setBounds(320, 100, 720, 550);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

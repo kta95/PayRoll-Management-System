@@ -366,9 +366,14 @@ public class EmployeeForm extends JInternalFrame {
 				if(!nameField.getText().isEmpty() && !(genderCombo.getSelectedIndex() == 0) && !dobChooser.getDate().equals(null) &&
 						!phoneField.getText().isEmpty() && !emailField.getText().isEmpty() && !addressField.getText().isEmpty() &&
 						!hiredDateChooser.getDate().equals(null)) {
-					employeeService.deleteEmployee(String.valueOf(employee.getId()));
-					resetFormData();
-					loadAllEmployee(Optional.empty());
+					int response = JOptionPane.showConfirmDialog(null, "Deleting the record from Employee table removes the records from other tables!\n Do you want to continue?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);				
+					if (response == JOptionPane.YES_OPTION) {
+						employeeService.deleteEmployee(String.valueOf(employee.getId()));
+						resetFormData();
+						loadAllEmployee(Optional.empty());
+						JOptionPane.showMessageDialog(null, "Delete Employee Successfully!", "Success", 1);
+					}
+					
 				}
 			}
 		});
