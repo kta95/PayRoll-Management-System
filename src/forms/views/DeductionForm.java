@@ -365,10 +365,11 @@ public class DeductionForm extends JInternalFrame {
 					double absentDeduction;
 					double tax;
 					basic = employee.getPosition().getBasicSalary();
-					lateHour = Double.valueOf(txtLate.getText());
-					absentDays = Double.valueOf(txtAbsent.getText());
 					ssc = Double.valueOf(txtSSC.getText());
 					tax = Double.valueOf(txtTax.getText());
+					
+					absentDays = Double.valueOf(txtAbsent.getText());
+					lateHour = Double.valueOf(txtLate.getText());
 					hourlyPay = basic / 160;
 					lateDeduction = (hourlyPay * lateHour);
 					absentDeduction = hourlyPay * 8 * absentDays;

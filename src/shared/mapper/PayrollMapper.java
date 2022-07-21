@@ -16,7 +16,7 @@ public class PayrollMapper {
         try {
         	
         	payroll.setId(rs.getInt("payroll_id"));
-        	payroll.setDate(rs.getDate("date"));
+        	payroll.setDate(rs.getDate("date").toLocalDate());
         	payroll.setGrossSalary(rs.getString("gross_salary"));
         	payroll.setNetSalary(rs.getString("net_salary"));      
         	
@@ -33,7 +33,6 @@ public class PayrollMapper {
         	employee.setRole((role));
             employee.setUsername(rs.getString("username"));
             employee.setActive(rs.getBoolean("active"));
-
             payroll.setEmployee(employee);
             
             Attendance attendance = new Attendance();

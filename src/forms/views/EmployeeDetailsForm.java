@@ -204,7 +204,6 @@ public class EmployeeDetailsForm extends JInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 				Employee theEmployee = EmployeeHolder.getSelectedEmployee();
 				theEmployee.setUsername(txtUsername.getText());
-				theEmployee.setPassword(txtPassword.getText());
 				if (!txtUsername.getText().trim().isBlank() && !txtPassword.getText().trim().isBlank()) {
 					System.out.println("did you got here?");
 					employeeService.updateEmployee(String.valueOf(theEmployee.getId()), theEmployee);

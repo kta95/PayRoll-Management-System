@@ -1,5 +1,6 @@
 package entities;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Payroll {
@@ -11,13 +12,13 @@ public class Payroll {
 	private DeductionDetails deductionDetails;
 	private String grossSalary;
 	private String netSalary;
-	private Date date;
+	private LocalDate date;
 	public Payroll() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 	public Payroll(int id, Employee employee, Attendance attendance, AllowanceDetails allowanceDetails,
-			DeductionDetails deductionDetails, String grossSalary, String netSalary, Date date) {
+			DeductionDetails deductionDetails, String grossSalary, String netSalary, LocalDate date) {
 		super();
 		this.id = id;
 		this.employee = employee;
@@ -70,11 +71,11 @@ public class Payroll {
 	public void setNetSalary(String netSalary) {
 		this.netSalary = netSalary;
 	}
-	public Date getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
-	public void setDate(Date date) {
-		this.date = date;
+	public void setDate(LocalDate date2) {
+		this.date = date2;
 	}
 	@Override
 	public int hashCode() {
@@ -138,5 +139,6 @@ public class Payroll {
 			return false;
 		return true;
 	}
+
 	
 }

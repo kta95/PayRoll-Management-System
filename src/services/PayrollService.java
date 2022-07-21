@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,20 +37,23 @@ public class PayrollService {
 		try {
 			  PreparedStatement ps = this.dbConfig.getConnection()
 	                    .prepareStatement("INSERT INTO payroll (emp_id, attendance_id, allowance_id, deduction_id, date, gross_salary, net_salary) VALUES (?, ?, ?, ?, ?, ?, ?)");
-
+			  	System.out.println("HRERE");
 	            ps.setLong(1, payroll.getEmployee().getId());
 	            ps.setLong(2, payroll.getAttendance().getId());
 	            ps.setLong(3, payroll.getAllowanceDetails().getAdId());
 	            ps.setLong(4, payroll.getDeductionDetails().getDeduction_details_id());
-	            ps.setDate(5, (Date) payroll.getDate());
+	            payroll.getDate();
+				ps.setString(5, LocalDate.now() + "");
 	            ps.setString(6, payroll.getGrossSalary());
 	            ps.setString(7, payroll.getNetSalary());
+			  	System.out.println("HRERE2");
+
 	            ps.executeUpdate();
 	            ps.close();
 		}catch(Exception e) {
-			if(e instanceof SQLException) {
-				e.printStackTrace();
-			}
+//			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, e.toString(), "error", 0);
+			
 		}
 	}
 	
@@ -62,7 +66,8 @@ public class PayrollService {
 	            ps.setLong(2, payroll.getAttendance().getId());
 	            ps.setLong(3, payroll.getAllowanceDetails().getAdId());
 	            ps.setLong(4, payroll.getDeductionDetails().getDeduction_details_id());
-	            ps.setDate(5, (Date) payroll.getDate());
+	            payroll.getDate();
+				ps.setString(5, String.valueOf(LocalDate.now()));
 	            ps.setString(6, payroll.getGrossSalary());
 	            ps.setString(7, payroll.getNetSalary());
 	            ps.setString(8, id);

@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="jars/flatlaf-2.3.jar"/>
 	<classpathentry kind="lib" path="jcalendar-1.4.jar"/>
 	<classpathentry kind="lib" path="flatlaf-2.3.jar"/>
+	<classpathentry kind="lib" path="jars/itextpdf-5.5.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
