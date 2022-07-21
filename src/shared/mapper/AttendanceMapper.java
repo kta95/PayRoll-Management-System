@@ -10,7 +10,6 @@ public class AttendanceMapper {
 	public Attendance mapToAttendance(Attendance attendance, ResultSet rs) {
         try {
 
-        	System.out.println("this");
         	attendance.setId(rs.getInt("attendance_id"));
 
         	attendance.setPresent(rs.getString("present"));

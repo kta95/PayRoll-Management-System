@@ -52,17 +52,12 @@ public class AttendanceService implements AttendanceRepo{
 
 			while(rs.next()) {
 				Attendance attendance = new Attendance();
-				System.out.println("Why 3");
 
 				attendanceList.add(this.attendanceMapper.mapToAttendance(attendance, rs));
 
 			}
-			System.out.println("Why");
 
 		} catch (Exception e) {
-			for (Attendance attd : attendanceList) {
-				System.out.println(attd.getId() + " " + attd.getEmployee().getName());
-			}
 			e.printStackTrace();
 		}
 		

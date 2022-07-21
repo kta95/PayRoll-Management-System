@@ -29,7 +29,6 @@ public class AllowanceService {
 	public void createAllowanceDetails(AllowanceDetails allowanceDetails) {
 		
         try {
-        	System.out.println("now now");
             PreparedStatement ps = this.dbConfig.getConnection().prepareStatement("INSERT INTO allowance_details(skills, longevity, allowance_amount, description, hra, ta, ad_employee_id, ad_attendance_id) VALUES (?,?,?,?,?,?,?,?);");
 
             ps.setString(1, allowanceDetails.getSkills());
@@ -40,7 +39,6 @@ public class AllowanceService {
             ps.setString(6, allowanceDetails.getTransportAllowance());
             ps.setInt(7, allowanceDetails.getEmployee().getId());
             ps.setInt(8, allowanceDetails.getAttendance().getId());
-        	System.out.println("then ");
 
             ps.executeUpdate();
             ps.close();

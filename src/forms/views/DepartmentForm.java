@@ -93,7 +93,7 @@ public class DepartmentForm extends JInternalFrame {
 		ui.setNorthPane(null);
 		
 		
-		setBounds(0, 0, 976, 591);
+		setBounds(0, 0, 1065, 588);
 
 	}
 	
@@ -127,7 +127,7 @@ public class DepartmentForm extends JInternalFrame {
 			
 		JPanel panel = new JPanel();
 		panel.setBackground(Color.WHITE);
-		panel.setBounds(10, 23, 540, 459);
+		panel.setBounds(52, 18, 540, 459);
 		panel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Department Management", TitledBorder.LEADING, TitledBorder.TOP, null, Color.BLACK));
 		this.getContentPane().add(panel);
 		panel.setLayout(null);
@@ -189,7 +189,7 @@ public class DepartmentForm extends JInternalFrame {
 		});
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(582, 72, 384, 410);
+		scrollPane.setBounds(628, 59, 384, 410);
 		this.getContentPane().add(scrollPane);
 		
 		tbldept = new JTable();
@@ -197,7 +197,7 @@ public class DepartmentForm extends JInternalFrame {
 		scrollPane.setViewportView(tbldept);
 		
 		txtdeptSearch = new JTextField();
-		txtdeptSearch.setBounds(582, 23, 285, 25);
+		txtdeptSearch.setBounds(628, 18, 285, 25);
 		this.getContentPane().add(txtdeptSearch);
 		txtdeptSearch.setColumns(10);
 		
@@ -216,7 +216,7 @@ public class DepartmentForm extends JInternalFrame {
 		});
 		btnSearch.setForeground(Color.BLACK);
 		btnSearch.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnSearch.setBounds(877, 22, 89, 25);
+		btnSearch.setBounds(923, 17, 89, 25);
 		this.getContentPane().add(btnSearch);
 		
 		this.tbldept.getSelectionModel().addListSelectionListener(new ListSelectionListener() {

@@ -96,7 +96,7 @@ public class PositionForm extends JInternalFrame {
 		this.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		BasicInternalFrameUI ui= (BasicInternalFrameUI)this.getUI();
 		ui.setNorthPane(null);	
-		setBounds(0, 0, 976, 591);
+		setBounds(0, 0, 1065, 588);
 
 	}
 	
@@ -139,7 +139,7 @@ public class PositionForm extends JInternalFrame {
 			
 		JPanel panel = new JPanel();
 		panel.setBackground(Color.WHITE);
-		panel.setBounds(10, 23, 540, 459);
+		panel.setBounds(50, 18, 540, 459);
 		panel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Position Management", TitledBorder.LEADING, TitledBorder.TOP, null, Color.BLACK));
 		this.getContentPane().add(panel);
 		panel.setLayout(null);
@@ -147,10 +147,23 @@ public class PositionForm extends JInternalFrame {
 		JButton btnEdit = new JButton("Edit");
 		btnEdit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setPositionDataFromForm(position);
-				PositionService.updatePosition(String.valueOf(position.getpId()), position);
-				resetFormData();
-				loadAllPosition(Optional.empty());
+				if(positionField.getText().trim().matches("^[a-zA-Z\\s]*$")
+						&& basicSalaryField.getText().trim().matches("[0-9]+")){
+					
+					setPositionDataFromForm(position);
+					PositionService.updatePosition(String.valueOf(position.getpId()), position);
+					resetFormData();
+					loadAllPosition(Optional.empty());
+		
+				}
+				else if(!positionField.getText().trim().matches("^[a-zA-Z\\s]*$")) {
+					JOptionPane.showMessageDialog(null, "Enter characters only !", "Error in position name", 0);
+					return;
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "Enter digits only !", "Error in basic salary", 0);
+					return;
+				}
 			}
 		});
 		btnEdit.setForeground(Color.BLACK);
@@ -201,10 +214,23 @@ public class PositionForm extends JInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 				Position position=new Position();
 				if(!positionField.getText().isEmpty()) {
-					setPositionDataFromForm(position);
-					PositionService.createPosition(position);
-					loadAllPosition(Optional.empty());
-					resetFormData();
+					if(positionField.getText().trim().matches("^[a-zA-Z\\s]*$")
+							&& basicSalaryField.getText().trim().matches("[0-9]+")){
+			
+						setPositionDataFromForm(position);
+						PositionService.createPosition(position);
+						loadAllPosition(Optional.empty());
+						resetFormData();
+			
+					}
+					else if(!positionField.getText().trim().matches("^[a-zA-Z\\s]*$")) {
+						JOptionPane.showMessageDialog(null, "Enter character only !", "Error in position name", 0);
+						return;
+					}
+					else {
+						JOptionPane.showMessageDialog(null, "Enter digit only !", "Error in basic salary", 0);
+						return;
+					}
 				}else {
 					JOptionPane.showMessageDialog(null,"Enter required field", "error", 0);
 				}
@@ -212,7 +238,7 @@ public class PositionForm extends JInternalFrame {
 		});
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(582, 72, 384, 410);
+		scrollPane.setBounds(637, 69, 384, 410);
 		this.getContentPane().add(scrollPane);
 		
 		tblposition = new JTable();
@@ -220,7 +246,7 @@ public class PositionForm extends JInternalFrame {
 		scrollPane.setViewportView(tblposition);
 		
 		txtpositionSearch = new JTextField();
-		txtpositionSearch.setBounds(582, 23, 285, 25);
+		txtpositionSearch.setBounds(637, 18, 285, 25);
 		this.getContentPane().add(txtpositionSearch);
 		txtpositionSearch.setColumns(10);
 		
@@ -239,7 +265,7 @@ public class PositionForm extends JInternalFrame {
 		});
 		btnSearch.setForeground(Color.BLACK);
 		btnSearch.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnSearch.setBounds(877, 22, 89, 25);
+		btnSearch.setBounds(932, 17, 89, 25);
 		this.getContentPane().add(btnSearch);
 		
 		// put data into fields when selected
@@ -254,8 +280,6 @@ public class PositionForm extends JInternalFrame {
 
 					positionField.setText(position.getTitle());
 					basicSalaryField.setText(String.valueOf(position.getBasicSalary()));
-//					Optional<Department> selectedDepartment = deptList.stream().filter(d -> d.getDepartmentName().equals(deptCombo.getSelectedItem())).findFirst();
-				//	deptCombo.setSelectedIndex(position.getDepartment().getDepartmentId());
 				}
 			}
 		});

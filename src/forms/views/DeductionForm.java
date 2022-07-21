@@ -213,10 +213,10 @@ public class DeductionForm extends JInternalFrame {
 		ui.setNorthPane(null);
 		
 		
-		setBounds(0, 0, 976, 591);
+		setBounds(0, 0, 1065, 588);
 		
 		JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(502, 51, 412, 413);
+        scrollPane.setBounds(516, 51, 497, 413);
         this.getContentPane().add(scrollPane);
 
         tblDeduction = new JTable();
@@ -226,7 +226,7 @@ public class DeductionForm extends JInternalFrame {
         
         
         txtSearchName = new JTextField();
-        txtSearchName.setBounds(643, 11, 172, 29);
+        txtSearchName.setBounds(742, 11, 172, 29);
         getContentPane().add(txtSearchName);
         txtSearchName.setForeground(Color.GRAY);
 		txtSearchName.addFocusListener(new FocusListener() {
@@ -263,7 +263,7 @@ public class DeductionForm extends JInternalFrame {
 				}
         	}
         });
-        btnSearch.setBounds(825, 11, 89, 32);
+        btnSearch.setBounds(924, 11, 89, 32);
         getContentPane().add(btnSearch);
 
 		
@@ -285,7 +285,6 @@ public class DeductionForm extends JInternalFrame {
 				double ssc;
 				
 				basic = employee.getPosition().getBasicSalary();
-				System.out.println(employee.getPosition().getTitle() + " this is basic");
 
 				if (basic < (1960000 / 12)) {
 					tax = 0.05 * basic;

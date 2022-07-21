@@ -217,7 +217,6 @@ public class PayrollForm extends JInternalFrame {
 		payroll.setAttendance(attendance);
 		payroll.setDeductionDetails(deductionDetails);
 		LocalDate date = LocalDate.now();
-		System.out.println(date);
 		payroll.setDate(date);
 		payroll.setGrossSalary(txtGrossS.getText());
 		payroll.setNetSalary(txtNetS.getText());
@@ -252,11 +251,11 @@ public class PayrollForm extends JInternalFrame {
 	private void initialize() {
 		getContentPane().setBackground(Color.WHITE);
 		getContentPane().setLayout(null);
-		setBounds(0, 0, 976, 591);
+		setBounds(0, 0, 1065, 588);
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBackground(Color.WHITE);
-		tabbedPane.setBounds(0, 0, 976, 564);
+		tabbedPane.setBounds(0, 0, 1065, 588);
 		getContentPane().add(tabbedPane);
 		
 		JPanel payrollManagement = new JPanel();
@@ -271,7 +270,7 @@ public class PayrollForm extends JInternalFrame {
 		panel.setName("Payroll Registration");
 		panel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Payroll Management", TitledBorder.LEADING, TitledBorder.TOP, null, Color.BLACK));
 		panel.setBackground(Color.WHITE);
-		panel.setBounds(66, 11, 822, 490);
+		panel.setBounds(119, 11, 822, 490);
 		payrollManagement.add(panel);
 		
 		EmpIdCombo.setBounds(188, 81, 200, 30);
@@ -279,7 +278,6 @@ public class PayrollForm extends JInternalFrame {
 		EmpIdCombo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String id = (String) EmpIdCombo.getSelectedItem();
-				System.out.println(id);
                 selectedEmployee = employeeList.stream()
                         .filter(emp -> String.valueOf(emp.getId()).equals(EmpIdCombo.getSelectedItem())).findFirst();
                 if (selectedEmployee.isPresent()) {
@@ -582,7 +580,7 @@ public class PayrollForm extends JInternalFrame {
 		payrollList.setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 67, 951, 235);
+		scrollPane.setBounds(51, 67, 963, 235);
 		payrollList.add(scrollPane);
 
         tblPayroll.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -593,11 +591,11 @@ public class PayrollForm extends JInternalFrame {
 		textField = new JTextField("Search By Employee Name");
 		textField.setForeground(Color.GRAY);
 		textField.setColumns(10);
-		textField.setBounds(10, 26, 200, 30);
+		textField.setBounds(51, 26, 200, 30);
 		payrollList.add(textField);
 		
 		JButton btnSearch = new JButton("Search");
-		btnSearch.setBounds(220, 26, 89, 30);
+		btnSearch.setBounds(261, 26, 89, 30);
 		payrollList.add(btnSearch);
 		
 		JButton btnslip = new JButton("Generate Pay Slip");
@@ -709,7 +707,7 @@ public class PayrollForm extends JInternalFrame {
 		});
 		btnslip.setEnabled(false);
 		btnslip.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnslip.setBounds(410, 320, 150, 81);
+		btnslip.setBounds(458, 320, 150, 81);
 		payrollList.add(btnslip);
 		
         
@@ -721,12 +719,14 @@ public class PayrollForm extends JInternalFrame {
                 payroll = payrollService.findPayrollById(payrollId);
                 btnslip.setEnabled(true);
                 EmpIdCombo.setSelectedIndex(payroll.getEmployee().getId());
+                
                 txtEmpName.setText(payroll.getEmployee().getName());
                 
-                String id = String.valueOf(payroll.getEmployee().getId());
+            	            	
+                String id = String.valueOf(payroll.getEmployee().getId());                
                 
                 selectedEmployee = employeeList.stream()
-                        .filter(emp -> String.valueOf(emp.getId()).equals(EmpIdCombo.getSelectedItem())).findFirst();
+                        .filter(emp -> String.valueOf(emp.getId()).equals(id)).findFirst();
                 if (selectedEmployee.isPresent()) {
                 	Attendance attendance = new Attendance();
                 	attendance = attendanceService.findAttendanceByEmpId(id);
@@ -736,7 +736,6 @@ public class PayrollForm extends JInternalFrame {
                 	
                 	DeductionDetails deductionDetails = new DeductionDetails();
                 	deductionDetails = deductionService.findDeductionDetailsByEmpId(id);
-                	
                 	txtEmpName.setText(selectedEmployee.map(emp -> emp.getName()).orElse(""));
                 	txtAttdId.setText(attendance.getId() + "");
                 	txtPosition.setText(selectedEmployee.map(emp -> emp.getPosition().getTitle()).orElse(""));

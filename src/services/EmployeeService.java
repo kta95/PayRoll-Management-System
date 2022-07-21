@@ -61,7 +61,6 @@ public class EmployeeService {
 		 try {
 	            PreparedStatement ps = this.dbConfig.getConnection()
 	                    .prepareStatement("UPDATE employee SET emp_name=?, emp_gender=?, emp_dob=?, emp_phone=?, emp_email=?, emp_address=?, hired_date=?, username=?, password=?, role=?, active=?, emp_position_id=?, emp_department_id=? WHERE emp_id=?");
-	            System.out.println("how about here");
 	            ps.setString(1, employee.getName());
 	            ps.setString(2, employee.getGender());
 	            ps.setString(3, String.valueOf(employee.getDateOfBirth()));
@@ -108,7 +107,7 @@ public class EmployeeService {
 					+ "INNER JOIN job_position "
 					+ "ON job_position.position_id = employee.emp_position_id "
 					+ "INNER JOIN department "
-					+ "ON department.dept_id = employee.emp_department_id;";
+					+ "ON department.dept_id = employee.emp_department_id ORDER BY emp_id ASC;";
 
 			ResultSet rs = st.executeQuery(query);
 

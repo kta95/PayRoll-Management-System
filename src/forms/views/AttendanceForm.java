@@ -4,6 +4,8 @@ import java.awt.EventQueue;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
@@ -31,6 +33,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -139,12 +142,9 @@ public class AttendanceForm extends JInternalFrame {
 		this.dtm.getDataVector().removeAllElements();
 		this.dtm.fireTableDataChanged();
 		
-		System.out.println("from");
 		
 		this.attendanceList=this.attendanceService.findAllAttendances();
-		for (Attendance attd : attendanceList) {
-			System.out.println(attd.getId() + " " + attd.getEmployee().getName());
-		}
+
 		this.filteredAttendanceList=optionalAttendances.orElseGet(()->this.attendanceList)
 				.stream().collect(Collectors.toList());
 	
@@ -168,7 +168,7 @@ public class AttendanceForm extends JInternalFrame {
 	}
 	
 	private void initialize() {
-		this.setBounds(0, 0, 976, 591);
+		this.setBounds(0, 0, 1065, 588);
 		this.getContentPane().setBackground(Color.WHITE);
 		this.getContentPane().setLayout(null);
 		JPanel panel = new JPanel();
@@ -177,7 +177,7 @@ public class AttendanceForm extends JInternalFrame {
 		panel.setName("Employee Registration");
 		panel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Attendance Management", TitledBorder.LEADING, TitledBorder.TOP, null, Color.BLACK));
 		panel.setBackground(Color.WHITE);
-		panel.setBounds(10, 11, 924, 182);
+		panel.setBounds(72, 22, 924, 182);
 		getContentPane().add(panel);
 		
 		JLabel lblPresent = new JLabel("Present");
@@ -281,13 +281,21 @@ public class AttendanceForm extends JInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 				List<Attendance> attendanceList = new ArrayList<>();
 				attendanceList= attendanceService.findAllAttendances();
-				for (Attendance attd : attendanceList) {
-					System.out.println(attd.getId() + " " + attd.getEmployee().getName());
-				}
+
 				String id = empIDField.getText();
 				employee = new Employee();
 				employee = employeeService.findEmployeeById(id);
-				empNameField.setText(employee.getName());
+				EmployeeForm emp=new EmployeeForm();
+				List<Employee> empList= employeeService.findAllEmployees();
+				if(emp.duplicate(Integer.parseInt(id), empList)) {
+					empNameField.setText(employee.getName());
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "ID doesn't exist !","Error",0);
+					empIDField.setText("");
+					empIDField.requestFocus();
+					return;
+				}
 				
 				
 			}
@@ -296,40 +304,81 @@ public class AttendanceForm extends JInternalFrame {
 		panel.add(btnSearchEmpID);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 249, 924, 250);
+		scrollPane.setBounds(72, 249, 924, 250);
 		getContentPane().add(scrollPane);
 		
 		attdtbl = new JTable();
 		attdtbl.setFont(new Font("Tahoma", Font.PLAIN, 15));
         scrollPane.setViewportView(attdtbl);
-        
+       
 		monthChooser.setBounds(475, 31, 224, 26);
 		panel.add(monthChooser);
+		
 		
         JButton btnSave = new JButton("Register");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Attendance attendance = new Attendance();
+				Attendance attdRecord = new Attendance();
+				attdRecord = attendanceService.findAttendanceByEmpId(empIDField.getText());
+				
 
 				if (!presentField.getText().trim().isBlank() && !absentField.getText().trim().isBlank() && !leavesField.getText().trim().isBlank() &&
 					 !lateField.getText().trim().isBlank() && !otField.getText().trim().isBlank() && !empIDField.getText().trim().isBlank()) {
 					
-					setAttendanceDataFrom(attendance);
-					
-					attendanceService.createAttendance(attendance);
-					loadAllAttendance(Optional.empty());
-					
-					resetFormData();
+					if (!presentField.getText().trim().isBlank() && !absentField.getText().trim().isBlank() && !leavesField.getText().trim().isBlank() && !lateField.getText().trim().isBlank() && !otField.getText().trim().isBlank() && !empIDField.getText().trim().isBlank()) {
+						if(presentField.getText().trim().matches("[0-9]+") &&
+							absentField.getText().trim().matches("[0-9]+") &&
+							leavesField.getText().trim().matches("[0-9]+") &&
+							lateField.getText().trim().matches("[0-9]+") &&
+							otField.getText().trim().matches("[0-9]+")) 
+						{
+							
+							if (attdRecord.getMonth() != null) {
+								if (attdRecord.getMonth().equals(months[monthChooser.getMonth()])) {
+									JOptionPane.showMessageDialog(null, "Selected Employee's attendance is already registered for the selected month !", "Invalid Month", 0);
+									return;	
+								}								
+							}
+							setAttendanceDataFrom(attendance);	
+							attendanceService.createAttendance(attendance);
+							loadAllAttendance(Optional.empty());
+							resetFormData();								
+							}
+	
+						}
+						else if(!presentField.getText().trim().matches("[0-9]+")) {
+							JOptionPane.showMessageDialog(null, "Enter digits only !", "Error in present", 0);
+							return;
+						}
+						else if(!absentField.getText().trim().matches("[0-9]+")) {
+							JOptionPane.showMessageDialog(null, "Enter digits only !", "Error in absent", 0);
+							return;
+						}
+						else if(!leavesField.getText().trim().matches("[0-9]+")) {
+							JOptionPane.showMessageDialog(null, "Enter digits only !", "Error in leaves", 0);
+							return;
+						}
+						else if(!lateField.getText().trim().matches("[0-9]+")) {
+							JOptionPane.showMessageDialog(null, "Enter digits only !", "Error in late", 0);
+							return;
+						}
+						else {
+							JOptionPane.showMessageDialog(null, "Enter digits only !", "Error in overtime", 0);
+							return;
+						}
+					}
+				
 				}
 				
 			}
-		});
+		);
 		btnSave.setBounds(770, 88, 128, 38);
 		panel.add(btnSave);
 		
 		searchField = new JTextField("Search By Employee Name");
 		searchField.setColumns(10);
-		searchField.setBounds(10, 217, 162, 21);
+		searchField.setBounds(72, 215, 162, 21);
 		searchField.setForeground(Color.GRAY);
         searchField.addFocusListener(new FocusListener() {
             @Override
@@ -364,7 +413,7 @@ public class AttendanceForm extends JInternalFrame {
 				}
 			}
 		});
-		btnEmpAttendanceSearch.setBounds(182, 215, 89, 23);
+		btnEmpAttendanceSearch.setBounds(292, 215, 89, 23);
 		getContentPane().add(btnEmpAttendanceSearch);
 		
 	}

@@ -55,7 +55,7 @@ public class EmployeeDetailsForm extends JInternalFrame {
 	
 	
 	private void initialize() {
-		this.setBounds(0, 0, 976, 591);
+		this.setBounds(0, 0, 1065, 588);
 
 		JLabel lbltitle = new JLabel("Employee Details");
 		lbltitle.setHorizontalAlignment(SwingConstants.CENTER);
@@ -65,125 +65,125 @@ public class EmployeeDetailsForm extends JInternalFrame {
 		
 		JLabel lblName = new JLabel("Name -");
 		lblName.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblName.setBounds(86, 175, 143, 38);
+		lblName.setBounds(129, 175, 143, 38);
 		getContentPane().add(lblName);
 		
 		JLabel lblId = new JLabel("ID -");
 		lblId.setHorizontalAlignment(SwingConstants.LEFT);
 		lblId.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblId.setBounds(86, 126, 143, 38);
+		lblId.setBounds(129, 126, 143, 38);
 		getContentPane().add(lblId);
 		
 		JLabel lblGender = new JLabel("Gender -");
 		lblGender.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblGender.setBounds(86, 224, 143, 38);
+		lblGender.setBounds(129, 224, 143, 38);
 		getContentPane().add(lblGender);
 		
 		JLabel lblDateOfBirth = new JLabel("Date of Birth -");
 		lblDateOfBirth.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblDateOfBirth.setBounds(86, 273, 143, 38);
+		lblDateOfBirth.setBounds(129, 273, 143, 38);
 		getContentPane().add(lblDateOfBirth);
 		
 		JLabel lblPhone = new JLabel("Phone -");
 		lblPhone.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblPhone.setBounds(86, 322, 143, 38);
+		lblPhone.setBounds(129, 322, 143, 38);
 		getContentPane().add(lblPhone);
 		
 		JLabel lblEmail = new JLabel("Email -");
 		lblEmail.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblEmail.setBounds(86, 371, 143, 38);
+		lblEmail.setBounds(129, 371, 143, 38);
 		getContentPane().add(lblEmail);
 		
 		JLabel lblAddress = new JLabel("Address");
 		lblAddress.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblAddress.setBounds(473, 126, 143, 38);
+		lblAddress.setBounds(593, 126, 143, 38);
 		getContentPane().add(lblAddress);
 		
 		JLabel lblHiredDate = new JLabel("Hired Date -");
 		lblHiredDate.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblHiredDate.setBounds(473, 175, 143, 38);
+		lblHiredDate.setBounds(593, 175, 143, 38);
 		getContentPane().add(lblHiredDate);
 		
 		JLabel lblPosition = new JLabel("Position -");
 		lblPosition.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblPosition.setBounds(473, 224, 143, 38);
+		lblPosition.setBounds(593, 224, 143, 38);
 		getContentPane().add(lblPosition);
 		
 		JLabel lblDepartment = new JLabel("Department -");
 		lblDepartment.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblDepartment.setBounds(473, 273, 143, 38);
+		lblDepartment.setBounds(593, 273, 143, 38);
 		getContentPane().add(lblDepartment);
 		
 		JLabel lblUsername = new JLabel("Username");
 		lblUsername.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblUsername.setBounds(473, 322, 143, 38);
+		lblUsername.setBounds(593, 322, 143, 38);
 		getContentPane().add(lblUsername);
 		
 		JLabel lblPassword = new JLabel("Password");
 		lblPassword.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblPassword.setBounds(473, 371, 143, 38);
+		lblPassword.setBounds(593, 371, 143, 38);
 		getContentPane().add(lblPassword);
 		
 		JLabel lblid = new JLabel("");
 		lblid.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblid.setBounds(216, 126, 194, 38);
+		lblid.setBounds(282, 126, 194, 38);
 		getContentPane().add(lblid);
 		
 		JLabel lblname = new JLabel("");
 		lblname.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblname.setBounds(216, 175, 194, 38);
+		lblname.setBounds(282, 175, 194, 38);
 		getContentPane().add(lblname);
 		
 		JLabel lblGender_1 = new JLabel("");
 		lblGender_1.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblGender_1.setBounds(216, 224, 194, 38);
+		lblGender_1.setBounds(282, 224, 194, 38);
 		getContentPane().add(lblGender_1);
 		
 		JLabel lblDob = new JLabel("");
 		lblDob.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblDob.setBounds(216, 273, 194, 38);
+		lblDob.setBounds(282, 273, 194, 38);
 		getContentPane().add(lblDob);
 		
 		JLabel lblPhone_1 = new JLabel("");
 		lblPhone_1.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblPhone_1.setBounds(216, 322, 194, 38);
+		lblPhone_1.setBounds(282, 322, 194, 38);
 		getContentPane().add(lblPhone_1);
 		
 		JLabel lblMail = new JLabel("");
 		lblMail.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblMail.setBounds(216, 371, 194, 38);
+		lblMail.setBounds(282, 371, 194, 38);
 		getContentPane().add(lblMail);
 		
 		JLabel lblAddress_1 = new JLabel("");
 		lblAddress_1.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblAddress_1.setBounds(626, 126, 194, 38);
+		lblAddress_1.setBounds(746, 126, 194, 38);
 		getContentPane().add(lblAddress_1);
 		
 		JLabel lblHd = new JLabel("");
 		lblHd.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblHd.setBounds(626, 175, 194, 38);
+		lblHd.setBounds(746, 175, 194, 38);
 		getContentPane().add(lblHd);
 		
 		JLabel lblPosition_1 = new JLabel("");
 		lblPosition_1.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblPosition_1.setBounds(626, 224, 194, 38);
+		lblPosition_1.setBounds(746, 224, 194, 38);
 		getContentPane().add(lblPosition_1);
 		
 		JLabel lblDepartment_1 = new JLabel("");
 		lblDepartment_1.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblDepartment_1.setBounds(626, 273, 194, 38);
+		lblDepartment_1.setBounds(746, 273, 194, 38);
 		getContentPane().add(lblDepartment_1);
 		
 		txtUsername = new JTextField();
 		txtUsername.setEditable(false);
-		txtUsername.setBounds(626, 325, 194, 38);
+		txtUsername.setBounds(746, 325, 194, 38);
 		getContentPane().add(txtUsername);
 		txtUsername.setColumns(10);
 		
 		txtPassword = new JTextField();
 		txtPassword.setEditable(false);
 		txtPassword.setColumns(10);
-		txtPassword.setBounds(626, 374, 194, 38);
+		txtPassword.setBounds(746, 374, 194, 38);
 		getContentPane().add(txtPassword);
 		
 		JButton btnBack = new JButton("Back");
@@ -195,17 +195,16 @@ public class EmployeeDetailsForm extends JInternalFrame {
 				getParent().add(newframe);
 			}
 		});
-		btnBack.setBounds(521, 443, 143, 46);
+		btnBack.setBounds(593, 443, 143, 46);
 		getContentPane().add(btnBack);
 		
 		JButton btnSave = new JButton("Save");
-		btnSave.setBounds(674, 443, 143, 46);
+		btnSave.setBounds(797, 443, 143, 46);
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Employee theEmployee = EmployeeHolder.getSelectedEmployee();
 				theEmployee.setUsername(txtUsername.getText());
 				if (!txtUsername.getText().trim().isBlank() && !txtPassword.getText().trim().isBlank()) {
-					System.out.println("did you got here?");
 					employeeService.updateEmployee(String.valueOf(theEmployee.getId()), theEmployee);
 					JOptionPane.showMessageDialog(null, "Saved Successfully!", "Admin Registration", 1 );
 					txtUsername.setText("");
@@ -247,8 +246,7 @@ public class EmployeeDetailsForm extends JInternalFrame {
 				lblHd.setText(employee.getHiredDate());
 				lblPosition_1.setText(employee.getPosition().getTitle());
 				lblDepartment_1.setText(employee.getDepartment().getDepartmentName());
-				System.out.println(employee.getRole().equals(UserRole.ADMIN) + " haha");
-				System.out.println((employee.getRole() == UserRole.ADMIN) + " haha");
+
 
 				if (employee.getRole().equals(UserRole.ADMIN) || employee.getName().equals("Kyaw Thet Aung")) {
 					lblaccess.setForeground(Color.green);
@@ -263,7 +261,7 @@ public class EmployeeDetailsForm extends JInternalFrame {
 				}
 			}
 		});
-		btnShow.setBounds(86, 438, 143, 52);
+		btnShow.setBounds(129, 438, 143, 52);
 		getContentPane().add(btnShow);
 	
 

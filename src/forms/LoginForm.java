@@ -32,7 +32,7 @@ import java.awt.Toolkit;
 
 public class LoginForm {
 
-	private JFrame frame;
+	public JFrame frame;
 	private JTextField txtUsername;
 	private JPasswordField txtPassword;
 	private AuthService authService;
@@ -92,6 +92,7 @@ public class LoginForm {
 		lblLogin.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		txtUsername = new JTextField("Username");
+		txtUsername.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		txtUsername.setBounds(53, 164, 255, 41);
 		txtUsername.setForeground(Color.GRAY);
 		txtUsername.addFocusListener(new FocusListener() {
@@ -117,6 +118,7 @@ public class LoginForm {
 		txtUsername.setColumns(10);
 		
 		txtPassword = new JPasswordField();
+		txtPassword.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		txtPassword.setColumns(10);
 		txtPassword.setBounds(53, 239, 255, 41);
 		txtPassword.setIgnoreRepaint(false);
@@ -143,10 +145,8 @@ public class LoginForm {
 
                  if (!username.isEmpty() && !password.isEmpty()) {
                      String loggedInUserId = authService.login(username, password);
-                     System.out.println("hello");
                      if(!loggedInUserId.isEmpty()) {
                          CurrentUserHolder.setLoggedInUser(employeeService.findEmployeeById(loggedInUserId));
-                         System.out.println("==========");
                          JOptionPane.showMessageDialog(null, "Successfully Login", "Success", 1);
                          frame.setVisible(false);
                          Main main = new Main();
@@ -165,13 +165,12 @@ public class LoginForm {
 
 		JLabel logoImg = new JLabel("");
 		logoImg.setHorizontalAlignment(SwingConstants.CENTER);
-//		ImageIcon imageIcon = new ImageIcon(new ImageIcon("src\\icons\\logo.png").getImage().getScaledInstance(180, 180, Image.SCALE_SMOOTH));
 
 		logoImg.setBounds(359, 90, 345, 249);
 		logoImg.setIcon(new ImageIcon(LoginForm.class.getResource("/icons/logo.png")));
 		frame.getContentPane().add(logoImg);
 		
-		JLabel lblNewLabel = new JLabel("Payroll Management System version(beta)");
+		JLabel lblNewLabel = new JLabel("Payroll Management System version 1.0.0");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setBounds(359, 486, 345, 25);
 		frame.getContentPane().add(lblNewLabel);

@@ -84,7 +84,8 @@ public class Main {
 		mainframe = new JFrame();
 		mainframe.setIconImage(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("/icons/favicon.png")));
 		mainframe.getContentPane().setBackground(Color.WHITE);
-		mainframe.setBounds(40, 10, 1291, 700);
+		mainframe.setBounds(0, 0, 1380, 750);
+		mainframe.setExtendedState( mainframe.getExtendedState()|JFrame.MAXIMIZED_BOTH );
 		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainframe.getContentPane().setLayout(null);
 //		mainframe.setUndecorated(true);
@@ -94,7 +95,7 @@ public class Main {
 		
 		JPanel topBar = new JPanel();
 		topBar.setBackground(Color.WHITE);
-		topBar.setBounds(299, 0, 976, 72);
+		topBar.setBounds(299, 0, 1065, 72);
 		mainframe.getContentPane().add(topBar);
 		topBar.setLayout(null);
 		
@@ -114,7 +115,7 @@ public class Main {
 		JLabel lblName = new JLabel();
 		lblName.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lblName.setText(employee.getName() + "!");
-		lblName.setBounds(103, 18, 169, 25);
+		lblName.setBounds(91, 16, 169, 25);
 		topBar.add(lblName);
 		
 		
@@ -123,13 +124,15 @@ public class Main {
 		panelexit.addMouseListener(new MouseAdapter() {	// to show confirm box
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				int response = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit?", "Confirm Exit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);				
+				int response = JOptionPane.showConfirmDialog(null, "Are you sure you want to logout?", "Confirm Exit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);				
 				if (response == JOptionPane.YES_OPTION) {
 					mainframe.dispose();
+					LoginForm login = new LoginForm();
+					login.frame.setVisible(true);
 				}
 			}
 		});
-		panelexit.setBounds(932, 2, 40, 35);
+		panelexit.setBounds(1025, 0, 40, 35);
 		topBar.add(panelexit);
 		panelexit.setLayout(null);
 		
@@ -140,15 +143,15 @@ public class Main {
 		lblExit.setHorizontalAlignment(SwingConstants.CENTER);
 		ImageIcon logoutIcon = new ImageIcon(new ImageIcon("src\\icons\\logout.png").getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH));
 		lblExit.setIcon(logoutIcon);
-		
+	
 		JLabel lblNewLabel = new JLabel("Logout");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblNewLabel.setBounds(875, 0, 59, 35);
+		lblNewLabel.setBounds(968, 0, 59, 35);
 		topBar.add(lblNewLabel);
 
 		sideBar.setBackground(Color.BLACK);
-		sideBar.setBounds(0, 0, 299, 661);
+		sideBar.setBounds(0, 0, 299, 710);
 		mainframe.getContentPane().add(sideBar);
 		sideBar.setLayout(null);
 		
@@ -287,17 +290,17 @@ public class Main {
 		JLabel lblNewLabel_2 = new JLabel("Logged in As:");
 		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblNewLabel_2.setForeground(Color.WHITE);
-		lblNewLabel_2.setBounds(10, 624, 89, 26);
+		lblNewLabel_2.setBounds(10, 674, 89, 26);
 		sideBar.add(lblNewLabel_2);
 		
 		JLabel lblloggedInUser = new JLabel();
 		lblloggedInUser.setText(employee.getUsername());
 		lblloggedInUser.setForeground(Color.WHITE);
 		lblloggedInUser.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblloggedInUser.setBounds(99, 624, 89, 26);
+		lblloggedInUser.setBounds(98, 674, 89, 26);
 		sideBar.add(lblloggedInUser);
 		
-		desktopPane.setBounds(299, 123, 976, 538);
+		desktopPane.setBounds(299, 123, 1065, 588);
 		mainframe.getContentPane().add(desktopPane);
 		HomeForm home = new HomeForm();
 		desktopPane.add(home).setVisible(true);
@@ -305,7 +308,7 @@ public class Main {
 
 		JPanel panel = new JPanel();
 		panel.setBackground(Color.WHITE);
-		panel.setBounds(299, 71, 976, 51);
+		panel.setBounds(299, 71, 1065, 51);
 		mainframe.getContentPane().add(panel);
 		panel.setLayout(null);
 		

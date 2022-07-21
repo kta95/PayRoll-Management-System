@@ -94,7 +94,7 @@ public class HomeForm extends JInternalFrame {
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		panel.setBackground(Color.WHITE);
-		panel.setBounds(28, 11, 911, 506);
+		panel.setBounds(74, 11, 911, 506);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
@@ -205,6 +205,6 @@ public class HomeForm extends JInternalFrame {
 		ui.setNorthPane(null);
 		
 		
-		setBounds(0, 0, 976, 591);
+		setBounds(0, 0, 1065, 588);
 	}
 }

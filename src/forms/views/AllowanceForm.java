@@ -36,6 +36,10 @@ import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.awt.event.ActionEvent;
 
 public class AllowanceForm extends JInternalFrame {
@@ -132,7 +136,8 @@ public class AllowanceForm extends JInternalFrame {
 	 
 	 attendance = new Attendance();
 	 attendance = attendanceService.findAttendanceByEmpId(id);
-		
+	 
+	
 	 allowanceDetails.setSkills(txtSkills.getText());;
 	 allowanceDetails.setLongevity(txtLong.getText());
 	 allowanceDetails.setAllowance_Amount(txtAmount.getText());
@@ -174,7 +179,7 @@ public class AllowanceForm extends JInternalFrame {
 		ui.setNorthPane(null);
 		
 		
-		setBounds(0, 0, 976, 591);
+		setBounds(0, 0, 1065, 588);
 		getContentPane().setLayout(null);
 		
 		JPanel panel = new JPanel();
@@ -239,7 +244,7 @@ public class AllowanceForm extends JInternalFrame {
 		panel.add(txtOT);
 		
 		JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(477, 64, 452, 413);
+        scrollPane.setBounds(477, 64, 534, 413);
         this.getContentPane().add(scrollPane);
 
         tblAllowance = new JTable();
@@ -254,9 +259,32 @@ public class AllowanceForm extends JInternalFrame {
 				String id = txtEmpID.getText();
 				employee = new Employee();
 				employee = employeeService.findEmployeeById(id);
+				EmployeeForm emp=new EmployeeForm();
+				List<Employee> empList= employeeService.findAllEmployees();
+				
+				 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+				 LocalDateTime now = LocalDateTime.now();
+				 
+				 
+				 LocalDate dateHired = LocalDate.parse(employee.getHiredDate());
+				 LocalDate dateNow = LocalDate.parse(dtf.format(now) + "");
+				 Period period = dateHired.until(dateNow);
+				 int yearsBetween = period.getYears();
+				 
+				 txtLong.setText(yearsBetween + "");
+				
+				
+				if(emp.duplicate(Integer.parseInt(id), empList)) {
+					txtEmp.setText(employee.getName());
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "ID doesn't exist !","Error",0);
+					txtEmpID.setText("");
+					txtEmpID.requestFocus();
+					return;
+				}
 				attendance = new Attendance();
 				attendance = attendanceService.findAttendanceByEmpId(id);
-				txtEmp.setText(employee.getName());
 				txtOT.setText(attendance.getHourOT());
 			}
 		});
@@ -264,20 +292,21 @@ public class AllowanceForm extends JInternalFrame {
 		panel.add(btnSearch);
 		
 		JLabel lblNewLabel_1 = new JLabel("academic certification");
-		lblNewLabel_1.setBounds(37, 154, 126, 14);
+		lblNewLabel_1.setBounds(37, 195, 126, 14);
 		panel.add(lblNewLabel_1);
 		
 		txtSkills = new JTextField();
-		txtSkills.setBounds(173, 151, 185, 20);
+		txtSkills.setBounds(173, 192, 185, 20);
 		panel.add(txtSkills);
 		txtSkills.setColumns(10);
 		
-		JLabel lblNewLabel_2 = new JLabel("Longetivity (Year)");
-		lblNewLabel_2.setBounds(37, 195, 115, 14);
+		JLabel lblNewLabel_2 = new JLabel("Longevity (Year)");
+		lblNewLabel_2.setBounds(37, 154, 115, 14);
 		panel.add(lblNewLabel_2);
 		
 		txtLong = new JTextField();
-		txtLong.setBounds(173, 192, 185, 20);
+		txtLong.setEditable(false);
+		txtLong.setBounds(173, 151, 185, 20);
 		panel.add(txtLong);
 		txtLong.setColumns(10);
 		
@@ -295,17 +324,39 @@ public class AllowanceForm extends JInternalFrame {
 		txtDescription.setColumns(10);
 		
 		JButton btnRegister = new JButton("Register");
-//		btnRegister.setEnabled(false);
 		btnRegister.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				AllowanceDetails allowanceDetails = new AllowanceDetails();
 				setAllowanceDetails(allowanceDetails);
 				
 				if(!txtSkills.getText().isEmpty()&&!txtLong.getText().isEmpty()&&!txtAmount.getText().isEmpty()) {
-					allowanceService.createAllowanceDetails(allowanceDetails);
-					loadAllowanceDetails(Optional.empty());
-					resetFormData();
-					txtEmpID.requestFocus();
+					if(txtSkills.getText().trim().matches("[0-9]+")
+							&& txtLong.getText().trim().matches("[0-9]+") 
+							&& txtHRA.getText().trim().matches("[0-9]+")
+							&& txtTA.getText().trim().matches("[0-9]+")) {
+						
+						allowanceService.createAllowanceDetails(allowanceDetails);
+						loadAllowanceDetails(Optional.empty());
+						resetFormData();
+						txtEmpID.requestFocus();
+						
+						}
+						else if(!txtSkills.getText().trim().matches("[0-9]+")) {
+							JOptionPane.showMessageDialog(null, "Enter digits only !", "Error in academic", 0);
+							return;
+						}
+						else if(! txtLong.getText().trim().matches("[0-9]+")) {
+							JOptionPane.showMessageDialog(null, "Enter digits only !", "Error in Longevity", 0);
+							return;
+						}
+						else if(!txtHRA.getText().trim().matches("[0-9]+")) {
+							JOptionPane.showMessageDialog(null, "Enter digits only !", "Error in HRA", 0);
+							return;
+						}
+						else {
+							JOptionPane.showMessageDialog(null, "Enter digits only !", "Error in TA", 0);
+							return;
+						}
 				} else {
 					JOptionPane.showMessageDialog(null, "Enter required Fields", "Invalid field values", 0);
 				}
@@ -332,37 +383,56 @@ public class AllowanceForm extends JInternalFrame {
 				Employee theEmployee = new Employee();
 				theEmployee = employeeService.findEmployeeById(id);
 				if(!txtSkills.getText().isEmpty()&&!txtLong.getText().isEmpty()) {
-					double total;
-					double skillsAllowance;
-					double otAllowance;
-					double overtimeHours;
-					double houseRent;
-					double transportFee;
-					int longevity;
-					double longevityAllowance;
-					double basic;
-					double otherAllowance;
-					
-					skillsAllowance = Double.valueOf(txtSkills.getText().trim());
-					overtimeHours = Double.valueOf(txtOT.getText().trim());
-					houseRent = Double.valueOf(txtHRA.getText().trim());
-					transportFee = Double.valueOf(txtTA.getText().trim());
-					longevity = Integer.valueOf(txtLong.getText().trim());
-					basic = theEmployee.getPosition().getBasicSalary();
-					
-					if (longevity < 2) {
-						longevityAllowance = 0;
-					} else {
-						longevityAllowance = 0.1 * basic;
-					}
-					System.out.println(longevityAllowance + " this is longevity allowance!");
-					otAllowance = ((basic + skillsAllowance) / 160) * overtimeHours * 2;
-					System.out.println(otAllowance + " is the ot allowance!");
-					otherAllowance = houseRent + transportFee + longevityAllowance +skillsAllowance;
-					
-					total = otherAllowance + otAllowance;
-					txtAmount.setText(String.valueOf(total));
-					btnRegister.setEnabled(true);
+					if(txtSkills.getText().trim().matches("[0-9]+")
+							&& txtLong.getText().trim().matches("[0-9]+") 
+							&& txtHRA.getText().trim().matches("[0-9]+")
+							&& txtTA.getText().trim().matches("[0-9]+") ) {
+							double total;
+							double skillsAllowance;
+							double otAllowance;
+							double overtimeHours;
+							double houseRent;
+							double transportFee;
+							int longevity;
+							double longevityAllowance;
+							double basic;
+							double otherAllowance;
+							
+							skillsAllowance = Double.valueOf(txtSkills.getText().trim());
+							overtimeHours = Double.valueOf(txtOT.getText().trim());
+							houseRent = Double.valueOf(txtHRA.getText().trim());
+							transportFee = Double.valueOf(txtTA.getText().trim());
+							longevity = Integer.valueOf(txtLong.getText().trim());
+							basic = theEmployee.getPosition().getBasicSalary();
+							
+							if (longevity < 2) {
+								longevityAllowance = 0;
+							} else {
+								longevityAllowance = 0.1 * basic;
+							}
+							otAllowance = ((basic + skillsAllowance) / 160) * overtimeHours * 2;
+							otherAllowance = houseRent + transportFee + longevityAllowance +skillsAllowance;
+							
+							total = otherAllowance + otAllowance;
+							txtAmount.setText(String.valueOf(total));
+							btnRegister.setEnabled(true);
+						}
+						else if(!txtSkills.getText().trim().matches("[0-9]+")) {
+							JOptionPane.showMessageDialog(null, "Enter digits only !", "Error in academic", 0);
+							return;
+						}
+						else if(! txtLong.getText().trim().matches("[0-9]+")) {
+							JOptionPane.showMessageDialog(null, "Enter digits only !", "Error in Longevity", 0);
+							return;
+						}
+						else if(!txtHRA.getText().trim().matches("[0-9]+")) {
+							JOptionPane.showMessageDialog(null, "Enter digits only !", "Error in HRA", 0);
+							return;
+						}
+						else {
+							JOptionPane.showMessageDialog(null, "Enter digits only !", "Error in TA", 0);
+							return;
+						}
 				} else {
 					JOptionPane.showMessageDialog(null, "Enter required Fields to Calculate the Amount!", "Invalid field values", 0);
 				}
@@ -388,7 +458,7 @@ public class AllowanceForm extends JInternalFrame {
 		
 		txtSearchName = new JTextField("Search By Employee Name");
 		txtSearchName.setColumns(10);
-		txtSearchName.setBounds(679, 21, 165, 32);
+		txtSearchName.setBounds(761, 18, 165, 32);
 		txtSearchName.setForeground(Color.GRAY);
 		txtSearchName.addFocusListener(new FocusListener() {
 	            @Override
@@ -425,7 +495,7 @@ public class AllowanceForm extends JInternalFrame {
 				}
 			}
 		});
-		btnSearchName.setBounds(854, 21, 75, 32);
+		btnSearchName.setBounds(936, 18, 75, 32);
 		getContentPane().add(btnSearchName);
 		
 		this.tblAllowance.getSelectionModel().addListSelectionListener(new ListSelectionListener() {

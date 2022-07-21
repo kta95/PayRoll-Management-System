@@ -37,7 +37,6 @@ public class PayrollService {
 		try {
 			  PreparedStatement ps = this.dbConfig.getConnection()
 	                    .prepareStatement("INSERT INTO payroll (emp_id, attendance_id, allowance_id, deduction_id, date, gross_salary, net_salary) VALUES (?, ?, ?, ?, ?, ?, ?)");
-			  	System.out.println("HRERE");
 	            ps.setLong(1, payroll.getEmployee().getId());
 	            ps.setLong(2, payroll.getAttendance().getId());
 	            ps.setLong(3, payroll.getAllowanceDetails().getAdId());
@@ -46,7 +45,6 @@ public class PayrollService {
 				ps.setString(5, LocalDate.now() + "");
 	            ps.setString(6, payroll.getGrossSalary());
 	            ps.setString(7, payroll.getNetSalary());
-			  	System.out.println("HRERE2");
 
 	            ps.executeUpdate();
 	            ps.close();
