@@ -163,8 +163,8 @@ public class EmployeeForm extends JInternalFrame {
 		Optional<Position> selectedPosition = positionList.stream().filter(p -> p.getTitle().equals(positionCombo.getSelectedItem())).findFirst();
 		employee.setPosition(selectedPosition.orElse(null));
 		Optional<Department> selectedDepartment = deptList.stream().filter(d -> d.getDepartmentName().equals(deptCombo.getSelectedItem())).findFirst();
-		employee.setDepartment(selectedDepartment.orElse(null));		
-
+		employee.setDepartment(selectedDepartment.orElse(null));	
+		employee.setLeaveDays("10");
 	}
 	
 	private void loadDepartmentComboBox() {
@@ -329,7 +329,11 @@ public class EmployeeForm extends JInternalFrame {
 				Employee employee = new Employee();
 				List<Employee> registeredEmpList = new ArrayList();
 				registeredEmpList = employeeService.findAllEmployees();
+				List<String> empName = new ArrayList<>();		
 				
+				empName = registeredEmpList.stream().map(e2 -> e2.getName() + "").collect(Collectors.toList());
+				List<String> empDOB = new ArrayList<>();						
+				empDOB = registeredEmpList.stream().map(e2 -> e2.getDateOfBirth()+ "").collect(Collectors.toList());
 				if(!nameField.getText().isEmpty() && !(genderCombo.getSelectedIndex() == 0) && !dobChooser.getDate().equals(null) &&
 						!phoneField.getText().isEmpty() && !emailField.getText().isEmpty() && !addressField.getText().isEmpty() &&
 						!hiredDateChooser.getDate().equals(null)) {
@@ -337,13 +341,14 @@ public class EmployeeForm extends JInternalFrame {
 							emailField.getText().trim().matches("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-]"+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")) {
 						setEmployeeDataFromForm(employee);
 
-						if (registeredEmpList.contains(employee)) {
+						if (empName.contains(employee.getName() + "") && empDOB.contains(employee.getDateOfBirth())) {
 							JOptionPane.showMessageDialog(null, employee.getName() + "is already registered!", "Duplicate register!", 0);
 							resetFormData(); 
 							return;
 						} else {
-							employeeService.createEmployee(employee);
+							System.out.println("Yo");
 
+							employeeService.createEmployee(employee);
 							JOptionPane.showMessageDialog(null, "Successfully registered!", "Success", 1);
 							loadAllEmployee(Optional.empty());
 							resetFormData();	

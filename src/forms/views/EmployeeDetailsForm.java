@@ -204,6 +204,7 @@ public class EmployeeDetailsForm extends JInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 				Employee theEmployee = EmployeeHolder.getSelectedEmployee();
 				theEmployee.setUsername(txtUsername.getText());
+				theEmployee.setPassword(txtPassword.getText());
 				if (!txtUsername.getText().trim().isBlank() && !txtPassword.getText().trim().isBlank()) {
 					employeeService.updateEmployee(String.valueOf(theEmployee.getId()), theEmployee);
 					JOptionPane.showMessageDialog(null, "Saved Successfully!", "Admin Registration", 1 );

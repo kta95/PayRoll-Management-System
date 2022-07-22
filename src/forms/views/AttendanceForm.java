@@ -137,6 +137,21 @@ public class AttendanceForm extends JInternalFrame {
 		attendance.setHourLate(lateField.getText().isBlank() ? "0" : lateField.getText());
 		attendance.setHourOT(otField.getText().isBlank() ? "0" : otField.getText());
 		attendance.setEmployee(employee);
+		
+		int leave = Integer.valueOf(leavesField.getText());
+		int leaveLeft = Integer.valueOf(attendance.getEmployee().getLeaveDays()) - leave;
+		if (leaveLeft < 0) {
+			JOptionPane.showMessageDialog(null, "The employee doesn't have enough leave days, so the extra leave days will be added to absent days!");
+			int extraLeaves = leave - Integer.valueOf(attendance.getEmployee().getLeaveDays());
+			
+			int addedAbsent = Integer.valueOf(absentField.getText().isBlank() ? "0" : absentField.getText()) + extraLeaves;
+			attendance.setAbsent(addedAbsent + "");
+		} else {
+			employee.setLeaveDays(leaveLeft + "");
+			employeeService.updateEmployee(String.valueOf(employee.getId()), employee);
+		}
+
+		
 //		System.out.println(attendance.getLeaveDays());
 //		int leaveLeft = Integer.valueOf(attendance.getLeaveDays()) - Integer.valueOf(leavesField.getText().isBlank()? "0" : leavesField.getText());
 //		attendance.setLeaveDays(leaveLeft + "");

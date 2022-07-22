@@ -15,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.swing.SwingConstants;
@@ -178,12 +179,25 @@ public class DepartmentForm extends JInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 				Department dept=new Department();
 				if(!deptField.getText().isEmpty()) {
+					
+					List<Department> newDeptList = new ArrayList<>();
+					newDeptList = departmentService.findAllDepartments();
+					List<String> deptName = new ArrayList<>();
+					deptName = newDeptList.stream().map(d -> d.getDepartmentName()).collect(Collectors.toList());
+					
 					dept.setDepartmentName(deptField.getText());
+					if (deptName.contains(dept.getDepartmentName())) {
+						JOptionPane.showMessageDialog(null,"Duplicate Department!", "error", 0);
+						resetFormData();
+						return;
+					}
 					departmentService.createDepartment(dept);
 					loadAllDepartment(Optional.empty());
 					resetFormData();
 				}else {
 					JOptionPane.showMessageDialog(null,"Enter required field", "error", 0);
+					resetFormData();
+					return;
 				}
 			}
 		});

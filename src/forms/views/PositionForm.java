@@ -213,11 +213,23 @@ public class PositionForm extends JInternalFrame {
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Position position=new Position();
+				
+				List<Position> pList = new ArrayList<>();
+				pList = PositionService.findAllPositions();
+				List<String> ptitle = new ArrayList<>();
+				
+				ptitle = pList.stream().map(p -> p.getTitle()).collect(Collectors.toList());
+				
 				if(!positionField.getText().isEmpty()) {
 					if(positionField.getText().trim().matches("^[a-zA-Z\\s]*$")
 							&& basicSalaryField.getText().trim().matches("[0-9]+")){
-			
+						
 						setPositionDataFromForm(position);
+						
+						if (ptitle.contains(position.getTitle())) {
+							JOptionPane.showMessageDialog(null, "Duplicate position!", "Error in position name", 0);
+							return;
+						}
 						PositionService.createPosition(position);
 						loadAllPosition(Optional.empty());
 						resetFormData();

@@ -43,7 +43,7 @@ public class EmployeeService {
 	            ps.setString(5, employee.getEmail());
 	            ps.setString(6, employee.getAddress());
 	            ps.setString(7, String.valueOf(employee.getHiredDate()));
-	            ps.setString(8, (employee.getDepartment().getDepartmentName().equals("HR") || employee.getDepartment().getPositon().equals("Manager")) ? UserRole.ADMIN.toString() : UserRole.USER.toString());
+	            ps.setString(8, (employee.getDepartment().getDepartmentName().equals("HR")) ? UserRole.ADMIN.toString() : UserRole.USER.toString());
 	            ps.setBoolean(9, true);
 	            ps.setLong(10, employee.getPosition().getpId());
 	            ps.setInt(11, employee.getDepartment().getDepartmentId());
@@ -71,7 +71,7 @@ public class EmployeeService {
 	            ps.setString(7, String.valueOf(employee.getHiredDate()));
 	            ps.setString(8, employee.getUsername());
 	            ps.setString(9, employee.getPassword());
-	            ps.setString(10, (employee.getDepartment().getDepartmentName().equals("HR") || employee.getDepartment().getPositon().equals("Manager"))? UserRole.ADMIN.toString() : UserRole.USER.toString());
+	            ps.setString(10, (employee.getDepartment().getDepartmentName().equals("HR"))? UserRole.ADMIN.toString() : UserRole.USER.toString());
 	            ps.setBoolean(11, true);
 	            ps.setInt(12, employee.getPosition().getpId());
 	            ps.setInt(13, employee.getDepartment().getDepartmentId());
