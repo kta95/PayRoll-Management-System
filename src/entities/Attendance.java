@@ -9,7 +9,6 @@ public class Attendance {
 	private String present;
 	private String absent;
 	private String month;
-	private String leaveDays;
 	private String hourLate;
 	private String hourOT;
 	private String leave;
@@ -18,14 +17,13 @@ public class Attendance {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public Attendance(int id, String present, String absent, String month, String leaveDays, String hourLate,
-			String hourOT, String leave, Employee employee) {
+	public Attendance(int id, String present, String absent, String month, String hourLate, String hourOT, String leave,
+			Employee employee) {
 		super();
 		this.id = id;
 		this.present = present;
 		this.absent = absent;
 		this.month = month;
-		this.leaveDays = leaveDays;
 		this.hourLate = hourLate;
 		this.hourOT = hourOT;
 		this.leave = leave;
@@ -55,12 +53,6 @@ public class Attendance {
 	public void setMonth(String month) {
 		this.month = month;
 	}
-	public String getLeaveDays() {
-		return leaveDays;
-	}
-	public void setLeaveDays(String leaveDays) {
-		this.leaveDays = leaveDays;
-	}
 	public String getHourLate() {
 		return hourLate;
 	}
@@ -87,7 +79,17 @@ public class Attendance {
 	}
 	@Override
 	public int hashCode() {
-		return Objects.hash(absent, employee, hourLate, hourOT, id, leave, leaveDays, month, present);
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((absent == null) ? 0 : absent.hashCode());
+		result = prime * result + ((employee == null) ? 0 : employee.hashCode());
+		result = prime * result + ((hourLate == null) ? 0 : hourLate.hashCode());
+		result = prime * result + ((hourOT == null) ? 0 : hourOT.hashCode());
+		result = prime * result + id;
+		result = prime * result + ((leave == null) ? 0 : leave.hashCode());
+		result = prime * result + ((month == null) ? 0 : month.hashCode());
+		result = prime * result + ((present == null) ? 0 : present.hashCode());
+		return result;
 	}
 	@Override
 	public boolean equals(Object obj) {
@@ -98,11 +100,46 @@ public class Attendance {
 		if (getClass() != obj.getClass())
 			return false;
 		Attendance other = (Attendance) obj;
-		return Objects.equals(absent, other.absent) && Objects.equals(employee, other.employee)
-				&& Objects.equals(hourLate, other.hourLate) && Objects.equals(hourOT, other.hourOT) && id == other.id
-				&& Objects.equals(leave, other.leave) && Objects.equals(leaveDays, other.leaveDays)
-				&& Objects.equals(month, other.month) && Objects.equals(present, other.present);
+		if (absent == null) {
+			if (other.absent != null)
+				return false;
+		} else if (!absent.equals(other.absent))
+			return false;
+		if (employee == null) {
+			if (other.employee != null)
+				return false;
+		} else if (!employee.equals(other.employee))
+			return false;
+		if (hourLate == null) {
+			if (other.hourLate != null)
+				return false;
+		} else if (!hourLate.equals(other.hourLate))
+			return false;
+		if (hourOT == null) {
+			if (other.hourOT != null)
+				return false;
+		} else if (!hourOT.equals(other.hourOT))
+			return false;
+		if (id != other.id)
+			return false;
+		if (leave == null) {
+			if (other.leave != null)
+				return false;
+		} else if (!leave.equals(other.leave))
+			return false;
+		if (month == null) {
+			if (other.month != null)
+				return false;
+		} else if (!month.equals(other.month))
+			return false;
+		if (present == null) {
+			if (other.present != null)
+				return false;
+		} else if (!present.equals(other.present))
+			return false;
+		return true;
 	}
+
 	
 	
 	

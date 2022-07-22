@@ -40,7 +40,6 @@ public class AllowanceMapper {
              attendance.setPresent(rs.getString("present"));
              attendance.setAbsent(rs.getString("absent"));
          	 attendance.setMonth(rs.getString("month"));
-         	 attendance.setLeaveDays(rs.getString("leave_day"));
          	 attendance.setLeave(rs.getString("leaves"));
          	 attendance.setHourLate(rs.getString("hour_late"));
          	 attendance.setHourOT(rs.getString("hour_overtime"));      

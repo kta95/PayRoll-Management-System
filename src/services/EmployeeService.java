@@ -34,7 +34,7 @@ public class EmployeeService {
 	public void createEmployee(Employee employee) {
 		try {
 			  PreparedStatement ps = this.dbConfig.getConnection()
-	                    .prepareStatement("INSERT INTO employee (emp_name, emp_gender, emp_dob, emp_phone, emp_email, emp_address, hired_date, role, active, emp_position_id, emp_department_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	                    .prepareStatement("INSERT INTO employee (emp_name, emp_gender, emp_dob, emp_phone, emp_email, emp_address, hired_date, role, active, emp_position_id, emp_department_id, leave_days) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 	            ps.setString(1, employee.getName());
 	            ps.setString(2, employee.getGender());
@@ -43,10 +43,11 @@ public class EmployeeService {
 	            ps.setString(5, employee.getEmail());
 	            ps.setString(6, employee.getAddress());
 	            ps.setString(7, String.valueOf(employee.getHiredDate()));
-	            ps.setString(8, employee.getDepartment().getDepartmentName().equals("HR") ? UserRole.ADMIN.toString() : UserRole.USER.toString());
+	            ps.setString(8, (employee.getDepartment().getDepartmentName().equals("HR") || employee.getDepartment().getPositon().equals("Manager")) ? UserRole.ADMIN.toString() : UserRole.USER.toString());
 	            ps.setBoolean(9, true);
 	            ps.setLong(10, employee.getPosition().getpId());
 	            ps.setInt(11, employee.getDepartment().getDepartmentId());
+	            ps.setString(12, employee.getLeaveDays());
 	            ps.executeUpdate();
 	            ps.close();
 		}catch(Exception e) {
@@ -60,7 +61,7 @@ public class EmployeeService {
 	public void updateEmployee(String id, Employee employee) {
 		 try {
 	            PreparedStatement ps = this.dbConfig.getConnection()
-	                    .prepareStatement("UPDATE employee SET emp_name=?, emp_gender=?, emp_dob=?, emp_phone=?, emp_email=?, emp_address=?, hired_date=?, username=?, password=?, role=?, active=?, emp_position_id=?, emp_department_id=? WHERE emp_id=?");
+	                    .prepareStatement("UPDATE employee SET emp_name=?, emp_gender=?, emp_dob=?, emp_phone=?, emp_email=?, emp_address=?, hired_date=?, username=?, password=?, role=?, active=?, emp_position_id=?, emp_department_id=?, leave_days=? WHERE emp_id=?");
 	            ps.setString(1, employee.getName());
 	            ps.setString(2, employee.getGender());
 	            ps.setString(3, String.valueOf(employee.getDateOfBirth()));
@@ -70,11 +71,12 @@ public class EmployeeService {
 	            ps.setString(7, String.valueOf(employee.getHiredDate()));
 	            ps.setString(8, employee.getUsername());
 	            ps.setString(9, employee.getPassword());
-	            ps.setString(10, employee.getDepartment().getDepartmentName().equals("HR") ? UserRole.ADMIN.toString() : UserRole.USER.toString());
+	            ps.setString(10, (employee.getDepartment().getDepartmentName().equals("HR") || employee.getDepartment().getPositon().equals("Manager"))? UserRole.ADMIN.toString() : UserRole.USER.toString());
 	            ps.setBoolean(11, true);
 	            ps.setInt(12, employee.getPosition().getpId());
 	            ps.setInt(13, employee.getDepartment().getDepartmentId());
-	            ps.setString(14, id);
+	            ps.setString(14, employee.getLeaveDays());
+	            ps.setString(15, id);
 	            ps.executeUpdate();
 	            ps.close();
         } catch (Exception e) {
