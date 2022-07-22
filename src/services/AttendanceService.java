@@ -47,7 +47,7 @@ public class AttendanceService implements AttendanceRepo{
 		List<Attendance> attendanceList=new ArrayList<>();
 		try (Statement st = this.dbConfig.getConnection().createStatement())  {
 			
-			String query = "SELECT * FROM attendance INNER JOIN employee ON employee.emp_id = attendance.attd_emp_id;";
+			String query = "SELECT * FROM attendance INNER JOIN employee ON employee.emp_id = attendance.attd_emp_id ORDER BY attendance_id ASC;";
 
 			ResultSet rs = st.executeQuery(query);
 
@@ -72,7 +72,7 @@ public class AttendanceService implements AttendanceRepo{
 			String query = "SELECT * FROM attendance "
 					+ "INNER JOIN employee "
 					+ "ON employee.emp_id = attendance.attd_emp_id "
-					+ "WHERE attd_emp_id = " + id + ";";
+					+ "WHERE attd_emp_id = " + id + " ORDER BY attendance_id ASC;";
 
 			ResultSet rs = st.executeQuery(query);
 
@@ -87,6 +87,27 @@ public class AttendanceService implements AttendanceRepo{
 		return attendance;
 	}
 	
+	public Attendance findAttendanceById(String id) {
+		Attendance attendance = new Attendance();
+		try (Statement st = this.dbConfig.getConnection().createStatement()) {
+
+			String query = "SELECT * FROM attendance "
+					+ "INNER JOIN employee "
+					+ "ON employee.emp_id = attendance.attd_emp_id "
+					+ "WHERE attendance_id = " + id + " ORDER BY attendance_id ASC;";
+
+			ResultSet rs = st.executeQuery(query);
+
+			if (rs.next()) {
+				this.attendanceMapper.mapToAttendance(attendance,rs);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return attendance;
+	}
 	 public void deleteAttendance(String id) {
 	        try {
 	            PreparedStatement ps = this.dbConfig.getConnection()

@@ -29,6 +29,10 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +43,6 @@ import javax.swing.JComboBox;
 public class DeductionForm extends JInternalFrame {
 	
 	private JTextField txtTax;
-	private JTextField txtEmpSearch;
 	private JTextField txtSSC;
 	private JTextField txtdAmount;
 	private DeductionService deductionService;
@@ -50,7 +53,7 @@ public class DeductionForm extends JInternalFrame {
 	private List<DeductionDetails> dDetailslist=new ArrayList();
 	private JTextField txtSearchName;
 	private DeductionDetails deductionDetails;
-    private List<Employee> employeeList;
+    private List<Employee> employeeList = new ArrayList<>();
     private JTextField txtDescription;
     private Employee employee;
     private JTextField txtEmpName;
@@ -59,6 +62,11 @@ public class DeductionForm extends JInternalFrame {
     private AttendanceService attendanceService;
     private JTextField txtAbsent;
 	List<String> attendanceIdRecords = new ArrayList<>();
+	JComboBox<String> comboBoAttendance = new JComboBox<String>();
+	List<Attendance> attdList = new ArrayList<>();
+	JComboBox<String> EmpIdCombo = new JComboBox<String>();
+    private Optional<Employee> selectedEmployee;
+    private Optional<Attendance> selectedAttendance;
 
 	/**
 	 * Launch the application.
@@ -79,9 +87,28 @@ public class DeductionForm extends JInternalFrame {
 	/**
 	 * Create the frame.
 	 */
+	
+	private void loadAttendanceForComboBox(String id) {
+		this.comboBoAttendance.removeAllItems();
+        this.comboBoAttendance.addItem("- Select -");
+        this.attdList = this.attendanceService.findAllAttendances();
+        List<Attendance> newAttdList = new ArrayList<>();
+        newAttdList = this.attdList.stream().filter(a -> String.valueOf(a.getEmployee().getId()).equals(id)).collect(Collectors.toList());
+
+        
+        newAttdList.forEach(e -> this.comboBoAttendance.addItem(String.valueOf(e.getId())));
+    }
+
+	private void loadEmployeeForComboBox() {
+        this.EmpIdCombo.addItem("- Select -");
+        this.employeeList = this.employeeService.findAllEmployees();
+        this.employeeList.forEach(e -> this.EmpIdCombo.addItem(String.valueOf(e.getId())));
+    }
+	
 	public DeductionForm() {
 		initialize();
 		initializeDependency();
+		loadEmployeeForComboBox();
 		this.setTableDesign();
 		this.loadAllDeductionDetails(Optional.empty());
     	this.deductionDetails = new DeductionDetails();
@@ -117,24 +144,27 @@ public class DeductionForm extends JInternalFrame {
 	        txtdAmount.setText("");
 	        txtDescription.setText("");
 	        txtAbsent.setText("");
-	        txtEmpSearch.setText("");
 	        txtEmpName.setText("");
 	        txtLate.setText("");
+	        EmpIdCombo.setSelectedIndex(0);
 	  }
 	 
 	 private void setDeductionDetails(DeductionDetails deductionDetails) {
-		 String id = txtEmpSearch.getText();
+		 String id = EmpIdCombo.getSelectedItem() + "";
 		 Employee newEmployee = new Employee();
 		 newEmployee = employeeService.findEmployeeById(id);
 		 
-		 attendance = new Attendance();
-		 attendance = attendanceService.findAttendanceByEmpId(id);
+		 Attendance newAttendance = new Attendance();
+		 
+		 String attd_id = (String) comboBoAttendance.getSelectedItem();		
+		 newAttendance = attendanceService.findAttendanceById(attd_id);
+		 
 		 deductionDetails.setTax(txtTax.getText());
 		 deductionDetails.setSSC(txtSSC.getText());
 		 deductionDetails.setDeduction_amount(Double.valueOf(txtdAmount.getText()));
 		 deductionDetails.setDescription(txtDescription.getText());
 		 deductionDetails.setEmployee(newEmployee);
-		 deductionDetails.setAttendance(attendance);
+		 deductionDetails.setAttendance(newAttendance);
 	 }
 	 
 
@@ -164,49 +194,44 @@ public class DeductionForm extends JInternalFrame {
 		JPanel panel = new JPanel();
 		panel.setBackground(Color.WHITE);
 		panel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Deduction", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel.setBounds(48, 11, 428, 467);
+		panel.setBounds(48, 11, 428, 487);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("Tax");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		lblNewLabel.setBounds(45, 170, 46, 14);
+		lblNewLabel.setBounds(45, 195, 46, 14);
 		panel.add(lblNewLabel);
 		
 		txtTax = new JTextField();
 		txtTax.setEditable(false);
-		txtTax.setBounds(169, 163, 193, 28);
+		txtTax.setBounds(169, 188, 193, 28);
 		panel.add(txtTax);
 		txtTax.setColumns(10);
 		
 		JLabel lblNewLabel_1 = new JLabel("Emp ID");
-		lblNewLabel_1.setBounds(45, 52, 75, 17);
+		lblNewLabel_1.setBounds(45, 27, 75, 17);
 		panel.add(lblNewLabel_1);
 		
-		txtEmpSearch = new JTextField();
-		txtEmpSearch.setBounds(169, 46, 109, 28);
-		panel.add(txtEmpSearch);
-		txtEmpSearch.setColumns(10);
-		
 		txtDescription = new JTextField();
-		txtDescription.setBounds(169, 280, 193, 28);
+		txtDescription.setBounds(169, 305, 193, 28);
 		panel.add(txtDescription);
 		txtDescription.setColumns(10);
 		
 		txtEmpName = new JTextField();
 		txtEmpName.setEditable(false);
 		txtEmpName.setColumns(10);
-		txtEmpName.setBounds(170, 85, 193, 28);
+		txtEmpName.setBounds(169, 110, 193, 28);
 		panel.add(txtEmpName);
 		
 		JLabel lblNewLabel_4_1 = new JLabel("late (hour)");
-		lblNewLabel_4_1.setBounds(45, 131, 59, 14);
+		lblNewLabel_4_1.setBounds(45, 156, 59, 14);
 		panel.add(lblNewLabel_4_1);
 		
 		txtLate = new JTextField();
 		txtLate.setEditable(false);
 		txtLate.setColumns(10);
-		txtLate.setBounds(170, 124, 193, 28);
+		txtLate.setBounds(169, 149, 193, 28);
 		panel.add(txtLate);
 		
 	
@@ -268,86 +293,50 @@ public class DeductionForm extends JInternalFrame {
         });
         btnSearch.setBounds(924, 11, 89, 32);
         getContentPane().add(btnSearch);
-
-		
-		JButton btnSearchEmpID = new JButton("Search");
-		btnSearchEmpID.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {				
-				String id = txtEmpSearch.getText();
-				employee = new Employee();
-				employee = employeeService.findEmployeeById(id);
-				txtEmpName.setText(employee.getName());
-				
-				attendance = new Attendance();
-				attendance = attendanceService.findAttendanceByEmpId(id);
-				txtLate.setText(attendance.getHourLate());
-				
-				double tax = 0;
-				double basic;
-				double absentDays;
-				double ssc;
-				
-				basic = employee.getPosition().getBasicSalary();
-
-				if (basic < (1960000 / 12)) {
-					tax = 0.05 * basic;
-				} else if (basic > (1960000 / 12)) {
-					tax = 0.1 * basic;
-				} else if (basic > (3300000 / 12)) {
-					tax = 0.2 * basic;
-				} else if (basic > (9000000 / 12)) {
-					tax = 0.33 * basic;					
-				} else if (basic > (18000000 / 12)) {
-					tax = 0.4 * basic;
-				} else if (basic > (40000000 / 12)) {
-					tax = 0.45 * basic;
-				}
-				
-				absentDays = Integer.valueOf(attendance.getAbsent());
-				ssc = basic * 0.05;
-				txtTax.setText(String.valueOf(tax));
-				txtSSC.setText(String.valueOf(ssc));
-				txtAbsent.setText(String.valueOf(absentDays));
-				
-			}
-		});
-		btnSearchEmpID.setBounds(288, 46, 75, 30);
-		panel.add(btnSearchEmpID);
 		
 		JLabel lblNewLabel_2 = new JLabel("SSC");
-		lblNewLabel_2.setBounds(45, 209, 58, 14);
+		lblNewLabel_2.setBounds(46, 234, 58, 14);
 		panel.add(lblNewLabel_2);
 		
 		txtSSC = new JTextField();
 		txtSSC.setEditable(false);
 		txtSSC.setColumns(10);
-		txtSSC.setBounds(169, 202, 193, 28);
+		txtSSC.setBounds(169, 227, 193, 28);
 		panel.add(txtSSC);
 		
 		JLabel lblNewLabel_3 = new JLabel("Total Amount");
-		lblNewLabel_3.setBounds(45, 336, 100, 25);
+		lblNewLabel_3.setBounds(45, 348, 100, 25);
 		panel.add(lblNewLabel_3);
 		
 		txtdAmount = new JTextField();
 		txtdAmount.setEditable(false);
 		txtdAmount.setColumns(10);
-		txtdAmount.setBounds(169, 334, 193, 28);
+		txtdAmount.setBounds(169, 346, 193, 28);
 		panel.add(txtdAmount);
 		
 		JButton btnSave = new JButton("Register");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				DeductionDetails deductionDetails = new DeductionDetails();
+				setDeductionDetails(deductionDetails);
+				
+				
+				
+				List<DeductionDetails> ddList = new ArrayList<>();
+				ddList = deductionService.findAllDDetails();
+				List<String> ddIdList = new ArrayList<>();
+
+				ddList = ddList.stream().filter( a -> String.valueOf(a.getEmployee().getId()).equals(deductionDetails.getEmployee().getId() + "")).collect(Collectors.toList());
+				ddIdList = ddList.stream().map(a -> a.getAttendance().getId() + "").collect(Collectors.toList());
+				
+				
 				
 				if(!txtTax.getText().isEmpty() && !txtSSC.getText().isEmpty() && !txtdAmount.getText().isEmpty()) {
-					setDeductionDetails(deductionDetails);
 
-					
-					List<DeductionDetails> newDeductionDetails = new ArrayList<>();
-					newDeductionDetails = deductionService.findAllDDetails();
-					
-					attendanceIdRecords = newDeductionDetails.stream().map(d -> String.valueOf(d.getAttendance().getId())).collect(Collectors.toList());
-					if (attendanceIdRecords.contains(String.valueOf(deductionDetails.getAttendance().getId()))) {
+
+					ddIdList.forEach(a -> System.out.println(a));
+					System.out.println(String.valueOf(deductionDetails.getAttendance().getId()));
+					if (ddIdList.contains(String.valueOf(deductionDetails.getAttendance().getId()))) {
 			    		JOptionPane.showMessageDialog(null, "Selected employee's Deduction has already registered for the month!", "Invalid", 0);
 						resetFormData();
 			    		return;	
@@ -410,21 +399,21 @@ public class DeductionForm extends JInternalFrame {
 		panel.add(btnClear);
 		
 		JLabel lblNewLabel_4 = new JLabel("Emp Name");
-		lblNewLabel_4.setBounds(45, 88, 59, 14);
+		lblNewLabel_4.setBounds(45, 117, 59, 14);
 		panel.add(lblNewLabel_4);
 		
 		JLabel lblNewLabel_5 = new JLabel("Description");
-		lblNewLabel_5.setBounds(45, 287, 75, 14);
+		lblNewLabel_5.setBounds(45, 312, 75, 14);
 		panel.add(lblNewLabel_5);
 		
 		JLabel lblNewLabel_4_2 = new JLabel("Absent (Day)");
-		lblNewLabel_4_2.setBounds(45, 240, 100, 26);
+		lblNewLabel_4_2.setBounds(45, 267, 100, 26);
 		panel.add(lblNewLabel_4_2);
 		
 		txtAbsent = new JTextField();
 		txtAbsent.setEditable(false);
 		txtAbsent.setColumns(10);
-		txtAbsent.setBounds(169, 241, 193, 28);
+		txtAbsent.setBounds(169, 266, 193, 28);
 		panel.add(txtAbsent);
 		JButton btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(new ActionListener() {
@@ -438,6 +427,94 @@ public class DeductionForm extends JInternalFrame {
 		});
 		btnDelete.setBounds(306, 399, 74, 42);
 		panel.add(btnDelete);
+		
+		JLabel lblMonth = new JLabel("Month");
+		lblMonth.setBounds(45, 89, 75, 17);
+		panel.add(lblMonth);
+		
+		EmpIdCombo.setBounds(169, 21, 193, 28);
+		panel.add(EmpIdCombo);
+		EmpIdCombo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String emp_id = (String) EmpIdCombo.getSelectedItem();
+                selectedEmployee = employeeList.stream()
+                        .filter(emp -> String.valueOf(emp.getId()).equals(EmpIdCombo.getSelectedItem())).findFirst();
+                if (selectedEmployee.isPresent()) {
+                	
+                	Employee employee = new Employee();
+                	employee = employeeService.findEmployeeById(emp_id);
+                	
+                	Attendance attendance = new Attendance();
+                	attendance = attendanceService.findAttendanceByEmpId(emp_id);
+                	
+
+                	if (attendance.getId() == 0) {
+                		JOptionPane.showMessageDialog(null, "Selected Employee doesn't have attendance records!", "Invalid", 0);
+                		resetFormData();
+                		return;
+                	}
+                	txtEmpName.setText(employee.getName());            	
+                	loadAttendanceForComboBox(emp_id);           	              	
+                }
+            }
+        });
+		
+		
+		JLabel lblAttd = new JLabel("Attendance ID");
+		lblAttd.setBounds(45, 66, 75, 17);
+		panel.add(lblAttd);
+		
+		comboBoAttendance.setBounds(169, 66, 193, 28);
+		panel.add(comboBoAttendance);
+		comboBoAttendance.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String attd_id = (String) comboBoAttendance.getSelectedItem();
+				selectedAttendance = attdList.stream().filter(a -> String.valueOf(a.getId()).equals(comboBoAttendance.getSelectedItem())).findFirst();
+				if (selectedAttendance.isPresent()) {            	
+                	Attendance attendance = new Attendance();
+                	attendance = attendanceService.findAttendanceById(attd_id);               	               
+    				 
+					String id = EmpIdCombo.getSelectedItem() + "";
+					employee = new Employee();
+					employee = employeeService.findEmployeeById(id);
+					txtEmpName.setText(employee.getName());
+					
+					attendance = new Attendance();
+					attendance = attendanceService.findAttendanceByEmpId(id);
+					txtLate.setText(attendance.getHourLate());
+					
+					double tax = 0;
+					double basic;
+					double absentDays;
+					double ssc;
+					
+					basic = employee.getPosition().getBasicSalary();
+					
+					if (basic < (1960000 / 12)) {
+						tax = 0.05 * basic;
+					} else if (basic > (1960000 / 12)) {
+						tax = 0.1 * basic;
+					} else if (basic > (3300000 / 12)) {
+						tax = 0.2 * basic;
+					} else if (basic > (9000000 / 12)) {
+						tax = 0.33 * basic;					
+					} else if (basic > (18000000 / 12)) {
+						tax = 0.4 * basic;
+					} else if (basic > (40000000 / 12)) {
+						tax = 0.45 * basic;
+					}
+					
+					absentDays = Integer.valueOf(attendance.getAbsent());
+					ssc = basic * 0.05;
+					txtTax.setText(String.valueOf(tax));
+					txtSSC.setText(String.valueOf(ssc));
+					txtAbsent.setText(String.valueOf(absentDays));
+				}
+			}
+		});
+		
+		
+		
 		this.tblDeduction.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
@@ -447,7 +524,7 @@ public class DeductionForm extends JInternalFrame {
 
 					deductionDetails = deductionService.findDeductionDetailsById(id);
 
-					txtEmpSearch.setText(String.valueOf(deductionDetails.getEmployee().getId()));
+					EmpIdCombo.setSelectedIndex(deductionDetails.getEmployee().getId());
 					txtEmpName.setText(deductionDetails.getEmployee().getName());
 					txtLate.setText(deductionDetails.getAttendance().getHourLate());
 					txtAbsent.setText(deductionDetails.getAttendance().getAbsent());
