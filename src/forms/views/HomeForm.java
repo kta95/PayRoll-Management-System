@@ -2,14 +2,25 @@ package forms.views;
 
 import java.awt.EventQueue;
 
+import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.SwingConstants;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import entities.Department;
 import entities.Employee;
@@ -31,6 +42,11 @@ import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
+import javax.swing.UIManager;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileOutputStream;
 
 public class HomeForm extends JInternalFrame {
 
@@ -99,12 +115,77 @@ public class HomeForm extends JInternalFrame {
 		panel.setLayout(null);
 		
 		JPanel panel_1 = new JPanel();
+		panel_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JFileChooser dialog = new JFileChooser();
+				dialog.setSelectedFile(new File("Employees Report.pdf"));
+				int dialogResult = dialog.showSaveDialog(null);
+				if (dialogResult == JFileChooser.APPROVE_OPTION) {
+					String filePath = dialog.getSelectedFile().getPath();
+					try {
+						List<Employee> empList = new ArrayList<>();
+						empList = employeeService.findAllEmployees();
+						
+						Document myDocument = new Document();
+						PdfWriter myWriter = PdfWriter.getInstance(myDocument, new FileOutputStream(filePath));
+						PdfPTable table = new PdfPTable(11);
+						myDocument.open();
+						
+						float[] columnWidths = new float[] {5, 12, 8, 8, 12, 15, 8, 8, 7, 10, 10};
+						table.setWidths(columnWidths);
+						
+						table.setWidthPercentage(100);
+						
+					    
+				          myDocument.add(new Paragraph("Employees List",FontFactory.getFont(FontFactory.TIMES_BOLD,20,Font.BOLD )));
+				          myDocument.add(new Paragraph(new Date().toString()));
+				          myDocument.add(new Paragraph("---------------------------------------------------------------------------------------------------------------"));
+				          table.addCell(new PdfPCell(new Paragraph("Employee ID",FontFactory.getFont(FontFactory.TIMES_ROMAN,9,Font.BOLD))));
+				          table.addCell(new PdfPCell(new Paragraph("Name",FontFactory.getFont(FontFactory.TIMES_ROMAN,9,Font.BOLD))));
+				          table.addCell(new PdfPCell(new Paragraph("Gender",FontFactory.getFont(FontFactory.TIMES_ROMAN,9,Font.BOLD))));
+				          table.addCell(new PdfPCell(new Paragraph("Date of Birth",FontFactory.getFont(FontFactory.TIMES_ROMAN,9,Font.BOLD))));
+				          table.addCell(new PdfPCell(new Paragraph("Telephone",FontFactory.getFont(FontFactory.TIMES_ROMAN,9,Font.BOLD))));
+				          table.addCell(new PdfPCell(new Paragraph("Email",FontFactory.getFont(FontFactory.TIMES_ROMAN,9,Font.BOLD))));
+				          table.addCell(new PdfPCell(new Paragraph("Address",FontFactory.getFont(FontFactory.TIMES_ROMAN,9,Font.BOLD))));
+				          table.addCell(new PdfPCell(new Paragraph("Date Hired",FontFactory.getFont(FontFactory.TIMES_ROMAN,9,Font.BOLD))));
+				          table.addCell(new PdfPCell(new Paragraph("Role",FontFactory.getFont(FontFactory.TIMES_ROMAN,9,Font.BOLD))));
+				          table.addCell(new PdfPCell(new Paragraph("Position",FontFactory.getFont(FontFactory.TIMES_ROMAN,9,Font.BOLD))));
+				          table.addCell(new PdfPCell(new Paragraph("Department",FontFactory.getFont(FontFactory.TIMES_ROMAN,9,Font.BOLD))));
+				          
+				          for(Employee emp : empList) {
+				        	  table.addCell(new PdfPCell(new Paragraph(emp.getId() + "",FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(emp.getName(),FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(emp.getGender(),FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(emp.getDateOfBirth(),FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(emp.getPhone(),FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(emp.getEmail(),FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(emp.getAddress(),FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(emp.getHiredDate(),FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(emp.getRole() + "",FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(emp.getPosition().getTitle(),FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(emp.getDepartment().getDepartmentName(),FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				          }
+				          
+				          myDocument.add(table);
+				           myDocument.add(new Paragraph("----------------------------------------------------------------------------------------------------------------"));
+				           myDocument.close();  
+				           JOptionPane.showMessageDialog(null,"Report was successfully generated");
+				          
+					}  catch(Exception e2){
+			            JOptionPane.showMessageDialog(null,e2);			            			            
+				     }
+				}
+			}
+		});
+		panel_1.setBackground(UIManager.getColor("CheckBox.background"));
 		panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
 		panel_1.setBounds(72, 45, 348, 183);
 		panel.add(panel_1);
 		panel_1.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("Employees");
+		JLabel lblNewLabel = new JLabel("Employee Report");
+		lblNewLabel.setBackground(UIManager.getColor("Button.highlight"));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 20));
 		lblNewLabel.setBounds(10, 11, 328, 67);

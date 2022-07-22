@@ -719,8 +719,17 @@ public class PayrollForm extends JInternalFrame {
 
                 payroll = payrollService.findPayrollById(payrollId);
                 btnslip.setEnabled(true);
-                EmpIdCombo.setSelectedIndex(payroll.getEmployee().getId());
+                System.out.println(payroll.getEmployee().getId());
                 
+                List<Payroll> pList = new ArrayList<>();
+                pList = payrollService.findAllPayrolls();
+                
+                for (int i = 0; i < pList.size(); i++) {
+                	if (pList.get(i).getId() == payroll.getEmployee().getId()) {
+                		EmpIdCombo.setSelectedIndex(i);
+                	}
+                }
+                                              
                 txtEmpName.setText(payroll.getEmployee().getName());
                 
             	            	
