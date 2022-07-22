@@ -23,17 +23,18 @@ public class AttendanceService implements AttendanceRepo{
 	@Override
 	public void createAttendance(Attendance attendance) {
 		// TODO Auto-generated method stub
+		
+		
 		try {
 			PreparedStatement ps = this.dbConfig.getConnection()
-					.prepareStatement("INSERT INTO attendance(present, absent, month, leave_day, leaves, hour_late, hour_overtime, attd_emp_id) VALUES (?,?,?,?,?,?,?,?);");
+					.prepareStatement("INSERT INTO attendance(present, absent, month, leaves, hour_late, hour_overtime, attd_emp_id) VALUES (?,?,?,?,?,?,?);");
 			ps.setString(1, attendance.getPresent());
 			ps.setString(2, attendance.getAbsent());
 			ps.setString(3, attendance.getMonth());
-			ps.setString(4, "10");
-			ps.setString(5, attendance.getLeave());
-			ps.setString(6, attendance.getHourLate());
-			ps.setString(7, attendance.getHourOT());
-			ps.setInt(8, attendance.getEmployee().getId());
+			ps.setString(4, attendance.getLeave());
+			ps.setString(5, attendance.getHourLate());
+			ps.setString(6, attendance.getHourOT());
+			ps.setInt(7, attendance.getEmployee().getId());
 			ps.executeUpdate();
 			ps.close();
 		} catch (Exception e) {

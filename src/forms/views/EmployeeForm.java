@@ -327,19 +327,27 @@ public class EmployeeForm extends JInternalFrame {
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Employee employee = new Employee();
+				List<Employee> registeredEmpList = new ArrayList();
+				registeredEmpList = employeeService.findAllEmployees();
+				
 				if(!nameField.getText().isEmpty() && !(genderCombo.getSelectedIndex() == 0) && !dobChooser.getDate().equals(null) &&
 						!phoneField.getText().isEmpty() && !emailField.getText().isEmpty() && !addressField.getText().isEmpty() &&
 						!hiredDateChooser.getDate().equals(null)) {
 					if(nameField.getText().trim().matches("^[a-zA-Z\\s]*$") && phoneField.getText().trim().matches("[0-9]+") &&
 							emailField.getText().trim().matches("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-]"+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")) {
-						
 						setEmployeeDataFromForm(employee);
-						employeeService.createEmployee(employee);
 
+						if (registeredEmpList.contains(employee)) {
+							JOptionPane.showMessageDialog(null, employee.getName() + "is already registered!", "Duplicate register!", 0);
+							resetFormData(); 
+							return;
+						} else {
+							employeeService.createEmployee(employee);
 
-						loadAllEmployee(Optional.empty());
-						resetFormData();
-
+							JOptionPane.showMessageDialog(null, "Successfully registered!", "Success", 1);
+							loadAllEmployee(Optional.empty());
+							resetFormData();	
+						}
 					}  
 					
 					else if(!emailField.getText().trim().matches("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-]"+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")) {

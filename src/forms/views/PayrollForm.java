@@ -538,6 +538,7 @@ public class PayrollForm extends JInternalFrame {
 		    	if (attendance.getMonth().equals(selectedMonth)) {
 					payrollService.createPayroll(payroll);
 					loadAllPayroll(Optional.empty());
+					JOptionPane.showMessageDialog(null, "Successfully registered!", "Success", 1);
 					resetFormDate();
 		    	} else {
 		    		JOptionPane.showMessageDialog(null, "invalid!", "Invalid", 0);

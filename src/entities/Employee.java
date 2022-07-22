@@ -10,24 +10,19 @@ public class Employee extends PersonInfo{
 
 	private boolean active;
 
+	private String leaveDays;
+	
 	public Employee() {
 		super();
 	}
 
-	public Employee(String username, String password, UserRole role, boolean active) {
+	public Employee(String username, String password, UserRole role, boolean active, String leaveDays) {
 		super();
 		this.username = username;
 		this.password = password;
 		this.role = role;
 		this.active = active;
-	}
-
-	public boolean isActive() {
-		return active;
-	}
-
-	public void setActive(boolean active) {
-		this.active = active;
+		this.leaveDays = leaveDays;
 	}
 
 	public String getUsername() {
@@ -54,11 +49,28 @@ public class Employee extends PersonInfo{
 		this.role = role;
 	}
 
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public String getLeaveDays() {
+		return leaveDays;
+	}
+
+	public void setLeaveDays(String leaveDays) {
+		this.leaveDays = leaveDays;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + (active ? 1231 : 1237);
+		result = prime * result + ((leaveDays == null) ? 0 : leaveDays.hashCode());
 		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		result = prime * result + ((role == null) ? 0 : role.hashCode());
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
@@ -76,6 +88,11 @@ public class Employee extends PersonInfo{
 		Employee other = (Employee) obj;
 		if (active != other.active)
 			return false;
+		if (leaveDays == null) {
+			if (other.leaveDays != null)
+				return false;
+		} else if (!leaveDays.equals(other.leaveDays))
+			return false;
 		if (password == null) {
 			if (other.password != null)
 				return false;
@@ -91,6 +108,7 @@ public class Employee extends PersonInfo{
 		return true;
 	}
 
+	
 	
 
 }

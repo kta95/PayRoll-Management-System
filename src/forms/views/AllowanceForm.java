@@ -41,6 +41,7 @@ import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.awt.event.ActionEvent;
+import com.toedter.calendar.JMonthChooser;
 
 public class AllowanceForm extends JInternalFrame {
 	private JTextField txtEmpID;
@@ -63,6 +64,11 @@ public class AllowanceForm extends JInternalFrame {
 	private JTextField txtTA;
 	private JTextField txtOT;
 	private JTextField txtSearchName;
+	List<String> attendanceIdRecords = new ArrayList<>();
+	JMonthChooser monthChooser = new JMonthChooser();
+	String[] months = new String[12];
+
+
 	/**
 	 * Launch the application.
 	 */
@@ -88,6 +94,8 @@ public class AllowanceForm extends JInternalFrame {
 		this.setTableDesign();
 		this.loadAllowanceDetails(Optional.empty());
     	this.allowanceDetails = new AllowanceDetails();
+		this.months = new String[] {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
 	}
 	
 	public AllowanceForm(AllowanceDetails allowanceDetails) {
@@ -135,9 +143,17 @@ public class AllowanceForm extends JInternalFrame {
 	 newEmployee = employeeService.findEmployeeById(id);
 	 
 	 attendance = new Attendance();
-	 attendance = attendanceService.findAttendanceByEmpId(id);
+//	 attendance = attendanceService.findAttendanceByEmpId(id);
 	 
-	
+	 List<Attendance> attdList = new ArrayList<>(); 
+	 attdList = attendanceService.findAllAttendances();
+	 for(Attendance attd : attdList) {
+		 if (attd.getMonth().equals(months[monthChooser.getMonth()])) {
+			 attendance = attd;
+		 }
+	 }
+	 
+	 
 	 allowanceDetails.setSkills(txtSkills.getText());;
 	 allowanceDetails.setLongevity(txtLong.getText());
 	 allowanceDetails.setAllowance_Amount(txtAmount.getText());
@@ -185,7 +201,7 @@ public class AllowanceForm extends JInternalFrame {
 		JPanel panel = new JPanel();
 		panel.setBackground(Color.WHITE);
 		panel.setBorder(new TitledBorder(null, "Allowance", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.setBounds(48, 27, 405, 460);
+		panel.setBounds(48, 18, 405, 497);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
@@ -200,47 +216,47 @@ public class AllowanceForm extends JInternalFrame {
 		txtEmpID.setColumns(10);
 		
 		JLabel lblNewLabel_5 = new JLabel("Total Amount");
-		lblNewLabel_5.setBounds(37, 371, 89, 14);
+		lblNewLabel_5.setBounds(37, 387, 89, 14);
 		panel.add(lblNewLabel_5);
 		
 		txtAmount = new JTextField();
 		txtAmount.setEditable(false);
-		txtAmount.setBounds(173, 368, 185, 20);
+		txtAmount.setBounds(173, 384, 185, 20);
 		panel.add(txtAmount);
 		txtAmount.setColumns(10);
 		
 		txtEmp = new JTextField();
 		txtEmp.setEditable(false);
-		txtEmp.setBounds(173, 76, 185, 20);
+		txtEmp.setBounds(173, 108, 185, 20);
 		panel.add(txtEmp);
 		txtEmp.setColumns(10);
 		
 		JLabel lblHRA = new JLabel("HRA");
-		lblHRA.setBounds(37, 273, 60, 20);
+		lblHRA.setBounds(37, 300, 60, 20);
 		panel.add(lblHRA);
 		
 		txtHRA = new JTextField();
 		txtHRA.setColumns(10);
-		txtHRA.setBounds(173, 273, 185, 20);
+		txtHRA.setBounds(173, 300, 185, 20);
 		panel.add(txtHRA);
 		
 		JLabel lblTA = new JLabel("TA");
-		lblTA.setBounds(37, 316, 60, 20);
+		lblTA.setBounds(37, 338, 60, 20);
 		panel.add(lblTA);
 		
 		txtTA = new JTextField();
 		txtTA.setColumns(10);
-		txtTA.setBounds(173, 316, 185, 20);
+		txtTA.setBounds(173, 338, 185, 20);
 		panel.add(txtTA);
 		
 		JLabel lblNewLabel_3_1 = new JLabel("OverTime (hour)");
-		lblNewLabel_3_1.setBounds(37, 116, 115, 14);
+		lblNewLabel_3_1.setBounds(37, 147, 115, 14);
 		panel.add(lblNewLabel_3_1);
 		
 		txtOT = new JTextField();
 		txtOT.setEditable(false);
 		txtOT.setColumns(10);
-		txtOT.setBounds(173, 113, 185, 20);
+		txtOT.setBounds(173, 144, 185, 20);
 		panel.add(txtOT);
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -292,34 +308,34 @@ public class AllowanceForm extends JInternalFrame {
 		panel.add(btnSearch);
 		
 		JLabel lblNewLabel_1 = new JLabel("academic certification");
-		lblNewLabel_1.setBounds(37, 195, 126, 14);
+		lblNewLabel_1.setBounds(37, 224, 126, 14);
 		panel.add(lblNewLabel_1);
 		
 		txtSkills = new JTextField();
-		txtSkills.setBounds(173, 192, 185, 20);
+		txtSkills.setBounds(173, 224, 185, 20);
 		panel.add(txtSkills);
 		txtSkills.setColumns(10);
 		
 		JLabel lblNewLabel_2 = new JLabel("Longevity (Year)");
-		lblNewLabel_2.setBounds(37, 154, 115, 14);
+		lblNewLabel_2.setBounds(37, 182, 115, 14);
 		panel.add(lblNewLabel_2);
 		
 		txtLong = new JTextField();
 		txtLong.setEditable(false);
-		txtLong.setBounds(173, 151, 185, 20);
+		txtLong.setBounds(173, 182, 185, 20);
 		panel.add(txtLong);
 		txtLong.setColumns(10);
 		
 		JLabel lblNewLabel_3 = new JLabel("Emp name");
-		lblNewLabel_3.setBounds(37, 79, 60, 14);
+		lblNewLabel_3.setBounds(37, 111, 60, 14);
 		panel.add(lblNewLabel_3);
 		
 		JLabel lblNewLabel_4 = new JLabel("Description");
-		lblNewLabel_4.setBounds(37, 232, 60, 20);
+		lblNewLabel_4.setBounds(37, 261, 60, 20);
 		panel.add(lblNewLabel_4);
 		
 		txtDescription = new JTextField();
-		txtDescription.setBounds(173, 232, 185, 20);
+		txtDescription.setBounds(173, 261, 185, 20);
 		panel.add(txtDescription);
 		txtDescription.setColumns(10);
 		
@@ -329,15 +345,26 @@ public class AllowanceForm extends JInternalFrame {
 				AllowanceDetails allowanceDetails = new AllowanceDetails();
 				setAllowanceDetails(allowanceDetails);
 				
+				AllowanceDetails newAllowanceDetails = new AllowanceDetails();
+				newAllowanceDetails = allowanceService.findAllowanceDetailsByEmpId(txtEmpID.getText());
+				
+				
+
 				if(!txtSkills.getText().isEmpty()&&!txtLong.getText().isEmpty()&&!txtAmount.getText().isEmpty()) {
 					if(txtSkills.getText().trim().matches("[0-9]+")
 							&& txtLong.getText().trim().matches("[0-9]+") 
 							&& txtHRA.getText().trim().matches("[0-9]+")
 							&& txtTA.getText().trim().matches("[0-9]+")) {
 						
+						if (newAllowanceDetails.getAttendance().getMonth().equals(months[monthChooser.getMonth()])) {
+				    		JOptionPane.showMessageDialog(null, "Selected employee's allowance has already registered for the month!", "Invalid", 0);
+							resetFormData();
+				    		return;	
+						}
 						allowanceService.createAllowanceDetails(allowanceDetails);
 						loadAllowanceDetails(Optional.empty());
 						resetFormData();
+						JOptionPane.showMessageDialog(null, "Successfully registered!", "Success", 1);
 						txtEmpID.requestFocus();
 						
 						}
@@ -362,7 +389,7 @@ public class AllowanceForm extends JInternalFrame {
 				}
 			}
 		});
-		btnRegister.setBounds(20, 410, 80, 39);
+		btnRegister.setBounds(10, 427, 80, 39);
 		panel.add(btnRegister);
 		
 		JButton btnClear = new JButton("Clear");
@@ -373,7 +400,7 @@ public class AllowanceForm extends JInternalFrame {
 
 			}
 		});
-		btnClear.setBounds(200, 410, 80, 39);
+		btnClear.setBounds(200, 427, 80, 39);
 		panel.add(btnClear);
 		
 		JButton btnCalculate = new JButton("Calculate");
@@ -439,7 +466,7 @@ public class AllowanceForm extends JInternalFrame {
 				
 			}
 		});
-		btnCalculate.setBounds(110, 410, 80, 39);
+		btnCalculate.setBounds(100, 427, 80, 39);
 		panel.add(btnCalculate);
 		
 		JButton btnDelete = new JButton("Delete");
@@ -453,8 +480,16 @@ public class AllowanceForm extends JInternalFrame {
 				}
 			}
 		});
-		btnDelete.setBounds(290, 410, 80, 39);
+		btnDelete.setBounds(290, 427, 80, 39);
 		panel.add(btnDelete);
+		
+		monthChooser.setMonth(LocalDate.now().getMonthValue());
+		monthChooser.setBounds(173, 67, 200, 24);
+		panel.add(monthChooser);
+		
+		JLabel lblMonth = new JLabel("Month");
+		lblMonth.setBounds(37, 77, 89, 14);
+		panel.add(lblMonth);
 		
 		txtSearchName = new JTextField("Search By Employee Name");
 		txtSearchName.setColumns(10);

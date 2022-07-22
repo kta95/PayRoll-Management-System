@@ -11,6 +11,7 @@ import javax.swing.table.DefaultTableModel;
 
 import entities.Employee;
 import services.EmployeeService;
+import entities.AllowanceDetails;
 import entities.Attendance;
 import entities.DeductionDetails;
 import services.AttendanceService;
@@ -57,6 +58,8 @@ public class DeductionForm extends JInternalFrame {
     private Attendance attendance;
     private AttendanceService attendanceService;
     private JTextField txtAbsent;
+	List<String> attendanceIdRecords = new ArrayList<>();
+
 	/**
 	 * Launch the application.
 	 */
@@ -339,9 +342,21 @@ public class DeductionForm extends JInternalFrame {
 				if(!txtTax.getText().isEmpty() && !txtSSC.getText().isEmpty() && !txtdAmount.getText().isEmpty()) {
 					setDeductionDetails(deductionDetails);
 
-					deductionService.createDeductionDetails(deductionDetails);
-					loadAllDeductionDetails(Optional.empty());
-					resetFormData();
+					
+					List<DeductionDetails> newDeductionDetails = new ArrayList<>();
+					newDeductionDetails = deductionService.findAllDDetails();
+					
+					attendanceIdRecords = newDeductionDetails.stream().map(d -> String.valueOf(d.getAttendance().getId())).collect(Collectors.toList());
+					if (attendanceIdRecords.contains(String.valueOf(deductionDetails.getAttendance().getId()))) {
+			    		JOptionPane.showMessageDialog(null, "Selected employee's Deduction has already registered for the month!", "Invalid", 0);
+						resetFormData();
+			    		return;	
+					} else {
+						deductionService.createDeductionDetails(deductionDetails);
+						loadAllDeductionDetails(Optional.empty());
+						resetFormData();
+						JOptionPane.showMessageDialog(null, "Successfully registered!", "Success", 1);
+					}
 				} else {
 					JOptionPane.showMessageDialog(null, "Enter required fields!", "Invalid fields", 0);
 				}

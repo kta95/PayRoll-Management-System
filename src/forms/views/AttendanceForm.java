@@ -127,14 +127,30 @@ public class AttendanceForm extends JInternalFrame {
 	
 	private void setAttendanceDataFrom(Attendance attendance) {
 		String mymonth = months[monthChooser.getMonth()];
-
+		
+		
 		attendance.setPresent(presentField.getText().isBlank() ? "0" : presentField.getText());
 		attendance.setAbsent(absentField.getText().isBlank() ? "0" : absentField.getText());
 		attendance.setLeave(leavesField.getText().isBlank()? "0" : leavesField.getText());
+
 		attendance.setMonth(mymonth);
 		attendance.setHourLate(lateField.getText().isBlank() ? "0" : lateField.getText());
 		attendance.setHourOT(otField.getText().isBlank() ? "0" : otField.getText());
 		attendance.setEmployee(employee);
+//		System.out.println(attendance.getLeaveDays());
+//		int leaveLeft = Integer.valueOf(attendance.getLeaveDays()) - Integer.valueOf(leavesField.getText().isBlank()? "0" : leavesField.getText());
+//		attendance.setLeaveDays(leaveLeft + "");
+//		if (leaveLeft < 0) {
+//			JOptionPane.showMessageDialog(null, "The employee doesn't have enough leave days, so the extra leave days will be added to absent days!");
+//			int extraLeaves = Integer.valueOf(leavesField.getText().isBlank()? "0" : leavesField.getText()) - Integer.valueOf(attendance.getLeaveDays());
+//			attendance.setLeave(attendance.getLeaveDays());
+//			
+//			int addedAbsent = Integer.valueOf(absentField.getText().isBlank() ? "0" : absentField.getText()) + extraLeaves;
+//			attendance.setAbsent(addedAbsent + "");
+//		} else {
+//			attendance.setLeaveDays(leaveLeft + "");
+//		}
+
 	}
 	
 	private void loadAllAttendance(Optional<List<Attendance>> optionalAttendances) {
@@ -311,6 +327,7 @@ public class AttendanceForm extends JInternalFrame {
 		attdtbl.setFont(new Font("Tahoma", Font.PLAIN, 15));
         scrollPane.setViewportView(attdtbl);
        
+		monthChooser.setMonth(LocalDate.now().getMonthValue());
 		monthChooser.setBounds(475, 31, 224, 26);
 		panel.add(monthChooser);
 		

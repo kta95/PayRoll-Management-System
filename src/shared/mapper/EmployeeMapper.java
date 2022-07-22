@@ -41,6 +41,7 @@ public class EmployeeMapper {
         	employee.setRole((role));
             employee.setUsername(rs.getString("username"));
             employee.setActive(rs.getBoolean("active"));
+            employee.setLeaveDays(rs.getString("leave_days"));
 
         } catch (Exception e) {
             e.printStackTrace();

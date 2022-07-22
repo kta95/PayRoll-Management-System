@@ -254,7 +254,6 @@ public class EmployeeDetailsForm extends JInternalFrame {
 					txtUsername.setEditable(true);
 					txtPassword.setEditable(true);
 					txtUsername.setText(employee.getUsername());
-					txtPassword.setText(String.valueOf(employee.getPassword()));
 				} else {
 					lblaccess.setForeground(Color.red);
 					lblaccess.setText("This employee does not have access to Admin!");
