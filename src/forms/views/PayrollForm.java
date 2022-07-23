@@ -172,7 +172,7 @@ public class PayrollForm extends JInternalFrame {
 	
             
 		filteredPayrollList.forEach(p-> {
-            	Object[] row =new Object [20]; 
+            	Object[] row =new Object [13]; 
             			row[0] = p.getId();
             			row[1] = p.getEmployee().getId();
             			row[2] = p.getEmployee().getName();
@@ -726,7 +726,7 @@ public class PayrollForm extends JInternalFrame {
                 
                 for (int i = 0; i < pList.size(); i++) {
                 	if (pList.get(i).getId() == payroll.getEmployee().getId()) {
-                		EmpIdCombo.setSelectedIndex(i);
+                		EmpIdCombo.setSelectedIndex(i + 1);
                 	}
                 }
                                               

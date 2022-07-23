@@ -67,6 +67,7 @@ public class DeductionForm extends JInternalFrame {
 	JComboBox<String> EmpIdCombo = new JComboBox<String>();
     private Optional<Employee> selectedEmployee;
     private Optional<Attendance> selectedAttendance;
+    private JTextField txtMonth;
 
 	/**
 	 * Launch the application.
@@ -200,12 +201,12 @@ public class DeductionForm extends JInternalFrame {
 		
 		JLabel lblNewLabel = new JLabel("Tax");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		lblNewLabel.setBounds(45, 195, 46, 14);
+		lblNewLabel.setBounds(45, 224, 46, 14);
 		panel.add(lblNewLabel);
 		
 		txtTax = new JTextField();
 		txtTax.setEditable(false);
-		txtTax.setBounds(169, 188, 193, 28);
+		txtTax.setBounds(169, 217, 193, 28);
 		panel.add(txtTax);
 		txtTax.setColumns(10);
 		
@@ -214,24 +215,24 @@ public class DeductionForm extends JInternalFrame {
 		panel.add(lblNewLabel_1);
 		
 		txtDescription = new JTextField();
-		txtDescription.setBounds(169, 305, 193, 28);
+		txtDescription.setBounds(169, 334, 193, 28);
 		panel.add(txtDescription);
 		txtDescription.setColumns(10);
 		
 		txtEmpName = new JTextField();
 		txtEmpName.setEditable(false);
 		txtEmpName.setColumns(10);
-		txtEmpName.setBounds(169, 110, 193, 28);
+		txtEmpName.setBounds(169, 139, 193, 28);
 		panel.add(txtEmpName);
 		
 		JLabel lblNewLabel_4_1 = new JLabel("late (hour)");
-		lblNewLabel_4_1.setBounds(45, 156, 59, 14);
+		lblNewLabel_4_1.setBounds(45, 185, 59, 14);
 		panel.add(lblNewLabel_4_1);
 		
 		txtLate = new JTextField();
 		txtLate.setEditable(false);
 		txtLate.setColumns(10);
-		txtLate.setBounds(169, 149, 193, 28);
+		txtLate.setBounds(169, 178, 193, 28);
 		panel.add(txtLate);
 		
 	
@@ -295,23 +296,23 @@ public class DeductionForm extends JInternalFrame {
         getContentPane().add(btnSearch);
 		
 		JLabel lblNewLabel_2 = new JLabel("SSC");
-		lblNewLabel_2.setBounds(46, 234, 58, 14);
+		lblNewLabel_2.setBounds(45, 263, 58, 14);
 		panel.add(lblNewLabel_2);
 		
 		txtSSC = new JTextField();
 		txtSSC.setEditable(false);
 		txtSSC.setColumns(10);
-		txtSSC.setBounds(169, 227, 193, 28);
+		txtSSC.setBounds(169, 256, 193, 28);
 		panel.add(txtSSC);
 		
 		JLabel lblNewLabel_3 = new JLabel("Total Amount");
-		lblNewLabel_3.setBounds(45, 348, 100, 25);
+		lblNewLabel_3.setBounds(45, 375, 100, 25);
 		panel.add(lblNewLabel_3);
 		
 		txtdAmount = new JTextField();
 		txtdAmount.setEditable(false);
 		txtdAmount.setColumns(10);
-		txtdAmount.setBounds(169, 346, 193, 28);
+		txtdAmount.setBounds(169, 373, 193, 28);
 		panel.add(txtdAmount);
 		
 		JButton btnSave = new JButton("Register");
@@ -351,7 +352,7 @@ public class DeductionForm extends JInternalFrame {
 				}
 			}
 		});
-		btnSave.setBounds(45, 399, 74, 42);
+		btnSave.setBounds(45, 421, 74, 42);
 		panel.add(btnSave);
 		
 		JButton btnCalculate = new JButton("Calculate");
@@ -386,7 +387,7 @@ public class DeductionForm extends JInternalFrame {
 				}
 			}
 		});
-		btnCalculate.setBounds(127, 399, 85, 42);
+		btnCalculate.setBounds(127, 421, 85, 42);
 		panel.add(btnCalculate);
 		
 		JButton btnClear = new JButton("Clear");
@@ -395,25 +396,25 @@ public class DeductionForm extends JInternalFrame {
 				resetFormData();
 			}
 		});
-		btnClear.setBounds(222, 399, 74, 42);
+		btnClear.setBounds(222, 421, 74, 42);
 		panel.add(btnClear);
 		
 		JLabel lblNewLabel_4 = new JLabel("Emp Name");
-		lblNewLabel_4.setBounds(45, 117, 59, 14);
+		lblNewLabel_4.setBounds(45, 146, 59, 14);
 		panel.add(lblNewLabel_4);
 		
 		JLabel lblNewLabel_5 = new JLabel("Description");
-		lblNewLabel_5.setBounds(45, 312, 75, 14);
+		lblNewLabel_5.setBounds(45, 341, 75, 14);
 		panel.add(lblNewLabel_5);
 		
 		JLabel lblNewLabel_4_2 = new JLabel("Absent (Day)");
-		lblNewLabel_4_2.setBounds(45, 267, 100, 26);
+		lblNewLabel_4_2.setBounds(45, 296, 100, 26);
 		panel.add(lblNewLabel_4_2);
 		
 		txtAbsent = new JTextField();
 		txtAbsent.setEditable(false);
 		txtAbsent.setColumns(10);
-		txtAbsent.setBounds(169, 266, 193, 28);
+		txtAbsent.setBounds(169, 295, 193, 28);
 		panel.add(txtAbsent);
 		JButton btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(new ActionListener() {
@@ -425,11 +426,11 @@ public class DeductionForm extends JInternalFrame {
 				}
 			}
 		});
-		btnDelete.setBounds(306, 399, 74, 42);
+		btnDelete.setBounds(306, 421, 74, 42);
 		panel.add(btnDelete);
 		
 		JLabel lblMonth = new JLabel("Month");
-		lblMonth.setBounds(45, 89, 75, 17);
+		lblMonth.setBounds(45, 106, 75, 17);
 		panel.add(lblMonth);
 		
 		EmpIdCombo.setBounds(169, 21, 193, 28);
@@ -464,8 +465,14 @@ public class DeductionForm extends JInternalFrame {
 		lblAttd.setBounds(45, 66, 75, 17);
 		panel.add(lblAttd);
 		
-		comboBoAttendance.setBounds(169, 66, 193, 28);
+		comboBoAttendance.setBounds(169, 60, 193, 28);
 		panel.add(comboBoAttendance);
+		
+		txtMonth = new JTextField();
+		txtMonth.setEditable(false);
+		txtMonth.setColumns(10);
+		txtMonth.setBounds(169, 100, 193, 28);
+		panel.add(txtMonth);
 		comboBoAttendance.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String attd_id = (String) comboBoAttendance.getSelectedItem();
@@ -509,6 +516,8 @@ public class DeductionForm extends JInternalFrame {
 					txtTax.setText(String.valueOf(tax));
 					txtSSC.setText(String.valueOf(ssc));
 					txtAbsent.setText(String.valueOf(absentDays));
+   				 	txtMonth.setText(attendance.getMonth());
+
 				}
 			}
 		});
@@ -532,7 +541,8 @@ public class DeductionForm extends JInternalFrame {
 					txtSSC.setText(deductionDetails.getSSC());
 					txtDescription.setText(deductionDetails.getDescription());
 					txtdAmount.setText(String.valueOf(deductionDetails.getDeduction_amount()));
-					
+					txtMonth.setText(deductionDetails.getAttendance().getMonth());
+
 				}
 			}
 		});
