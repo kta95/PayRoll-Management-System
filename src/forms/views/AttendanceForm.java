@@ -242,7 +242,7 @@ public class AttendanceForm extends JInternalFrame {
 		lblOT.setBounds(385, 129, 69, 21);
 		panel.add(lblOT);
 		
-		presentField = new JTextField();
+		presentField = new JTextField("20");
 		presentField.setColumns(10);
 		presentField.setBounds(128, 97, 224, 21);
 		panel.add(presentField);
