@@ -22,6 +22,8 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import entities.AllowanceDetails;
+import entities.DeductionDetails;
 import entities.Department;
 import entities.Employee;
 import entities.Payroll;
@@ -61,7 +63,8 @@ public class HomeForm extends JInternalFrame {
 	List<Department> deptList = new ArrayList<>();
 	List<Position> positionList = new ArrayList<>();
 	List<Payroll> payrollList = new ArrayList<>();
-
+	List<AllowanceDetails> allowanceList = new ArrayList<>();
+	List<DeductionDetails> dedukList = new ArrayList<>();
 	/**
 	 * Launch the application.
 	 */
@@ -106,6 +109,8 @@ public class HomeForm extends JInternalFrame {
 		deptList = departmentService.findAllDepartments();
 		positionList = positionService.findAllPositions();
 		payrollList = payrollService.findAllPayrolls();
+		allowanceList = allowanceService.findAllADetails();
+		dedukList = deductionService.findAllDDetails();
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -252,14 +257,14 @@ public class HomeForm extends JInternalFrame {
 				        	  table.addCell(new PdfPCell(new Paragraph(p.getId() + "",FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
 				              table.addCell(new PdfPCell(new Paragraph(p.getEmployee().getName(),FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
 				              table.addCell(new PdfPCell(new Paragraph(p.getAttendance().getMonth(),FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
-				              table.addCell(new PdfPCell(new Paragraph(p.getAttendance().getPresent(),FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
-				              table.addCell(new PdfPCell(new Paragraph(p.getAttendance().getAbsent(),FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
-				              table.addCell(new PdfPCell(new Paragraph(p.getAttendance().getHourLate(),FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
-				              table.addCell(new PdfPCell(new Paragraph(p.getAttendance().getHourOT(),FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
-				              table.addCell(new PdfPCell(new Paragraph(p.getAllowanceDetails().getAllowance_Amount(),FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
-				              table.addCell(new PdfPCell(new Paragraph(p.getDeductionDetails().getDeduction_amount() + "",FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
-				              table.addCell(new PdfPCell(new Paragraph(p.getGrossSalary(),FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
-				              table.addCell(new PdfPCell(new Paragraph(p.getNetSalary(),FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(p.getAttendance().getPresent() + " day(s)",FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(p.getAttendance().getAbsent() + " day(s)",FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(p.getAttendance().getHourLate() + " hrs",FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(p.getAttendance().getHourOT() + " hrs",FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(p.getAllowanceDetails().getAllowance_Amount() + " ¥",FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(p.getDeductionDetails().getDeduction_amount() + " ¥",FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(p.getGrossSalary() + " ¥",FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(p.getNetSalary() + " ¥",FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
 				          }
 				          
 				          myDocument.add(table);
@@ -279,7 +284,7 @@ public class HomeForm extends JInternalFrame {
 		panel.add(panel_1_1);
 		panel_1_1.setLayout(null);
 		
-		JLabel lblDepartment = new JLabel("Payroll");
+		JLabel lblDepartment = new JLabel("Payroll Report");
 		lblDepartment.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDepartment.setFont(new Font("Tahoma", Font.BOLD, 20));
 		lblDepartment.setBounds(10, 11, 328, 67);
@@ -299,55 +304,168 @@ public class HomeForm extends JInternalFrame {
 		
 		payrollCount.setText(payrollList.size() + "");
 		JPanel panel_1_2 = new JPanel();
+		panel_1_2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JFileChooser dialog = new JFileChooser();
+				dialog.setSelectedFile(new File("Deduction Report.pdf"));
+				int dialogResult = dialog.showSaveDialog(null);
+				if (dialogResult == JFileChooser.APPROVE_OPTION) {
+					String filePath = dialog.getSelectedFile().getPath();
+					try {
+						List<DeductionDetails> ddList = new ArrayList<>();
+						ddList = deductionService.findAllDDetails();
+												
+						
+						Document myDocument = new Document();
+						PdfWriter myWriter = PdfWriter.getInstance(myDocument, new FileOutputStream(filePath));
+						PdfPTable table = new PdfPTable(5);
+						myDocument.open();
+						
+						float[] columnWidths = new float[] {5, 12, 8, 12, 15};
+						table.setWidths(columnWidths);
+						
+						table.setWidthPercentage(100);
+						
+					    
+				          myDocument.add(new Paragraph("Deduction Report",FontFactory.getFont(FontFactory.TIMES_BOLD,20,Font.BOLD )));
+				          myDocument.add(new Paragraph(new Date().toString()));
+				          myDocument.add(new Paragraph("---------------------------------------------------------------------------------------------------------------"));
+				          table.addCell(new PdfPCell(new Paragraph("Deduction ID",FontFactory.getFont(FontFactory.TIMES_ROMAN,9,Font.BOLD))));
+				          table.addCell(new PdfPCell(new Paragraph("Employee Name",FontFactory.getFont(FontFactory.TIMES_ROMAN,9,Font.BOLD))));
+				          table.addCell(new PdfPCell(new Paragraph("Tax",FontFactory.getFont(FontFactory.TIMES_ROMAN,9,Font.BOLD))));
+				          table.addCell(new PdfPCell(new Paragraph("SSC",FontFactory.getFont(FontFactory.TIMES_ROMAN,9,Font.BOLD))));
+				          table.addCell(new PdfPCell(new Paragraph("Deduction Amount",FontFactory.getFont(FontFactory.TIMES_ROMAN,9,Font.BOLD))));
+		
+				          
+				          for(DeductionDetails d : ddList) {
+				        	  table.addCell(new PdfPCell(new Paragraph(d.getDeduction_details_id() + "",FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(d.getEmployee().getName(),FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(d.getTax() + " ¥",FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(d.getSSC() + " ¥",FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(d.getDeduction_amount() + " ¥",FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				          }
+				          
+				          myDocument.add(table);
+				          myDocument.add(new Paragraph("----------------------------------------------------------------------------------------------------------------"));
+				          myDocument.close();  
+				          JOptionPane.showMessageDialog(null,"Report was successfully generated");
+				          
+					}  catch(Exception e2){
+			            JOptionPane.showMessageDialog(null,e2);			            			            
+				    }
+				}			
+				
+			}
+		});
 		panel_1_2.setBorder(new LineBorder(new Color(0, 0, 0)));
 		panel_1_2.setBounds(498, 281, 348, 183);
 		panel.add(panel_1_2);
 		panel_1_2.setLayout(null);
 		
-		JLabel lblPosition = new JLabel("Position");
-		lblPosition.setHorizontalAlignment(SwingConstants.CENTER);
-		lblPosition.setFont(new Font("Tahoma", Font.BOLD, 20));
-		lblPosition.setBounds(10, 11, 328, 67);
-		panel_1_2.add(lblPosition);
+		JLabel lblDeduction = new JLabel("Deduction Report");
+		lblDeduction.setHorizontalAlignment(SwingConstants.CENTER);
+		lblDeduction.setFont(new Font("Tahoma", Font.BOLD, 20));
+		lblDeduction.setBounds(10, 11, 328, 67);
+		panel_1_2.add(lblDeduction);
 		
-		JLabel lblNewLabel_1_1_1_1 = new JLabel("Total Position :");
+		JLabel lblNewLabel_1_1_1_1 = new JLabel("Total Deduction :");
 		lblNewLabel_1_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_1_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 18));
 		lblNewLabel_1_1_1_1.setBounds(59, 89, 179, 67);
 		panel_1_2.add(lblNewLabel_1_1_1_1);
 		
-		JLabel positionCount = new JLabel("");
-		positionCount.setHorizontalAlignment(SwingConstants.CENTER);
-		positionCount.setFont(new Font("Tahoma", Font.BOLD, 18));
-		positionCount.setBounds(227, 89, 69, 67);
-		panel_1_2.add(positionCount);
-		positionCount.setText(positionList.size() + "");
+		JLabel dedukCount = new JLabel("");
+		dedukCount.setHorizontalAlignment(SwingConstants.CENTER);
+		dedukCount.setFont(new Font("Tahoma", Font.BOLD, 18));
+		dedukCount.setBounds(227, 89, 69, 67);
+		panel_1_2.add(dedukCount);
+		dedukCount.setText(dedukList.size() + "");
 		
-		JPanel panel_1_3 = new JPanel();
-		panel_1_3.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel_1_3.setBounds(72, 281, 348, 183);
-		panel.add(panel_1_3);
-		panel_1_3.setLayout(null);
+		JPanel allowancepnl = new JPanel();
+		allowancepnl.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JFileChooser dialog = new JFileChooser();
+				dialog.setSelectedFile(new File("Allowance Report.pdf"));
+				int dialogResult = dialog.showSaveDialog(null);
+				if (dialogResult == JFileChooser.APPROVE_OPTION) {
+					String filePath = dialog.getSelectedFile().getPath();
+					try {
+						List<AllowanceDetails> alwList = new ArrayList<>();
+						alwList = allowanceService.findAllADetails();
+												
+						
+						Document myDocument = new Document();
+						PdfWriter myWriter = PdfWriter.getInstance(myDocument, new FileOutputStream(filePath));
+						PdfPTable table = new PdfPTable(8);
+						myDocument.open();
+						
+						float[] columnWidths = new float[] {5, 12, 8, 12, 15, 8, 8, 9};
+						table.setWidths(columnWidths);
+						
+						table.setWidthPercentage(100);
+						
+					    
+				          myDocument.add(new Paragraph("Allowance Report",FontFactory.getFont(FontFactory.TIMES_BOLD,20,Font.BOLD )));
+				          myDocument.add(new Paragraph(new Date().toString()));
+				          myDocument.add(new Paragraph("---------------------------------------------------------------------------------------------------------------"));
+				          table.addCell(new PdfPCell(new Paragraph("Allowance ID",FontFactory.getFont(FontFactory.TIMES_ROMAN,9,Font.BOLD))));
+				          table.addCell(new PdfPCell(new Paragraph("Employee Name",FontFactory.getFont(FontFactory.TIMES_ROMAN,9,Font.BOLD))));
+				          table.addCell(new PdfPCell(new Paragraph("Longevity",FontFactory.getFont(FontFactory.TIMES_ROMAN,9,Font.BOLD))));
+				          table.addCell(new PdfPCell(new Paragraph("Acedamic Certification Allowance",FontFactory.getFont(FontFactory.TIMES_ROMAN,9,Font.BOLD))));
+				          table.addCell(new PdfPCell(new Paragraph("HRA",FontFactory.getFont(FontFactory.TIMES_ROMAN,9,Font.BOLD))));
+				          table.addCell(new PdfPCell(new Paragraph("TA",FontFactory.getFont(FontFactory.TIMES_ROMAN,9,Font.BOLD))));
+				          table.addCell(new PdfPCell(new Paragraph("Month",FontFactory.getFont(FontFactory.TIMES_ROMAN,9,Font.BOLD))));
+				          table.addCell(new PdfPCell(new Paragraph("Allowance Amount",FontFactory.getFont(FontFactory.TIMES_ROMAN,9,Font.BOLD))));
+				          
+				          for(AllowanceDetails a : alwList) {
+				        	  table.addCell(new PdfPCell(new Paragraph(a.getAdId() + "",FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(a.getEmployee().getName(),FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(a.getLongevity() + " year(s)",FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(a.getSkills() + " ¥",FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(a.getHouseRentAllowance() + " ¥",FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(a.getTransportAllowance() + " ¥",FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(a.getAttendance().getMonth(),FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				              table.addCell(new PdfPCell(new Paragraph(a.getAllowance_Amount() + " ¥",FontFactory.getFont(FontFactory.TIMES_ROMAN,8,Font.PLAIN))));
+				          }
+				          
+				          myDocument.add(table);
+				          myDocument.add(new Paragraph("----------------------------------------------------------------------------------------------------------------"));
+				          myDocument.close();  
+				          JOptionPane.showMessageDialog(null,"Report was successfully generated");
+				          
+					}  catch(Exception e2){
+			            JOptionPane.showMessageDialog(null,e2);			            			            
+				    }
+				}		
+				
+			}
+		});
+		allowancepnl.setBorder(new LineBorder(new Color(0, 0, 0)));
+		allowancepnl.setBounds(72, 281, 348, 183);
+		panel.add(allowancepnl);
+		allowancepnl.setLayout(null);
 		
-		JLabel lblDepartment_1 = new JLabel("Department");
-		lblDepartment_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblDepartment_1.setFont(new Font("Tahoma", Font.BOLD, 20));
-		lblDepartment_1.setBounds(10, 11, 328, 67);
-		panel_1_3.add(lblDepartment_1);
+		JLabel lblAllowance = new JLabel("Allowance Report");
+		lblAllowance.setHorizontalAlignment(SwingConstants.CENTER);
+		lblAllowance.setFont(new Font("Tahoma", Font.BOLD, 20));
+		lblAllowance.setBounds(10, 11, 328, 67);
+		allowancepnl.add(lblAllowance);
 		
-		JLabel lblNewLabel_1_1 = new JLabel("Total Department :");
+		JLabel lblNewLabel_1_1 = new JLabel("Total Allowance :");
 		lblNewLabel_1_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_1_1.setFont(new Font("Tahoma", Font.BOLD, 18));
 		lblNewLabel_1_1.setBounds(33, 89, 188, 67);
-		panel_1_3.add(lblNewLabel_1_1);
+		allowancepnl.add(lblNewLabel_1_1);
 		
-		JLabel deptCount = new JLabel("");
-		deptCount.setHorizontalAlignment(SwingConstants.CENTER);
-		deptCount.setFont(new Font("Tahoma", Font.BOLD, 18));
-		deptCount.setBounds(218, 89, 69, 67);
-		panel_1_3.add(deptCount);
+		JLabel allowancelbl = new JLabel("");
+		allowancelbl.setHorizontalAlignment(SwingConstants.CENTER);
+		allowancelbl.setFont(new Font("Tahoma", Font.BOLD, 18));
+		allowancelbl.setBounds(218, 89, 69, 67);
+		allowancepnl.add(allowancelbl);
 		
-		deptCount.setText(deptList.size() + "");
+		allowancelbl.setText(allowanceList.size() + "");
 		this.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		BasicInternalFrameUI ui= (BasicInternalFrameUI)this.getUI();
 		ui.setNorthPane(null);
