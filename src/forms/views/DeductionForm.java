@@ -531,6 +531,19 @@ public class DeductionForm extends JInternalFrame {
 					deductionDetails = deductionService.findDeductionDetailsById(id);
 
 					EmpIdCombo.setSelectedIndex(deductionDetails.getEmployee().getId());
+					
+					Attendance attendance = new Attendance();
+                	attendance = attendanceService.findAttendanceById(deductionDetails.getAttendance().getId() + "");
+                	int index = 0;
+                	for (int i = 0; i < comboBoAttendance.getItemCount(); i++) {
+                		if (comboBoAttendance.getItemAt(i).equals(attendance.getId() + "")) {
+                			index = i;
+                		}
+                	}
+                	
+                	comboBoAttendance.setSelectedIndex(index);
+					
+					
 					txtEmpName.setText(deductionDetails.getEmployee().getName());
 					txtLate.setText(deductionDetails.getAttendance().getHourLate());
 					txtAbsent.setText(deductionDetails.getAttendance().getAbsent());

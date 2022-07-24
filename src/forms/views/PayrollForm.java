@@ -871,7 +871,7 @@ public class PayrollForm extends JInternalFrame {
                 if (selectedEmployee.isPresent()) {
                 	Attendance attendance = new Attendance();
                 	attendance = attendanceService.findAttendanceById(payroll.getAttendance().getId() + "");
-                	comboBoAttendance.setSelectedItem(attendance.getId());
+          //      	comboBoAttendance.setSelectedItem(attendance.getId());
                 	AllowanceDetails allowanceDetails = new AllowanceDetails();
                 	allowanceDetails = allowanceService.findAllowanceDetailsByEmpId(id);
                 	

@@ -592,10 +592,26 @@ public class AllowanceForm extends JInternalFrame {
 				if (!tblAllowance.getSelectionModel().isSelectionEmpty()) {
 
 					String id = tblAllowance.getValueAt(tblAllowance.getSelectedRow(), 0).toString();
-
+					
+					
 					allowanceDetails = allowanceService.findAllowanceDetailsById(id);
 					
+					List<Attendance> newAttdList = new ArrayList<>();
+					 newAttdList = attendanceService.findAllAttendances();
+					selectedAttendance = newAttdList.stream()
+							.filter(a -> String.valueOf(a.getId()).equals(allowanceDetails.getAttendance().getId() +"")).findFirst();
+					
 					EmpIdCombo.setSelectedIndex(allowanceDetails.getEmployee().getId());
+					Attendance attendance = new Attendance();
+                	attendance = attendanceService.findAttendanceById(allowanceDetails.getAttendance().getId() + "");
+                	int index = 0;
+                	for (int i = 0; i < comboBoAttendance.getItemCount(); i++) {
+                		if (comboBoAttendance.getItemAt(i).equals(attendance.getId() + "")) {
+                			index = i;
+                		}
+                	}
+                	
+                	comboBoAttendance.setSelectedIndex(index);
 					txtEmp.setText("" + allowanceDetails.getEmployee().getName());
 					txtSkills.setText(allowanceDetails.getSkills());
 					txtLong.setText(allowanceDetails.getLongevity());
