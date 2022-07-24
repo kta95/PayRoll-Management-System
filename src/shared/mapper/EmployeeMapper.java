@@ -40,6 +40,7 @@ public class EmployeeMapper {
         	UserRole role = UserRole.valueOf(rs.getString("role"));
         	employee.setRole((role));
             employee.setUsername(rs.getString("username"));
+            employee.setPassword(rs.getString("password"));
             employee.setActive(rs.getBoolean("active"));
             employee.setLeaveDays(rs.getString("leave_days"));
 

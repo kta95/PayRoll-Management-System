@@ -97,9 +97,6 @@ public class EmployeeService {
 	        	e.printStackTrace();
 	        	return;
 	        }
-//	        attendanceService.deleteAttendance(id);
-//	        allowanceService.deleteAllowance(id);
-//	        deductionService.deleteDeduction(id);
 	    }
 	public List<Employee> findAllEmployees() {
 		List<Employee> employeeList=new ArrayList<>();

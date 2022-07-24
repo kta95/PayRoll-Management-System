@@ -125,7 +125,8 @@ public class AttendanceForm extends JInternalFrame {
 	}
 	
 	private void setAttendanceDataFrom(Attendance attendance) {
-		String mymonth = months[monthChooser.getMonth()];
+		int currentYear = LocalDate.now().getYear(); 
+		String mymonth = months[monthChooser.getMonth()] + ", " + currentYear;
 		
 		
 		attendance.setPresent(presentField.getText().isBlank() ? "0" : presentField.getText());
@@ -345,7 +346,7 @@ public class AttendanceForm extends JInternalFrame {
         scrollPane.setViewportView(attdtbl);
        
 		monthChooser.setMonth(LocalDate.now().getMonthValue());
-		monthChooser.setBounds(475, 31, 224, 26);
+		monthChooser.setBounds(475, 31, 128, 26);
 		panel.add(monthChooser);
 		
 		
@@ -409,6 +410,13 @@ public class AttendanceForm extends JInternalFrame {
 		);
 		btnSave.setBounds(770, 88, 128, 38);
 		panel.add(btnSave);
+		
+		JLabel currentYear = new JLabel("");
+		currentYear.setHorizontalAlignment(SwingConstants.CENTER);
+		currentYear.setBounds(598, 30, 51, 26);
+		panel.add(currentYear);
+		currentYear.setText(LocalDate.now().getYear() + "");
+		
 		
 		searchField = new JTextField("Search By Employee Name");
 		searchField.setColumns(10);
