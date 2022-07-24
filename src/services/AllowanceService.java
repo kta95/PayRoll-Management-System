@@ -127,6 +127,33 @@ public class AllowanceService {
         return allowanceDetails;
     }
 	
+
+	public AllowanceDetails findAllowanceDetailsByattdId(String id, String allowanceId) {
+
+		AllowanceDetails allowanceDetails = new AllowanceDetails();
+        try (Statement st = this.dbConfig.getConnection().createStatement()) {
+
+            String query = "SELECT * FROM allowance_details\n" +
+                    "INNER JOIN employee\n" +
+                    "ON employee.emp_id = allowance_details.ad_employee_id\n" +
+                    "INNER JOIN attendance\n" +
+                    "ON attendance.attendance_id=allowance_details.ad_attendance_id \n" +
+                    "WHERE ad_employee_id=" + id +" and ad_attendance_id=" + allowanceId + ";";
+
+            ResultSet rs = st.executeQuery(query);
+
+            while (rs.next()) {
+                this.allowanceMapper.mapToAllowanceDetails(allowanceDetails, rs);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return allowanceDetails;
+    }
+	
+	
 	public void deleteAllowance(String id) {
 	        try {
 	            PreparedStatement ps = this.dbConfig.getConnection()

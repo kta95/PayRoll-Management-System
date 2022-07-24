@@ -320,10 +320,10 @@ public class AllowanceForm extends JInternalFrame {
 				
 				List<AllowanceDetails> adList = new ArrayList<>();
 				adList = allowanceService.findAllADetails();
-				List<String> adIdList = new ArrayList<>();
+				List<String> adMonthList = new ArrayList<>();
 
 				adList = adList.stream().filter( a -> String.valueOf(a.getEmployee().getId()).equals(allowanceDetails.getEmployee().getId() + "")).collect(Collectors.toList());
-				adIdList = adList.stream().map(a -> a.getAttendance().getId() + "").collect(Collectors.toList());
+				adMonthList = adList.stream().map(a -> a.getAttendance().getMonth() + "").collect(Collectors.toList());
 				
 
 		        
@@ -333,7 +333,7 @@ public class AllowanceForm extends JInternalFrame {
 							&& txtHRA.getText().trim().matches("[0-9]+")
 							&& txtTA.getText().trim().matches("[0-9]+")) {
 						
-						if (adIdList.contains(allowanceDetails.getAttendance().getId() + "")) {
+						if (adMonthList.contains(allowanceDetails.getAttendance().getMonth())) {
 				    		JOptionPane.showMessageDialog(null, "Selected employee's allowance has already registered for the month!", "Invalid", 0);
 							resetFormData();
 				    		return;								

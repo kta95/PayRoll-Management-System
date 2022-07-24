@@ -51,6 +51,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -64,7 +67,6 @@ public class PayrollForm extends JInternalFrame {
 	private JTextField txtPosition;
 	private JTextField txtDept;
 	JComboBox<String> EmpIdCombo = new JComboBox<String>();
-	private JTextField txtAttdId;
 	private JTextField txtPresent;
 	private JTextField txtAbsent;
 	private JTextField txtLate;
@@ -93,10 +95,15 @@ public class PayrollForm extends JInternalFrame {
 	JButton btnRegister = new JButton("Register");
 	private List<Payroll> payrollList = new ArrayList<>();
 	private List<Payroll> filteredPayrollList = new ArrayList<>();
-	JMonthChooser monthChooser = new JMonthChooser();
 	String[] months = new String[12];
 	List<String> attendanceIdRecords = new ArrayList<>();
 	private Payroll payroll;
+	private JTextField txtMonth;
+	JComboBox<String> comboBoAttendance = new JComboBox<String>();
+	List<Attendance> attdList = new ArrayList<>();
+    private Optional<Attendance> selectedAttendance;
+
+
 	/**
 	 * Launch the application.
 	 */
@@ -226,7 +233,7 @@ public class PayrollForm extends JInternalFrame {
 	private void resetFormDate() {
 		EmpIdCombo.setSelectedIndex(0);
 		txtEmpName.setText("");
-    	txtAttdId.setText("");
+		comboBoAttendance.setSelectedIndex(0);
     	txtPosition.setText("");
     	txtDept.setText("");
     	txtPresent.setText("");
@@ -248,6 +255,15 @@ public class PayrollForm extends JInternalFrame {
 	        this.employeeList.forEach(e -> this.EmpIdCombo.addItem(String.valueOf(e.getId())));
 	    }
 	
+	private void loadAttendanceForComboBox(String id) {
+		this.comboBoAttendance.removeAllItems();
+        this.comboBoAttendance.addItem("- Select -");
+        this.attdList = this.attendanceService.findAllAttendances();
+        List<Attendance> newAttdList = new ArrayList<>();
+        newAttdList = this.attdList.stream().filter(a -> String.valueOf(a.getEmployee().getId()).equals(id)).collect(Collectors.toList());
+        
+        newAttdList.forEach(e -> this.comboBoAttendance.addItem(String.valueOf(e.getId())));
+    }
 	private void initialize() {
 		getContentPane().setBackground(Color.WHITE);
 		getContentPane().setLayout(null);
@@ -270,55 +286,79 @@ public class PayrollForm extends JInternalFrame {
 		panel.setName("Payroll Registration");
 		panel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Payroll Management", TitledBorder.LEADING, TitledBorder.TOP, null, Color.BLACK));
 		panel.setBackground(Color.WHITE);
-		panel.setBounds(119, 11, 822, 490);
+		panel.setBounds(119, 11, 822, 515);
 		payrollManagement.add(panel);
 		
-		EmpIdCombo.setBounds(188, 81, 200, 30);
+		EmpIdCombo.setBounds(188, 27, 200, 30);
 		
 		EmpIdCombo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String id = (String) EmpIdCombo.getSelectedItem();
+				String emp_id = (String) EmpIdCombo.getSelectedItem();
                 selectedEmployee = employeeList.stream()
                         .filter(emp -> String.valueOf(emp.getId()).equals(EmpIdCombo.getSelectedItem())).findFirst();
                 if (selectedEmployee.isPresent()) {
-                	Attendance attendance = new Attendance();
-                	attendance = attendanceService.findAttendanceByEmpId(id);
                 	
+                	Employee employee = new Employee();
+                	employee = employeeService.findEmployeeById(emp_id);
+                	
+                	Attendance attendance = new Attendance();
+                	attendance = attendanceService.findAttendanceByEmpId(emp_id);
+                	
+                	try {
+                		if (attendance.getId() == 0) {
+//                    		JOptionPane.showMessageDialog(null, "Selected Employee doesn't have attendance records!", "Invalid", 0);
+                    		resetFormDate();
+                    		return;
+                    	}
+                	} catch (Exception e5) {
+                		JOptionPane.showMessageDialog(null, "Selected Employee doesn't have attendance records!", "Invalid", 0);
+                	}
+                	
+                	txtEmpName.setText(employee.getName());            	
+                	loadAttendanceForComboBox(emp_id);           	              	
+                }
+            }
+        });
+
+		comboBoAttendance.setBounds(188, 68, 198, 30);
+		panel.add(comboBoAttendance);
+		comboBoAttendance.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//comboBoAttendance.removeAll();
+				String attd_id = (String) comboBoAttendance.getSelectedItem();
+				selectedAttendance = attdList.stream().filter(a -> String.valueOf(a.getId()).equals(comboBoAttendance.getSelectedItem())).findFirst();
+				if (selectedAttendance.isPresent()) {            	
+                	Attendance attendance = new Attendance();
+                	attendance = attendanceService.findAttendanceById(attd_id);               	
+                	String emp_id = attendance.getEmployee().getId() + "";                	
+					Employee employee = new Employee();			
+                	employee = employeeService.findEmployeeById(emp_id);                	
+
                 	AllowanceDetails allowanceDetails = new AllowanceDetails();
-                	allowanceDetails = allowanceService.findAllowanceDetailsByEmpId(id);
+                	allowanceDetails = allowanceService.findAllowanceDetailsByattdId(emp_id, attd_id);
                 	
                 	DeductionDetails deductionDetails = new DeductionDetails();
-                	deductionDetails = deductionService.findDeductionDetailsByEmpId(id);
+                	deductionDetails = deductionService.findDeductionDetailsByAttdId(emp_id, attd_id);
+                	try {
+                		if (attendance.getId() == 0) {
+                    		JOptionPane.showMessageDialog(null, "Selected Employee doesn't have attendance records!", "Invalid", 0);
+                    		resetFormDate();
+                    		return;
+                    	}
+                    	if (allowanceDetails.getAdId() == 0) {
+                    		JOptionPane.showMessageDialog(null, "Selected Employee doesn't have Allowance records!", "Invalid", 0);  
+                    		resetFormDate();
+                    		return;
+                    	}
+                    	if (deductionDetails.getDeduction_details_id() == 0) {
+                    		JOptionPane.showMessageDialog(null, "Selected Employee doesn't have Deduction records!", "Invalid", 0); 
+                    		resetFormDate();
+                    		return;
+                    	}	
+                	} catch (Exception e5) {
+                		
+                	}
                 	
-                	if (attendance.getId() == 0) {
-                		JOptionPane.showMessageDialog(null, "Selected Employee doesn't have attendance records!", "Invalid", 0);
-                		resetFormDate();
-                		return;
-                	}
-                	if (allowanceDetails.getAdId() == 0) {
-                		JOptionPane.showMessageDialog(null, "Selected Employee doesn't have Allowance records!", "Invalid", 0);  
-                		resetFormDate();
-                		return;
-                	}
-                	if (deductionDetails.getDeduction_details_id() == 0) {
-                		JOptionPane.showMessageDialog(null, "Selected Employee doesn't have Deduction records!", "Invalid", 0); 
-                		resetFormDate();
-                		return;
-                	}
-                	
-                	txtEmpName.setText(selectedEmployee.map(emp -> emp.getName()).orElse(""));
-                	txtAttdId.setText(attendance.getId() + "");
-                	txtPosition.setText(selectedEmployee.map(emp -> emp.getPosition().getTitle()).orElse(""));
-                	txtDept.setText(selectedEmployee.map(emp -> emp.getDepartment().getDepartmentName()).orElse(""));
-                	txtPresent.setText(attendance.getPresent());
-                	txtAbsent.setText(attendance.getAbsent());
-                	txtLate.setText(attendance.getHourLate());
-                	txtOT.setText(attendance.getHourOT());
-                	txtAllowance.setText(allowanceDetails.getAdId() + "");
-                	txtDeduk.setText(deductionDetails.getDeduction_details_id() + "");
-                	txtAllowanceAmount.setText(allowanceDetails.getAllowance_Amount());
-                	txtDedukAmount.setText(deductionDetails.getDeduction_amount() + "");
-                	txtBasicS.setText(selectedEmployee.map(emp -> String.valueOf(emp.getPosition().getBasicSalary())).orElse(""));
                 	int index = 0;
                 	String selectedMonth = attendance.getMonth();
                 	for (int i = 0; i < months.length; i++) {
@@ -326,115 +366,166 @@ public class PayrollForm extends JInternalFrame {
                 			index = i;
                 		}
                 	}               	
-                	monthChooser.setMonth(index);
                 	
-                }
-            }
-        });
-		
+                	txtEmpName.setText(selectedEmployee.map(emp -> emp.getName()).orElse(""));
+                	txtMonth.setText(selectedAttendance.map(a -> a.getMonth()).orElse(""));
+                	txtPosition.setText(selectedEmployee.map(emp -> emp.getPosition().getTitle()).orElse(""));
+                	txtDept.setText(selectedEmployee.map(emp -> emp.getDepartment().getDepartmentName()).orElse(""));
+                	txtPresent.setText(selectedAttendance.map(a -> a.getPresent()).orElse(""));
+                	txtAbsent.setText(selectedAttendance.map(a -> a.getAbsent()).orElse(""));
+                	txtLate.setText(selectedAttendance.map(a -> a.getHourLate()).orElse(""));
+                	txtOT.setText(selectedAttendance.map(a -> a.getHourOT()).orElse(""));
+                	txtAllowance.setText(allowanceDetails.getAdId() + "");
+                	txtDeduk.setText(deductionDetails.getDeduction_details_id() + "");
+                	txtAllowanceAmount.setText(allowanceDetails.getAllowance_Amount());
+                	txtDedukAmount.setText(deductionDetails.getDeduction_amount() + "");
+                	txtBasicS.setText(selectedEmployee.map(emp -> String.valueOf(emp.getPosition().getBasicSalary())).orElse(""));
+                	
+				}
+			}
+		});
+//		EmpIdCombo.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				String id = (String) EmpIdCombo.getSelectedItem();
+//				
+//
+//                selectedEmployee = employeeList.stream()
+//                        .filter(emp -> String.valueOf(emp.getId()).equals(EmpIdCombo.getSelectedItem())).findFirst();
+//                if (selectedEmployee.isPresent()) {
+//                	Attendance attendance = new Attendance();
+//                	attendance = attendanceService.findAttendanceByEmpId(id);
+//                	
+//                	AllowanceDetails allowanceDetails = new AllowanceDetails();
+//                	allowanceDetails = allowanceService.findAllowanceDetailsByEmpId(id);
+//                	
+//                	DeductionDetails deductionDetails = new DeductionDetails();
+//                	deductionDetails = deductionService.findDeductionDetailsByEmpId(id);
+//                	
+//                	if (attendance.getId() == 0) {
+//                		JOptionPane.showMessageDialog(null, "Selected Employee doesn't have attendance records!", "Invalid", 0);
+//                		resetFormDate();
+//                		return;
+//                	}
+//                	if (allowanceDetails.getAdId() == 0) {
+//                		JOptionPane.showMessageDialog(null, "Selected Employee doesn't have Allowance records!", "Invalid", 0);  
+//                		resetFormDate();
+//                		return;
+//                	}
+//                	if (deductionDetails.getDeduction_details_id() == 0) {
+//                		JOptionPane.showMessageDialog(null, "Selected Employee doesn't have Deduction records!", "Invalid", 0); 
+//                		resetFormDate();
+//                		return;
+//                	}
+//                	int index = 0;
+//                	String selectedMonth = attendance.getMonth();
+//                	for (int i = 0; i < months.length; i++) {
+//                		if (months[i].equals(selectedMonth)) {
+//                			index = i;
+//                		}
+//                	}               	
+//                	
+//                	txtEmpName.setText(selectedEmployee.map(emp -> emp.getName()).orElse(""));
+//                	txtAttdId.setText(attendance.getId() + "");
+//                	txtPosition.setText(selectedEmployee.map(emp -> emp.getPosition().getTitle()).orElse(""));
+//                	txtDept.setText(selectedEmployee.map(emp -> emp.getDepartment().getDepartmentName()).orElse(""));
+//                	txtPresent.setText(attendance.getPresent());
+//                	txtAbsent.setText(attendance.getAbsent());
+//                	txtLate.setText(attendance.getHourLate());
+//                	txtOT.setText(attendance.getHourOT());
+//                	txtAllowance.setText(allowanceDetails.getAdId() + "");
+//                	txtDeduk.setText(deductionDetails.getDeduction_details_id() + "");
+//                	txtAllowanceAmount.setText(allowanceDetails.getAllowance_Amount());
+//                	txtDedukAmount.setText(deductionDetails.getDeduction_amount() + "");
+//                	txtBasicS.setText(selectedEmployee.map(emp -> String.valueOf(emp.getPosition().getBasicSalary())).orElse(""));
+//                	
+//                	
+//                }
+//            }
+//        });
+//		
 		
 		panel.add(EmpIdCombo);
 		
 		JLabel lblEmpId = new JLabel("Employee ID");
 		lblEmpId.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblEmpId.setBounds(54, 79, 124, 30);
+		lblEmpId.setBounds(54, 25, 124, 30);
 		panel.add(lblEmpId);
 		
 		txtEmpName = new JTextField();
 		txtEmpName.setEditable(false);
-		txtEmpName.setBounds(188, 122, 200, 30);
+		txtEmpName.setBounds(188, 178, 200, 30);
 		panel.add(txtEmpName);
 		txtEmpName.setColumns(10);
 		
 		JLabel lblEmployeeName = new JLabel("Employee Name");
 		lblEmployeeName.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblEmployeeName.setBounds(54, 120, 124, 30);
+		lblEmployeeName.setBounds(54, 176, 124, 30);
 		panel.add(lblEmployeeName);
 		
 		JLabel lblPosition = new JLabel("Position");
 		lblPosition.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblPosition.setBounds(54, 202, 124, 30);
+		lblPosition.setBounds(54, 217, 124, 30);
 		panel.add(lblPosition);
 		
 		txtPosition = new JTextField();
 		txtPosition.setEditable(false);
 		txtPosition.setColumns(10);
-		txtPosition.setBounds(188, 204, 200, 30);
+		txtPosition.setBounds(188, 219, 200, 30);
 		panel.add(txtPosition);
 		
 		txtDept = new JTextField();
 		txtDept.setEditable(false);
 		txtDept.setColumns(10);
-		txtDept.setBounds(188, 245, 200, 30);
+		txtDept.setBounds(188, 260, 200, 30);
 		panel.add(txtDept);
 		
 		JLabel lblDepartment = new JLabel("Department");
 		lblDepartment.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblDepartment.setBounds(54, 243, 124, 30);
+		lblDepartment.setBounds(54, 258, 124, 30);
 		panel.add(lblDepartment);
-		
-		txtAttdId = new JTextField();
-		txtAttdId.setEditable(false);
-		txtAttdId.setColumns(10);
-		txtAttdId.setBounds(188, 163, 200, 30);
-		panel.add(txtAttdId);
-		
-		JLabel lblAttendanceId = new JLabel("Attendance ID");
-		lblAttendanceId.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblAttendanceId.setBounds(54, 161, 124, 30);
-		panel.add(lblAttendanceId);
-		
-		JLabel lblAttendanceId_1 = new JLabel("Month");
-		lblAttendanceId_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblAttendanceId_1.setBounds(54, 38, 124, 30);
-		panel.add(lblAttendanceId_1);
-		
-		monthChooser.setMonth(LocalDate.now().getMonthValue());
-		monthChooser.setBounds(188, 38, 200, 30);
-		panel.add(monthChooser);
 		
 		JLabel lblPresent = new JLabel("Present (Day)");
 		lblPresent.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblPresent.setBounds(54, 284, 124, 30);
+		lblPresent.setBounds(54, 299, 124, 30);
 		panel.add(lblPresent);
 		
 		txtPresent = new JTextField();
 		txtPresent.setEditable(false);
 		txtPresent.setColumns(10);
-		txtPresent.setBounds(188, 286, 200, 30);
+		txtPresent.setBounds(188, 301, 200, 30);
 		panel.add(txtPresent);
 		
 		JLabel lblAbsentday = new JLabel("Absent (Day)");
 		lblAbsentday.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblAbsentday.setBounds(54, 325, 124, 30);
+		lblAbsentday.setBounds(54, 340, 124, 30);
 		panel.add(lblAbsentday);
 		
 		txtAbsent = new JTextField();
 		txtAbsent.setEditable(false);
 		txtAbsent.setColumns(10);
-		txtAbsent.setBounds(188, 327, 200, 30);
+		txtAbsent.setBounds(188, 342, 200, 30);
 		panel.add(txtAbsent);
 		
 		JLabel lblLatehour = new JLabel("Late (Hour)");
 		lblLatehour.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblLatehour.setBounds(54, 366, 124, 30);
+		lblLatehour.setBounds(54, 381, 124, 30);
 		panel.add(lblLatehour);
 		
 		txtLate = new JTextField();
 		txtLate.setEditable(false);
 		txtLate.setColumns(10);
-		txtLate.setBounds(188, 368, 200, 30);
+		txtLate.setBounds(188, 383, 200, 30);
 		panel.add(txtLate);
 		
 		JLabel lblOvertimehour = new JLabel("Overtime (Hour)");
 		lblOvertimehour.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblOvertimehour.setBounds(54, 407, 124, 30);
+		lblOvertimehour.setBounds(54, 422, 124, 30);
 		panel.add(lblOvertimehour);
 		
 		txtOT = new JTextField();
 		txtOT.setEditable(false);
 		txtOT.setColumns(10);
-		txtOT.setBounds(188, 409, 200, 30);
+		txtOT.setBounds(188, 424, 200, 30);
 		panel.add(txtOT);
 		
 		JLabel lblAllowanceId = new JLabel("Allowance ID");
@@ -519,13 +610,18 @@ public class PayrollForm extends JInternalFrame {
 				List<Payroll> thePayroll = new ArrayList<>();
 				thePayroll = payrollService.findAllPayrolls();
 				attendanceIdRecords = thePayroll.stream().map(p -> String.valueOf(p.getAttendance().getId())).collect(Collectors.toList());
-				
+
+				List<String> attendanceMonthRecords = new ArrayList<>();
+				attendanceMonthRecords = thePayroll.stream().map(p -> p.getAttendance().getMonth()).collect(Collectors.toList());
+
 				Payroll payroll = new Payroll();
 				setPayrollDataFromForm(payroll);
 				Attendance attendance = new Attendance();
 		    	attendance = attendanceService.findAttendanceByEmpId(payroll.getEmployee().getId() + "");
-				String selectedMonth =months[monthChooser.getMonth()];
-				if (!attendance.getMonth().equals(selectedMonth)) {
+				String selectedMonth = txtMonth.getText();
+				
+				
+				if (attendanceMonthRecords.contains(selectedMonth)) {
 					JOptionPane.showMessageDialog(null, "Selected employee doesn't have attendance record for the selected month!", "Invalid", 0);
 		    		resetFormDate();
 		    		return;	
@@ -546,7 +642,7 @@ public class PayrollForm extends JInternalFrame {
 		    		return;
 		    	}
 				JOptionPane.showMessageDialog(null, "Payroll registered successfully!", "Success", 1);
-
+				resetFormDate();
 			}
 		});
 		btnRegister.setEnabled(false);
@@ -571,8 +667,30 @@ public class PayrollForm extends JInternalFrame {
 		panel.add(btnCalculate);
 		
 		JButton btnClear = new JButton("Clear");
+		btnClear.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				resetFormDate();
+			}
+		});
 		btnClear.setBounds(666, 407, 103, 65);
 		panel.add(btnClear);
+		
+		JLabel lblMonth = new JLabel("Attendance ID");
+		lblMonth.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblMonth.setBounds(54, 66, 124, 33);
+		panel.add(lblMonth);
+		
+		
+		JLabel lblNewLabel_3_1_1 = new JLabel("Month");
+		lblNewLabel_3_1_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblNewLabel_3_1_1.setBounds(54, 135, 124, 30);
+		panel.add(lblNewLabel_3_1_1);
+		
+		txtMonth = new JTextField();
+		txtMonth.setEditable(false);
+		txtMonth.setColumns(10);
+		txtMonth.setBounds(188, 139, 200, 28);
+		panel.add(txtMonth);
 		
 		JPanel payrollList = new JPanel();
 		payrollList.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -606,7 +724,7 @@ public class PayrollForm extends JInternalFrame {
 				String empName = txtEmpName.getText();
 				String empPosition = txtPosition.getText();
 				String empDept = txtDept.getText();
-				String month = months[monthChooser.getMonth()];
+				String month = txtMonth.getText();
 				String absent = txtAbsent.getText();
 				String late = txtLate.getText();
 				String overtime = txtOT.getText();
@@ -719,7 +837,6 @@ public class PayrollForm extends JInternalFrame {
 
                 payroll = payrollService.findPayrollById(payrollId);
                 btnslip.setEnabled(true);
-                System.out.println(payroll.getEmployee().getId());
                 
                 List<Payroll> pList = new ArrayList<>();
                 pList = payrollService.findAllPayrolls();
@@ -729,31 +846,45 @@ public class PayrollForm extends JInternalFrame {
                 		EmpIdCombo.setSelectedIndex(i + 1);
                 	}
                 }
-                                              
+                String id = String.valueOf(payroll.getEmployee().getId());                
+
+                List<Attendance> attd = new ArrayList<>();
+                attd = attendanceService.findAllAttendances();
+                List<Attendance> attdListforEmp = new ArrayList<>(); 
+                attdListforEmp = attd.stream().filter(a -> String.valueOf(a.getEmployee().getId()).equals(id)).collect(Collectors.toList());;
+                
+                for (int i = 0; i < attdListforEmp.size(); i++) {
+                	if (attdListforEmp.get(i).getId() == payroll.getAttendance().getId()) {
+                		comboBoAttendance.setSelectedIndex(i + 1);
+                	}
+                }
+                
                 txtEmpName.setText(payroll.getEmployee().getName());
                 
             	            	
-                String id = String.valueOf(payroll.getEmployee().getId());                
                 
                 selectedEmployee = employeeList.stream()
                         .filter(emp -> String.valueOf(emp.getId()).equals(id)).findFirst();
+				selectedAttendance = attdList.stream()
+						.filter(a -> String.valueOf(a.getId()).equals(payroll.getAttendance().getId() +"")).findFirst();
+
                 if (selectedEmployee.isPresent()) {
                 	Attendance attendance = new Attendance();
-                	attendance = attendanceService.findAttendanceByEmpId(id);
-                	
+                	attendance = attendanceService.findAttendanceById(payroll.getAttendance().getId() + "");
+                	comboBoAttendance.setSelectedItem(attendance.getId());
                 	AllowanceDetails allowanceDetails = new AllowanceDetails();
                 	allowanceDetails = allowanceService.findAllowanceDetailsByEmpId(id);
                 	
                 	DeductionDetails deductionDetails = new DeductionDetails();
                 	deductionDetails = deductionService.findDeductionDetailsByEmpId(id);
                 	txtEmpName.setText(selectedEmployee.map(emp -> emp.getName()).orElse(""));
-                	txtAttdId.setText(attendance.getId() + "");
+                	txtMonth.setText(selectedAttendance.map(a -> a.getMonth()).orElse(""));
                 	txtPosition.setText(selectedEmployee.map(emp -> emp.getPosition().getTitle()).orElse(""));
                 	txtDept.setText(selectedEmployee.map(emp -> emp.getDepartment().getDepartmentName()).orElse(""));
-                	txtPresent.setText(attendance.getPresent());
-                	txtAbsent.setText(attendance.getAbsent());
-                	txtLate.setText(attendance.getHourLate());
-                	txtOT.setText(attendance.getHourOT());
+                	txtPresent.setText(selectedAttendance.map(a -> a.getPresent()).orElse(""));
+                	txtAbsent.setText(selectedAttendance.map(a -> a.getAbsent()).orElse(""));
+                	txtLate.setText(selectedAttendance.map(a -> a.getHourLate()).orElse(""));
+                	txtOT.setText(selectedAttendance.map(a -> a.getHourOT()).orElse(""));
                 	txtAllowance.setText(allowanceDetails.getAdId() + "");
                 	txtDeduk.setText(deductionDetails.getDeduction_details_id() + "");
                 	txtAllowanceAmount.setText(allowanceDetails.getAllowance_Amount());
@@ -761,14 +892,7 @@ public class PayrollForm extends JInternalFrame {
                 	txtBasicS.setText(selectedEmployee.map(emp -> String.valueOf(emp.getPosition().getBasicSalary())).orElse(""));
                 	txtGrossS.setText(payroll.getGrossSalary());
                 	txtNetS.setText(payroll.getNetSalary());
-                	int index = 0;
-                	String selectedMonth = attendance.getMonth();
-                	for (int i = 0; i < months.length; i++) {
-                		if (months[i].equals(selectedMonth)) {
-                			index = i;
-                		}
-                	}               	
-                	monthChooser.setMonth(index);
+               	
                 }
                              
             }

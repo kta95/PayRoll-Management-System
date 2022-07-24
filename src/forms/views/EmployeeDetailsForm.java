@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
 
 import java.awt.Font;
 import javax.swing.SwingConstants;
@@ -249,7 +250,7 @@ public class EmployeeDetailsForm extends JInternalFrame {
 				lblDepartment_1.setText(employee.getDepartment().getDepartmentName());
 
 
-				if (employee.getRole().equals(UserRole.ADMIN) || employee.getName().equals("Kyaw Thet Aung")) {
+				if (employee.getRole().equals(UserRole.ADMIN) || employee.getName().equals("Michiko")) {
 					lblaccess.setForeground(Color.green);
 					lblaccess.setText("This employee has permission to become administrator!");
 					txtUsername.setEditable(true);

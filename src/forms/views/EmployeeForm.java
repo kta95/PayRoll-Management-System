@@ -153,13 +153,7 @@ public class EmployeeForm extends JInternalFrame {
 		String hd = "" + Date_Format.format(hiredDateChooser.getDate());
 		employee.setHiredDate(hd);
 		
-		if(!deptCombo.getSelectedItem().equals("HR")) {
-			if(positionCombo.getSelectedItem().equals("HR clerk")) {
-				JOptionPane.showMessageDialog(null, "HR clerk shouldn't be in another department!", "Invalid Fields", 0);
-				resetFormData();
-				return;
-			}
-		}
+	
 		Optional<Position> selectedPosition = positionList.stream().filter(p -> p.getTitle().equals(positionCombo.getSelectedItem())).findFirst();
 		employee.setPosition(selectedPosition.orElse(null));
 		Optional<Department> selectedDepartment = deptList.stream().filter(d -> d.getDepartmentName().equals(deptCombo.getSelectedItem())).findFirst();
@@ -340,12 +334,20 @@ public class EmployeeForm extends JInternalFrame {
 					if(nameField.getText().trim().matches("^[a-zA-Z\\s]*$") && phoneField.getText().trim().matches("[0-9]+") &&
 							emailField.getText().trim().matches("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-]"+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")) {
 						setEmployeeDataFromForm(employee);
-
+						
+						if(!deptCombo.getSelectedItem().equals("HR")) {
+							if(positionCombo.getSelectedItem().equals("HR clerk")) {
+								JOptionPane.showMessageDialog(null, "HR clerk shouldn't be in another department!", "Invalid Fields", 0);
+								resetFormData();
+								return;
+							}
+						}
 						if (empName.contains(employee.getName() + "") && empDOB.contains(employee.getDateOfBirth())) {
 							JOptionPane.showMessageDialog(null, employee.getName() + "is already registered!", "Duplicate register!", 0);
 							resetFormData(); 
 							return;
-						} else {
+						}
+						else {
 							System.out.println("Yo");
 
 							employeeService.createEmployee(employee);

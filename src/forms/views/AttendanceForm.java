@@ -116,7 +116,6 @@ public class AttendanceForm extends JInternalFrame {
 	private void resetFormData() {
 		empIDField.setText("");
 		empNameField.setText("");
-		presentField.setText("0");
 		absentField.setText("0");
 		monthChooser.setMonth(0);
 		leavesField.setText("0");
@@ -146,6 +145,8 @@ public class AttendanceForm extends JInternalFrame {
 			
 			int addedAbsent = Integer.valueOf(absentField.getText().isBlank() ? "0" : absentField.getText()) + extraLeaves;
 			attendance.setAbsent(addedAbsent + "");
+			employee.setLeaveDays(0 + "");
+			employeeService.updateEmployee(String.valueOf(employee.getId()), employee);
 		} else {
 			employee.setLeaveDays(leaveLeft + "");
 			employeeService.updateEmployee(String.valueOf(employee.getId()), employee);
@@ -224,28 +225,29 @@ public class AttendanceForm extends JInternalFrame {
 		JLabel lblMonth = new JLabel("Month");
 		lblMonth.setHorizontalAlignment(SwingConstants.LEFT);
 		lblMonth.setForeground(Color.BLACK);
-		lblMonth.setBounds(385, 33, 51, 21);
+		lblMonth.setBounds(370, 33, 66, 21);
 		panel.add(lblMonth);
 		
 		JLabel lblleaves = new JLabel("leaves");
 		lblleaves.setForeground(Color.BLACK);
-		lblleaves.setBounds(385, 68, 51, 21);
+		lblleaves.setBounds(370, 68, 66, 21);
 		panel.add(lblleaves);
 		
-		JLabel lblLate = new JLabel("Late");
+		JLabel lblLate = new JLabel("Late (hr)");
 		lblLate.setForeground(Color.BLACK);
-		lblLate.setBounds(385, 97, 51, 21);
+		lblLate.setBounds(370, 97, 66, 21);
 		panel.add(lblLate);
 		
-		JLabel lblOT = new JLabel("OverTime");
+		JLabel lblOT = new JLabel("OverTime(hr)");
 		lblOT.setForeground(Color.BLACK);
-		lblOT.setBounds(385, 129, 69, 21);
+		lblOT.setBounds(370, 129, 82, 21);
 		panel.add(lblOT);
 		
 		presentField = new JTextField("20");
 		presentField.setColumns(10);
 		presentField.setBounds(128, 97, 224, 21);
 		panel.add(presentField);
+		//presentField.setText("20");
 		
 		absentField = new JTextField();
 		absentField.setColumns(10);

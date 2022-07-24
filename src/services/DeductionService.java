@@ -122,6 +122,30 @@ public class DeductionService {
         return deductionDetails;
     }
 	
+	public DeductionDetails findDeductionDetailsByAttdId(String id, String dedukId) {
+
+		DeductionDetails deductionDetails = new DeductionDetails();
+        try (Statement st = this.dbConfig.getConnection().createStatement()) {
+
+            String query = "SELECT * FROM deduction_details\n" +
+                    "INNER JOIN employee\n" +
+                    "ON employee.emp_id = deduction_details.dd_emp_id\n" +
+                    "INNER JOIN attendance\n" +
+                    "ON attendance.attendance_id=deduction_details.dd_attd_id \n" +
+                    "WHERE dd_emp_id=" + id +" and dd_attd_id=" + dedukId + ";";
+
+            ResultSet rs = st.executeQuery(query);
+
+            while (rs.next()) {
+                this.deductionMapper.mapToDeductionDetails(deductionDetails, rs);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return deductionDetails;
+    }
 	 public void deleteDeduction(String id) {
 	        try {
 	            PreparedStatement ps = this.dbConfig.getConnection()

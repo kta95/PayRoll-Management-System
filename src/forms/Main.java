@@ -82,6 +82,7 @@ public class Main {
 	 */
 	private void initialize() {
 		mainframe = new JFrame();
+		mainframe.setTitle("Payroll Management System");
 		mainframe.setIconImage(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("/icons/favicon.png")));
 		mainframe.getContentPane().setBackground(Color.WHITE);
 		mainframe.setBounds(0, 0, 1380, 750);
@@ -114,7 +115,7 @@ public class Main {
 		
 		JLabel lblName = new JLabel();
 		lblName.setFont(new Font("Tahoma", Font.BOLD, 16));
-//		lblName.setText(employee.getName() + "!");
+		lblName.setText(employee.getName() + "!");
 		lblName.setBounds(91, 16, 169, 25);
 		topBar.add(lblName);
 		
@@ -294,7 +295,7 @@ public class Main {
 		sideBar.add(lblNewLabel_2);
 		
 		JLabel lblloggedInUser = new JLabel();
-//		lblloggedInUser.setText(employee.getUsername());
+		lblloggedInUser.setText(employee.getUsername());
 		lblloggedInUser.setForeground(Color.WHITE);
 		lblloggedInUser.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblloggedInUser.setBounds(98, 674, 89, 26);

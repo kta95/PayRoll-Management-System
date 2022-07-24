@@ -137,7 +137,7 @@ public class HomeForm extends JInternalFrame {
 						PdfPTable table = new PdfPTable(11);
 						myDocument.open();
 						
-						float[] columnWidths = new float[] {5, 12, 8, 8, 12, 15, 8, 8, 7, 10, 10};
+						float[] columnWidths = new float[] {5, 12, 8, 10, 12, 15, 8, 10, 7, 10, 10};
 						table.setWidths(columnWidths);
 						
 						table.setWidthPercentage(100);
@@ -203,10 +203,11 @@ public class HomeForm extends JInternalFrame {
 		panel_1.add(lblNewLabel_1);
 		
 		
-		
+		List<Employee> newempList= new ArrayList<>();
+		newempList= employeeService.findAllEmployees();
 		JLabel empCount = new JLabel("");
 		empCount.setHorizontalAlignment(SwingConstants.CENTER);
-		empCount.setText(employeeList.size() + "");
+		empCount.setText(newempList.size() + "");
 		empCount.setFont(new Font("Tahoma", Font.BOLD, 18));
 		empCount.setBounds(214, 89, 69, 67);
 		panel_1.add(empCount);

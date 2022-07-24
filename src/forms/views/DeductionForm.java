@@ -335,8 +335,6 @@ public class DeductionForm extends JInternalFrame {
 				if(!txtTax.getText().isEmpty() && !txtSSC.getText().isEmpty() && !txtdAmount.getText().isEmpty()) {
 
 
-					ddIdList.forEach(a -> System.out.println(a));
-					System.out.println(String.valueOf(deductionDetails.getAttendance().getId()));
 					if (ddIdList.contains(String.valueOf(deductionDetails.getAttendance().getId()))) {
 			    		JOptionPane.showMessageDialog(null, "Selected employee's Deduction has already registered for the month!", "Invalid", 0);
 						resetFormData();
@@ -379,7 +377,6 @@ public class DeductionForm extends JInternalFrame {
 					absentDeduction = hourlyPay * 8 * absentDays;
 					
 					total = lateDeduction + absentDeduction + ssc + tax;
-					
 					txtdAmount.setText(String.valueOf(total));
 					
 				} else {
