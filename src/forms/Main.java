@@ -116,7 +116,7 @@ public class Main {
 		JLabel lblName = new JLabel();
 		lblName.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lblName.setText(employee.getName() + "!");
-		lblName.setBounds(91, 16, 169, 25);
+		lblName.setBounds(101, 16, 169, 25);
 		topBar.add(lblName);
 		
 		

@@ -206,10 +206,11 @@ public class PayrollForm extends JInternalFrame {
 		Employee employee = new Employee();
 		employee = employeeService.findEmployeeById(id);
 
+		String attdId = (String) comboBoAttendance.getSelectedItem();
 		
-		
+		System.out.println(attdId + " set");
 		Attendance attendance = new Attendance();
-    	attendance = attendanceService.findAttendanceByEmpId(id);
+    	attendance = attendanceService.findAttendanceById(attdId);
     	
     	AllowanceDetails allowanceDetails = new AllowanceDetails();
     	allowanceDetails = allowanceService.findAllowanceDetailsByEmpId(id);
@@ -244,12 +245,16 @@ public class PayrollForm extends JInternalFrame {
     	txtDeduk.setText("");
     	txtAllowanceAmount.setText("");
     	txtDedukAmount.setText("");
-    	txtBasicS.setText("");		
+    	txtBasicS.setText("");	
+    	txtMonth.setText("");
 	}
 	
 	
 	
 	private void loadEmployeeForComboBox() {
+			this.EmpIdCombo.removeAllItems();
+			this.comboBoAttendance.removeAllItems();
+
 	        this.EmpIdCombo.addItem("- Select -");
 	        this.employeeList = this.employeeService.findAllEmployees();
 	        this.employeeList.forEach(e -> this.EmpIdCombo.addItem(String.valueOf(e.getId())));
@@ -293,6 +298,10 @@ public class PayrollForm extends JInternalFrame {
 		
 		EmpIdCombo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+            	comboBoAttendance.removeAllItems();
+
+           //     comboBoAttendance.addItem("- Select -");
+
 				String emp_id = (String) EmpIdCombo.getSelectedItem();
                 selectedEmployee = employeeList.stream()
                         .filter(emp -> String.valueOf(emp.getId()).equals(EmpIdCombo.getSelectedItem())).findFirst();
@@ -308,10 +317,25 @@ public class PayrollForm extends JInternalFrame {
                 		if (attendance.getId() == 0) {
 //                    		JOptionPane.showMessageDialog(null, "Selected Employee doesn't have attendance records!", "Invalid", 0);
                     		resetFormDate();
+
                     		return;
                     	}
                 	} catch (Exception e5) {
                 		JOptionPane.showMessageDialog(null, "Selected Employee doesn't have attendance records!", "Invalid", 0);
+                		txtEmpName.setText("");
+                    	txtPosition.setText("");
+                    	txtDept.setText("");
+                    	txtPresent.setText("");
+                    	txtAbsent.setText("");
+                    	txtLate.setText("");
+                    	txtOT.setText("");
+                    	txtAllowance.setText("");
+                    	txtDeduk.setText("");
+                    	txtAllowanceAmount.setText("");
+                    	txtDedukAmount.setText("");
+                    	txtBasicS.setText("");	
+                    	txtMonth.setText("");
+                		return;
                 	}
                 	
                 	txtEmpName.setText(employee.getName());            	
@@ -339,12 +363,9 @@ public class PayrollForm extends JInternalFrame {
                 	
                 	DeductionDetails deductionDetails = new DeductionDetails();
                 	deductionDetails = deductionService.findDeductionDetailsByAttdId(emp_id, attd_id);
+                	
                 	try {
-                		if (attendance.getId() == 0) {
-                    		JOptionPane.showMessageDialog(null, "Selected Employee doesn't have attendance records!", "Invalid", 0);
-                    		resetFormDate();
-                    		return;
-                    	}
+                		
                     	if (allowanceDetails.getAdId() == 0) {
                     		JOptionPane.showMessageDialog(null, "Selected Employee doesn't have Allowance records!", "Invalid", 0);  
                     		resetFormDate();
@@ -380,7 +401,6 @@ public class PayrollForm extends JInternalFrame {
                 	txtAllowanceAmount.setText(allowanceDetails.getAllowance_Amount());
                 	txtDedukAmount.setText(deductionDetails.getDeduction_amount() + "");
                 	txtBasicS.setText(selectedEmployee.map(emp -> String.valueOf(emp.getPosition().getBasicSalary())).orElse(""));
-                	
 				}
 			}
 		});
@@ -610,29 +630,41 @@ public class PayrollForm extends JInternalFrame {
 				List<Payroll> thePayroll = new ArrayList<>();
 				thePayroll = payrollService.findAllPayrolls();
 				attendanceIdRecords = thePayroll.stream().map(p -> String.valueOf(p.getAttendance().getId())).collect(Collectors.toList());
-
-				List<String> attendanceMonthRecords = new ArrayList<>();
-				attendanceMonthRecords = thePayroll.stream().map(p -> p.getAttendance().getMonth()).collect(Collectors.toList());
-
 				Payroll payroll = new Payroll();
 				setPayrollDataFromForm(payroll);
-				Attendance attendance = new Attendance();
-		    	attendance = attendanceService.findAttendanceByEmpId(payroll.getEmployee().getId() + "");
+				
+				
+				List<Attendance> allattd = new ArrayList<>();
+				allattd = attendanceService.findAllAttendances();
+				
+				
+				List<Attendance> attdList = new ArrayList<>();
+				attdList = allattd.stream().filter(a -> a.getEmployee().getId() == payroll.getEmployee().getId()).collect(Collectors.toList());
+				
+			
+				
+				
+				List<String> attendanceMonthRecords = new ArrayList<>();
+				attendanceMonthRecords = attdList.stream().map(a -> a.getMonth()).collect(Collectors.toList());
+				
+				attendanceMonthRecords.forEach(a -> System.out.println(a));
+				attendanceIdRecords.forEach(a -> System.out.print(a+ " !!"));
+				System.out.println(comboBoAttendance.getSelectedItem() + " entered value");
 				String selectedMonth = txtMonth.getText();
 				
 				
-				if (attendanceMonthRecords.contains(selectedMonth)) {
-					JOptionPane.showMessageDialog(null, "Selected employee doesn't have attendance record for the selected month!", "Invalid", 0);
+				if (!attendanceMonthRecords.contains(selectedMonth)) {
+					JOptionPane.showMessageDialog(null, "Selected employee doesn't have attendance record for the selected month!!!", "Invalid", 0);
 		    		resetFormDate();
 		    		return;	
 				}
-				if (attendanceIdRecords.contains(String.valueOf(payroll.getAttendance().getId()))) {
+				if (attendanceIdRecords.contains(payroll.getAttendance().getId() + "")) {
 		    		JOptionPane.showMessageDialog(null, "Selected employee has already registered for the month!", "Invalid", 0);
 		    		resetFormDate();
 		    		return;	
 				}
-		    	if (attendance.getMonth().equals(selectedMonth)) {
-					payrollService.createPayroll(payroll);
+		    	if (payroll.getAttendance().getMonth().equals(selectedMonth)) {
+		    		payrollService.createPayroll(payroll);
 					loadAllPayroll(Optional.empty());
 					JOptionPane.showMessageDialog(null, "Successfully registered!", "Success", 1);
 					resetFormDate();
@@ -641,8 +673,6 @@ public class PayrollForm extends JInternalFrame {
 		    		resetFormDate();
 		    		return;
 		    	}
-				JOptionPane.showMessageDialog(null, "Payroll registered successfully!", "Success", 1);
-				resetFormDate();
 			}
 		});
 		btnRegister.setEnabled(false);
@@ -651,15 +681,27 @@ public class PayrollForm extends JInternalFrame {
 		
 		JButton btnCalculate = new JButton("Calculate");
 		btnCalculate.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {			
-				double basic = Double.valueOf(selectedEmployee.map(emp -> String.valueOf(emp.getPosition().getBasicSalary())).orElse(""));
-				double allowanceAmount = Double.valueOf(txtAllowanceAmount.getText());
-				double deductionAmount = Double.valueOf(txtDedukAmount.getText());
-				double grossSalary = basic + allowanceAmount;
-				txtGrossS.setText(String.valueOf(grossSalary));
-				double netSalary = grossSalary - deductionAmount;
-				txtNetS.setText(String.valueOf(netSalary));
-            	btnRegister.setEnabled(true);
+			public void actionPerformed(ActionEvent e) {	
+				try {
+					double basic = Double.valueOf(selectedEmployee.map(emp -> String.valueOf(emp.getPosition().getBasicSalary())).orElse(""));
+					double allowanceAmount = Double.valueOf(txtAllowanceAmount.getText());
+					double deductionAmount = Double.valueOf(txtDedukAmount.getText());
+					double grossSalary = basic + allowanceAmount;
+					txtGrossS.setText(String.valueOf(grossSalary));
+					double netSalary = grossSalary - deductionAmount;
+					txtNetS.setText(String.valueOf(netSalary));
+	            	btnRegister.setEnabled(true);	
+				} catch (Exception e5) {
+					
+				}
+//				double basic = Double.valueOf(selectedEmployee.map(emp -> String.valueOf(emp.getPosition().getBasicSalary())).orElse(""));
+//				double allowanceAmount = Double.valueOf(txtAllowanceAmount.getText());
+//				double deductionAmount = Double.valueOf(txtDedukAmount.getText());
+//				double grossSalary = basic + allowanceAmount;
+//				txtGrossS.setText(String.valueOf(grossSalary));
+//				double netSalary = grossSalary - deductionAmount;
+//				txtNetS.setText(String.valueOf(netSalary));
+//            	btnRegister.setEnabled(true);
 
 			}
 		});
@@ -838,12 +880,28 @@ public class PayrollForm extends JInternalFrame {
                 payroll = payrollService.findPayrollById(payrollId);
                 btnslip.setEnabled(true);
                 
+
+
+				EmpIdCombo.setSelectedIndex(payroll.getEmployee().getId());
+				Attendance attend = new Attendance();
+				attend = attendanceService.findAttendanceById(payroll.getAttendance().getId() + "");
+            	int index = 0;
+            	for (int i = 0; i < comboBoAttendance.getItemCount(); i++) {
+            		if (comboBoAttendance.getItemAt(i).equals(attend.getId() + "")) {
+            			index = i;
+            		}
+            	}
+            	
+            	comboBoAttendance.setSelectedIndex(index);
+                
+                
                 List<Payroll> pList = new ArrayList<>();
                 pList = payrollService.findAllPayrolls();
                 
+                pList.forEach(a -> System.out.print(a.getId() + " id"));
                 for (int i = 0; i < pList.size(); i++) {
                 	if (pList.get(i).getId() == payroll.getEmployee().getId()) {
-                		EmpIdCombo.setSelectedIndex(i + 1);
+                		EmpIdCombo.setSelectedIndex(i);
                 	}
                 }
                 String id = String.valueOf(payroll.getEmployee().getId());                

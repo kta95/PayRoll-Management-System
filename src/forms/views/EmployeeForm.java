@@ -27,6 +27,7 @@ import com.formdev.flatlaf.ui.FlatTextFieldUI;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -315,6 +316,10 @@ public class EmployeeForm extends JInternalFrame {
 		panel.add(lblhiredDate);
 		
 		hiredDateChooser.setBounds(382, 98, 200, 20);
+//		Calendar c = Calendar.getInstance();
+//		c.add(Calendar.MONTH, - 1);
+//		Date date = c.getTime();
+		hiredDateChooser.getJCalendar().setMaxSelectableDate(new Date());
 		panel.add(hiredDateChooser);
 		
 		JButton btnSave = new JButton("Register");
@@ -330,7 +335,7 @@ public class EmployeeForm extends JInternalFrame {
 				empDOB = registeredEmpList.stream().map(e2 -> e2.getDateOfBirth()+ "").collect(Collectors.toList());
 				if(!nameField.getText().isEmpty() && !(genderCombo.getSelectedIndex() == 0) && !dobChooser.getDate().equals(null) &&
 						!phoneField.getText().isEmpty() && !emailField.getText().isEmpty() && !addressField.getText().isEmpty() &&
-						!hiredDateChooser.getDate().equals(null)) {
+						!hiredDateChooser.getDate().equals(null) && deptCombo.getSelectedIndex() != 0 && positionCombo.getSelectedIndex() != 0) {
 					if(nameField.getText().trim().matches("^[a-zA-Z\\s]*$") && phoneField.getText().trim().matches("[0-9]+") &&
 							emailField.getText().trim().matches("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-]"+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")) {
 						setEmployeeDataFromForm(employee);
@@ -338,7 +343,7 @@ public class EmployeeForm extends JInternalFrame {
 						if(!deptCombo.getSelectedItem().equals("HR")) {
 							if(positionCombo.getSelectedItem().equals("HR clerk")) {
 								JOptionPane.showMessageDialog(null, "HR clerk shouldn't be in another department!", "Invalid Fields", 0);
-								resetFormData();
+								//resetFormData();
 								return;
 							}
 						}

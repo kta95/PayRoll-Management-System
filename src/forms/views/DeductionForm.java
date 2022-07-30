@@ -148,6 +148,8 @@ public class DeductionForm extends JInternalFrame {
 	        txtEmpName.setText("");
 	        txtLate.setText("");
 	        EmpIdCombo.setSelectedIndex(0);
+	        comboBoAttendance.setSelectedIndex(0);
+	        txtMonth.setText("");
 	  }
 	 
 	 private void setDeductionDetails(DeductionDetails deductionDetails) {
@@ -445,12 +447,16 @@ public class DeductionForm extends JInternalFrame {
                 	Attendance attendance = new Attendance();
                 	attendance = attendanceService.findAttendanceByEmpId(emp_id);
                 	
-
-                	if (attendance.getId() == 0) {
-                		JOptionPane.showMessageDialog(null, "Selected Employee doesn't have attendance records!", "Invalid", 0);
-                		resetFormData();
-                		return;
+                	try {
+                		if (attendance.getId() == 0) {
+                    		JOptionPane.showMessageDialog(null, "Selected Employee doesn't have attendance records!", "Invalid", 0);
+                    		resetFormData();
+                    		return;
+                    	}	
+                	} catch (Exception e2) {
+                		
                 	}
+                	
                 	txtEmpName.setText(employee.getName());            	
                 	loadAttendanceForComboBox(emp_id);           	              	
                 }
@@ -474,17 +480,14 @@ public class DeductionForm extends JInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 				String attd_id = (String) comboBoAttendance.getSelectedItem();
 				selectedAttendance = attdList.stream().filter(a -> String.valueOf(a.getId()).equals(comboBoAttendance.getSelectedItem())).findFirst();
-				if (selectedAttendance.isPresent()) {            	
+				if (selectedAttendance.isPresent()) {            	             	                   				 
                 	Attendance attendance = new Attendance();
-                	attendance = attendanceService.findAttendanceById(attd_id);               	               
-    				 
+                	attendance = attendanceService.findAttendanceById(attd_id);
 					String id = EmpIdCombo.getSelectedItem() + "";
 					employee = new Employee();
 					employee = employeeService.findEmployeeById(id);
 					txtEmpName.setText(employee.getName());
 					
-					attendance = new Attendance();
-					attendance = attendanceService.findAttendanceByEmpId(id);
 					txtLate.setText(attendance.getHourLate());
 					
 					double tax = 0;
@@ -494,6 +497,7 @@ public class DeductionForm extends JInternalFrame {
 					
 					basic = employee.getPosition().getBasicSalary();
 					
+					// income tax
 					if (basic < (1960000 / 12)) {
 						tax = 0.05 * basic;
 					} else if (basic > (1960000 / 12)) {

@@ -32,9 +32,11 @@ import javax.swing.JTable;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -370,15 +372,50 @@ public class AttendanceForm extends JInternalFrame {
 						{
 							
 							if (attdRecord.getMonth() != null) {
-								if (attdRecord.getMonth().equals(months[monthChooser.getMonth()])) {
+								int currentYear = LocalDate.now().getYear();
+								if (attdRecord.getMonth().equals(months[monthChooser.getMonth()] + ", " + currentYear)) {
 									JOptionPane.showMessageDialog(null, "Selected Employee's attendance is already registered for the selected month !", "Invalid Month", 0);
 									return;	
 								}								
 							}
-							setAttendanceDataFrom(attendance);	
-							attendanceService.createAttendance(attendance);
-							loadAllAttendance(Optional.empty());
-							resetFormData();								
+							Employee employee = new Employee();
+							employee = employeeService.findEmployeeById(empIDField.getText());
+							
+							
+							Calendar c = Calendar.getInstance();
+							c.add(Calendar.MONTH, - 1);
+							Date date = c.getTime();
+							System.out.println(date + "");
+							
+							SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+							String lastMonth = format1.format(date);
+							String selectedM = LocalDate.now().getYear()+ "-" + monthChooser.getMonth() +"-" + LocalDate.now().getDayOfMonth();
+							try {
+								Date empHd = format1.parse(employee.getHiredDate());
+								Date lastD = format1.parse(lastMonth);
+								Date seleD = format1.parse(selectedM);
+								
+								
+								System.out.println(empHd.compareTo(lastD) <= 0);
+								if (seleD.compareTo(empHd) < 0) {
+									JOptionPane.showMessageDialog(null, "Selected Employee isn't hired yet!", "Invalid Month", 0);
+									return;
+								} else if (seleD.compareTo(lastD) > 0) {
+									JOptionPane.showMessageDialog(null, "Invalid month", "Invalid Month", 0);
+									return;	
+								}
+								setAttendanceDataFrom(attendance);	
+								attendanceService.createAttendance(attendance);
+								loadAllAttendance(Optional.empty());								
+								JOptionPane.showMessageDialog(null, "Attendance successfully registered!", "Success", 1);
+								resetFormData();	
+							} catch (ParseException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							
+							
+													
 							}
 	
 						}

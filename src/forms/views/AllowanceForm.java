@@ -142,6 +142,8 @@ public class AllowanceForm extends JInternalFrame {
         txtOT.setText("");
         txtTA.setText("");
         txtEmp.setText("");
+        comboBoAttendance.setSelectedIndex(0);
+        txtMonth.setText("");
   }
 	
 	private void loadAttendanceForComboBox(String id) {
@@ -480,12 +482,16 @@ public class AllowanceForm extends JInternalFrame {
                 	Attendance attendance = new Attendance();
                 	attendance = attendanceService.findAttendanceByEmpId(emp_id);
                 	
-
-                	if (attendance.getId() == 0) {
-                		JOptionPane.showMessageDialog(null, "Selected Employee doesn't have attendance records!", "Invalid", 0);
-                		resetFormData();
-                		return;
+                	try {
+                		if (attendance.getId() == 0) {
+                    		JOptionPane.showMessageDialog(null, "Selected Employee doesn't have attendance records!", "Invalid", 0);
+                    		resetFormData();
+                    		return;
+                    	}	
+                	} catch (Exception e2) {
+                		
                 	}
+                	
                 	txtEmp.setText(employee.getName());            	
                 	loadAttendanceForComboBox(emp_id);           	              	
                 }
@@ -528,8 +534,6 @@ public class AllowanceForm extends JInternalFrame {
     					EmpIdCombo.setSelectedIndex(0);
     					return;
     				}
-    				attendance = new Attendance();
-    				attendance = attendanceService.findAttendanceByEmpId(emp_id);
     				txtOT.setText(attendance.getHourOT());
 				}
 			}
